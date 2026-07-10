@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Save, User, Calendar, Tag, AlertTriangle } from 'lucide-react';
-import clsx from 'clsx';
 import { mockApi } from '../services/mockApi';
 
 interface TaskDrawerProps {
@@ -35,6 +34,7 @@ export const TaskDrawer = ({ isOpen, onClose, onTaskCreated }: TaskDrawerProps) 
       await mockApi.crearTarea({
         tarea: tareaDesc,
         asociadaA: asociadaA,
+        responsable: responsable,
         responsableAsignado: responsable,
         fechaVencimiento: fecha,
         estado: estado
