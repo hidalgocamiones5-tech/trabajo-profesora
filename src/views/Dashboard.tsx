@@ -1,16 +1,12 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { mockTareasPendientes } from '../data/mockData';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import { Search, Clock, AlertTriangle, CheckCircle, FileText, Timer, Users, Target, Edit3, Check } from 'lucide-react';
+import { Search, Clock, AlertTriangle, CheckCircle, FileText, Timer, Users, Target, Edit3, Check, Loader2, Plus } from 'lucide-react';
 import clsx from 'clsx';
-
-const KPI_CARDS = [
-  { title: 'Normativas', values: [{ label: '122 Atrasadas', color: 'text-red-500', bg: 'bg-red-50' }, { label: '47 En tiempo', color: 'text-lemon-600', bg: 'bg-lemon-50' }], icon: FileText },
-  { title: 'Riesgos', values: [{ label: '192 Pendiente', color: 'text-orange-500', bg: 'bg-orange-50' }, { label: '13 En curso', color: 'text-blue-500', bg: 'bg-blue-50' }], icon: AlertTriangle },
-  { title: 'Incidentes', values: [{ label: '70 En progreso', color: 'text-blue-500', bg: 'bg-blue-50' }, { label: '6 Completados', color: 'text-emerald-500', bg: 'bg-emerald-50' }], icon: AlertTriangle },
-  { title: 'Solicitudes', values: [{ label: '0 Recibidas', color: 'text-slate-500', bg: 'bg-slate-50' }, { label: '127 En progreso', color: 'text-blue-500', bg: 'bg-blue-50' }], icon: CheckCircle },
-];
+import { useDashboard } from '../hooks/useDashboard';
+import { TaskDrawer } from '../components/TaskDrawer';
+import { KPIDetailsModal } from '../components/KPIDetailsModal';
+import { mockApi } from '../services/mockApi';
 
 const dataParticipation = [
   { name: 'Julian Sosa', value: 45, color: '#3b82f6' },
@@ -20,11 +16,32 @@ const dataParticipation = [
 ];
 
 export const Dashboard = () => {
-  // Tasks Filters
+  // Tasks Filters State (UI)
   const [filterUser, setFilterUser] = useState<string>('Todos');
   const [filterPriority, setFilterPriority] = useState<string>('Todas');
   const [filterStatus, setFilterStatus] = useState<string>('Todos');
   
+  // Active Filters (sent to hook)
+  const [activeFilters, setActiveFilters] = useState({
+    responsable: 'Todos',
+    prioridad: 'Todas',
+    estado: 'Todos'
+  });
+
+  const [isTaskDrawerOpen, setIsTaskDrawerOpen] = useState(false);
+  const [activeKpiModal, setActiveKpiModal] = useState<'Normativas' | 'Riesgos' | 'Incidentes' | 'Solicitudes' | null>(null);
+
+  // Custom Hook (Mock API)
+  const { metrics, tareas, assignees, isLoadingMetrics, isLoadingTareas, error, refreshTareas } = useDashboard(activeFilters);
+
+  const handleApplyFilters = () => {
+    setActiveFilters({
+      responsable: filterUser,
+      prioridad: filterPriority,
+      estado: filterStatus
+    });
+  };
+
   // Executive Summary Inline Editing
   const [isEditingSummary, setIsEditingSummary] = useState(false);
   const [summaryText, setSummaryText] = useState("Durante la revisión trimestral, se acordó priorizar la actualización de normativas ISO 27001 para el próximo mes. Los riesgos críticos asociados a infraestructura cloud han sido mitigados en un 80%, pero persisten vulnerabilidades en el control de accesos que deben ser atendidas por el equipo de TI de inmediato.");
@@ -36,16 +53,44 @@ export const Dashboard = () => {
     return colors[name.length % colors.length];
   };
 
-  const filteredTareas = mockTareasPendientes.filter(t => {
-    const matchUser = filterUser === 'Todos' || t.responsableAsignado === filterUser;
-    // mock data doesn't have priority, let's pretend state maps to priority for the filter demo
-    const matchStatus = filterStatus === 'Todos' || 
-                       (filterStatus === 'Pendiente' && t.estado !== 'al_dia') ||
-                       (filterStatus === 'Completada' && t.estado === 'al_dia');
-    return matchUser && matchStatus;
-  });
+  const KPI_CARDS = [
+    { 
+      title: 'Normativas', 
+      values: [
+        { label: `${metrics?.normativasAtrasadas || 0} Atrasadas`, color: 'text-red-500', bg: 'bg-red-50' }, 
+        { label: `${metrics?.normativasEnTiempo || 0} En tiempo`, color: 'text-lemon-600', bg: 'bg-lemon-50' }
+      ], 
+      icon: FileText 
+    },
+    { 
+      title: 'Riesgos', 
+      values: [
+        { label: `${metrics?.riesgosPendientes || 0} Pendiente`, color: 'text-orange-500', bg: 'bg-orange-50' }, 
+        { label: `${metrics?.riesgosEnCurso || 0} En curso`, color: 'text-blue-500', bg: 'bg-blue-50' }
+      ], 
+      icon: AlertTriangle 
+    },
+    { 
+      title: 'Incidentes', 
+      values: [
+        { label: `${metrics?.incidentesEnProgreso || 0} En progreso`, color: 'text-blue-500', bg: 'bg-blue-50' }, 
+        { label: `${metrics?.incidentesCompletados || 0} Completados`, color: 'text-emerald-500', bg: 'bg-emerald-50' }
+      ], 
+      icon: AlertTriangle 
+    },
+    { 
+      title: 'Solicitudes', 
+      values: [
+        { label: `${metrics?.solicitudesRecibidas || 0} Recibidas`, color: 'text-slate-500', bg: 'bg-slate-50' }, 
+        { label: `${metrics?.solicitudesEnProgreso || 0} En progreso`, color: 'text-blue-500', bg: 'bg-blue-50' }
+      ], 
+      icon: CheckCircle 
+    },
+  ];
 
-  const uniqueAssignees = Array.from(new Set(mockTareasPendientes.map(t => t.responsableAsignado)));
+  if (error) {
+    return <div className="p-6 text-center text-red-500 font-medium">{error}</div>;
+  }
 
   return (
     <motion.div 
@@ -141,33 +186,55 @@ export const Dashboard = () => {
       </div>
       {/* FIN MÓDULO BENTO REUNIÓN */}
 
-      <h2 className="text-xl font-semibold text-slate-800 mt-10">Métricas Generales GRC</h2>
+      <div className="flex items-center justify-between mt-10 mb-4">
+        <h2 className="text-xl font-semibold text-slate-800">Métricas Generales GRC</h2>
+        {isLoadingMetrics && <Loader2 className="w-5 h-5 text-lemon-500 animate-spin" />}
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {KPI_CARDS.map((card, i) => (
-          <div key={i} className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-slate-50 rounded-lg text-slate-500">
-                <card.icon className="w-5 h-5" />
-              </div>
-              <h3 className="font-medium text-slate-700">{card.title}</h3>
+        {isLoadingMetrics ? (
+          // Skeletons para las tarjetas
+          Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm animate-pulse h-32">
+               <div className="h-6 w-1/2 bg-slate-100 rounded mb-4"></div>
+               <div className="h-8 w-full bg-slate-100 rounded mb-2"></div>
+               <div className="h-8 w-full bg-slate-100 rounded"></div>
             </div>
-            <div className="flex flex-col gap-2">
-              {card.values.map((v, idx) => (
-                <div key={idx} className={clsx("px-3 py-2 rounded-md text-sm font-medium flex items-center justify-between", v.bg, v.color)}>
-                  <span>{v.label.split(' ')[0]}</span>
-                  <span className="opacity-80">{v.label.split(' ').slice(1).join(' ')}</span>
+          ))
+        ) : (
+          KPI_CARDS.map((card, i) => (
+            <div 
+              key={i} 
+              onClick={() => setActiveKpiModal(card.title as any)}
+              className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-md hover:border-lemon-300 transition-all cursor-pointer group"
+            >
+              <div className="flex items-center gap-3 mb-4 transition-transform group-hover:scale-105">
+                <div className="p-2 bg-slate-50 rounded-lg text-slate-500 group-hover:bg-lemon-50 group-hover:text-lemon-600 transition-colors">
+                  <card.icon className="w-5 h-5" />
                 </div>
-              ))}
+                <h3 className="font-medium text-slate-700">{card.title}</h3>
+              </div>
+              <div className="flex flex-col gap-2">
+                {card.values.map((v, idx) => (
+                  <div key={idx} className={clsx("px-3 py-2 rounded-md text-sm font-medium flex items-center justify-between", v.bg, v.color)}>
+                    <span>{v.label.split(' ')[0]}</span>
+                    <span className="opacity-80">{v.label.split(' ').slice(1).join(' ')}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-1 bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex flex-col">
           <h3 className="font-semibold text-slate-800 mb-6">Filtros Inteligentes (Tareas)</h3>
           
-          <div className="space-y-5 flex-1">
+          <div className="space-y-5 flex-1 relative">
+            {isLoadingMetrics && (
+              <div className="absolute inset-0 bg-white/50 z-10 flex items-center justify-center"></div>
+            )}
             <div>
               <label className="text-sm font-medium text-slate-500 mb-2 block">Responsable</label>
               <select 
@@ -176,7 +243,7 @@ export const Dashboard = () => {
                 className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-lemon-500 outline-none"
               >
                 <option value="Todos">Todos los usuarios</option>
-                {uniqueAssignees.map(u => <option key={u} value={u}>{u}</option>)}
+                {assignees.map(u => <option key={u} value={u}>{u}</option>)}
               </select>
             </div>
 
@@ -206,13 +273,26 @@ export const Dashboard = () => {
                 <option value="Completada">Completadas</option>
               </select>
             </div>
+            
+            <button 
+              onClick={handleApplyFilters}
+              className="w-full mt-4 py-2 bg-lemon-500 hover:bg-lemon-600 text-slate-900 font-medium rounded-lg transition-colors shadow-sm"
+            >
+              Aplicar Filtro
+            </button>
           </div>
         </div>
 
-        <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col">
+        <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col relative overflow-hidden">
+          {isLoadingTareas && (
+            <div className="absolute inset-0 bg-white/60 backdrop-blur-sm z-10 flex items-center justify-center">
+              <Loader2 className="w-8 h-8 text-lemon-500 animate-spin" />
+            </div>
+          )}
+          
           <div className="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <h3 className="font-semibold text-slate-800">Action Items de Reuniones</h3>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <div className="relative">
                 <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input 
@@ -221,6 +301,13 @@ export const Dashboard = () => {
                   className="pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-lemon-500 focus:bg-white transition-all w-full sm:w-64"
                 />
               </div>
+              <button 
+                onClick={() => setIsTaskDrawerOpen(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-lemon-500 text-slate-900 font-medium rounded-lg hover:bg-lemon-600 transition-colors shadow-sm text-sm"
+              >
+                <Plus className="w-4 h-4" />
+                Nueva Tarea
+              </button>
             </div>
           </div>
           
@@ -236,14 +323,14 @@ export const Dashboard = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {filteredTareas.length === 0 && (
+                {!isLoadingTareas && tareas.length === 0 && (
                   <tr>
                     <td colSpan={5} className="text-center py-10 text-slate-500 text-sm">
                       No hay tareas que coincidan con los filtros.
                     </td>
                   </tr>
                 )}
-                {filteredTareas.map((tarea) => (
+                {tareas.map((tarea) => (
                   <tr key={tarea.id} className="hover:bg-slate-50/50 transition-colors">
                     <td className="px-5 py-4">
                       <span className={clsx(
@@ -270,10 +357,22 @@ export const Dashboard = () => {
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-2">
                         {/* Avatar Dinámico */}
-                        <div className={clsx("w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold border", getAvatarColor(tarea.responsableAsignado))}>
+                        <div className={clsx("w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold border shrink-0", getAvatarColor(tarea.responsableAsignado))}>
                           {getAvatarInitials(tarea.responsableAsignado)}
                         </div>
-                        <span className="text-sm font-medium text-slate-700">{tarea.responsableAsignado}</span>
+                        <select 
+                          value={tarea.responsableAsignado}
+                          onChange={async (e) => {
+                            await mockApi.reasignarTarea(tarea.id, e.target.value);
+                            refreshTareas();
+                          }}
+                          className="text-sm font-medium text-slate-700 bg-transparent border-none focus:ring-0 cursor-pointer hover:bg-slate-100 rounded px-1 py-0.5 -ml-1 transition-colors outline-none"
+                        >
+                          <option value={tarea.responsableAsignado}>{tarea.responsableAsignado}</option>
+                          {assignees.filter(a => a !== tarea.responsableAsignado).map(a => (
+                            <option key={a} value={a}>{a}</option>
+                          ))}
+                        </select>
                       </div>
                     </td>
                   </tr>
@@ -283,6 +382,18 @@ export const Dashboard = () => {
           </div>
         </div>
       </div>
+
+      <TaskDrawer 
+        isOpen={isTaskDrawerOpen}
+        onClose={() => setIsTaskDrawerOpen(false)}
+        onTaskCreated={() => refreshTareas()}
+      />
+
+      <KPIDetailsModal 
+        isOpen={activeKpiModal !== null}
+        onClose={() => setActiveKpiModal(null)}
+        kpiType={activeKpiModal}
+      />
     </motion.div>
   );
 };
