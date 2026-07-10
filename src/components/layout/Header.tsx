@@ -1,4 +1,4 @@
-import { Bell, Search, Download, FileText, Code, Mail, ChevronDown, Check, AlertTriangle, Info, X } from 'lucide-react';
+import { Bell, Search, Download, FileText, Code, Mail, ChevronDown, Check, AlertTriangle, X } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 

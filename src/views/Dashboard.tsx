@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import { mockTareasPendientes } from '../data/mockData';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import { Filter, Search, Clock, AlertTriangle, CheckCircle, FileText, Timer, Users, Target, Edit3, Check } from 'lucide-react';
+import { Search, Clock, AlertTriangle, CheckCircle, FileText, Timer, Users, Target, Edit3, Check } from 'lucide-react';
 import clsx from 'clsx';
 
 const KPI_CARDS = [
@@ -10,12 +10,6 @@ const KPI_CARDS = [
   { title: 'Riesgos', values: [{ label: '192 Pendiente', color: 'text-orange-500', bg: 'bg-orange-50' }, { label: '13 En curso', color: 'text-blue-500', bg: 'bg-blue-50' }], icon: AlertTriangle },
   { title: 'Incidentes', values: [{ label: '70 En progreso', color: 'text-blue-500', bg: 'bg-blue-50' }, { label: '6 Completados', color: 'text-emerald-500', bg: 'bg-emerald-50' }], icon: AlertTriangle },
   { title: 'Solicitudes', values: [{ label: '0 Recibidas', color: 'text-slate-500', bg: 'bg-slate-50' }, { label: '127 En progreso', color: 'text-blue-500', bg: 'bg-blue-50' }], icon: CheckCircle },
-];
-
-const dataPie = [
-  { name: 'Vencidas', value: 8000, color: '#ef4444' },
-  { name: 'En progreso', value: 10000, color: '#3b82f6' },
-  { name: 'Al día', value: 4800, color: '#A2D729' },
 ];
 
 const dataParticipation = [
@@ -46,8 +40,8 @@ export const Dashboard = () => {
     const matchUser = filterUser === 'Todos' || t.responsableAsignado === filterUser;
     // mock data doesn't have priority, let's pretend state maps to priority for the filter demo
     const matchStatus = filterStatus === 'Todos' || 
-                       (filterStatus === 'Pendiente' && t.estado !== 'completado') ||
-                       (filterStatus === 'Completada' && t.estado === 'completado');
+                       (filterStatus === 'Pendiente' && t.estado !== 'al_dia') ||
+                       (filterStatus === 'Completada' && t.estado === 'al_dia');
     return matchUser && matchStatus;
   });
 

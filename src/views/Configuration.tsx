@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Settings, User, Bell, Shield, Key, Database, Building2, Save } from 'lucide-react';
+import { Settings, User, Bell, Shield, Database, Building2, Save } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export function Configuration() {
