@@ -1,0 +1,31 @@
+name: Deploy Frontend to cPanel
+
+on:
+  push:
+    branches:
+      - main 
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Obtener el código del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar el entorno de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Instalar dependencias y compilar el proyecto
+        run: |
+          npm install
+          npm run build
+
+      - name: Desplegar archivos al cPanel vía FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/
