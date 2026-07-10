@@ -1,0 +1,6 @@
+@echo off
+echo Iniciando el entorno y el servidor de desarrollo de LemonFlow...
+echo Por favor, espera un momento...
+echo.
+npm run dev
+pause
