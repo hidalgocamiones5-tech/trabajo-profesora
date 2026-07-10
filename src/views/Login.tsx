@@ -9,12 +9,15 @@ interface LoginProps {
 export const Login = ({ onLogin }: LoginProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate authentication
-    if (email || password || true) {
+    if (password === 'Proyecto2026@') {
+      setError('');
       onLogin();
+    } else {
+      setError('Contraseña incorrecta para ver el boceto.');
     }
   };
 
@@ -81,6 +84,12 @@ export const Login = ({ onLogin }: LoginProps) => {
               </div>
             </div>
 
+            {error && (
+              <div className="text-red-500 text-sm font-medium bg-red-50 p-2 rounded-lg border border-red-100 text-center">
+                {error}
+              </div>
+            )}
+
             <button
               type="submit"
               className="w-full flex items-center justify-center gap-2 py-2.5 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-slate-800 hover:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 transition-colors"
@@ -103,7 +112,7 @@ export const Login = ({ onLogin }: LoginProps) => {
             <div className="mt-6">
               <button
                 type="button"
-                onClick={() => onLogin()}
+                onClick={() => setError('Por favor, usa la contraseña del proyecto arriba.')}
                 className="w-full flex items-center justify-center gap-3 px-4 py-2.5 border border-slate-200 rounded-xl bg-white text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors"
               >
                 <Building2 className="w-5 h-5 text-blue-600" />
