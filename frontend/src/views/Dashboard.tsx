@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import { Search, Clock, AlertTriangle, CheckCircle, FileText, Timer, Users, Target, Edit3, Check, Loader2, Plus } from 'lucide-react';
+import { Search, AlertTriangle, CheckCircle, FileText, Timer, Users, Target, Edit3, Check, Loader2, Plus } from 'lucide-react';
 import clsx from 'clsx';
 import { useDashboard } from '../hooks/useDashboard';
 import { TaskDrawer } from '../components/TaskDrawer';

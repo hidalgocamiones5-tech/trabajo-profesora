@@ -63,9 +63,9 @@ export const api = {
 
   getTareas: async (filters: { responsable?: string, prioridad?: string, estado?: string }): Promise<TareaPendiente[]> => {
     const response = await fetchAPI(`${API_URL}/tareas/`, { headers: getHeaders() });
-    let tareas: TareaPendiente[] = await response.json();
+    let tareas: any[] = await response.json();
     
-    return tareas.filter(t => {
+    return tareas.filter((t: any) => {
       const matchUser = !filters.responsable || filters.responsable === 'Todos' || t.responsable_asignado === filters.responsable;
       const matchStatus = !filters.estado || filters.estado === 'Todos' || 
                          (filters.estado === 'Pendiente' && t.estado !== 'al_dia') ||

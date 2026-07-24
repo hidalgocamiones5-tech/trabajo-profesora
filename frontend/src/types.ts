@@ -54,7 +54,7 @@ export interface Incidente {
 export interface TareaPendiente {
   id: string;
   responsable: string;
-  estado: 'pendiente' | 'en_progreso' | 'completada';
+  estado: 'pendiente' | 'en_progreso' | 'completada' | 'al_dia' | 'vencido';
   fechaVencimiento: string;
   tarea: string;
   asociadaA: string; // Origen (Normativa, etc.)
