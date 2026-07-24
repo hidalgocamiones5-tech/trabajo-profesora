@@ -18,19 +18,14 @@ export const Login: React.FC = () => {
     setError('');
 
     try {
-      const response = await fetch(`${API_URL}/login/`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      });
-
-      if (!response.ok) {
+      // SIMULACIÓN DE LOGIN PARA PRODUCCIÓN (Sin Backend)
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      if (username === 'empleado' && password === 'empleado123') {
+        login('fake-jwt-token-demo');
+      } else {
         throw new Error('Credenciales inválidas');
       }
-
-      const data = await response.json();
-      login(data.access);
-      // App.tsx will automatically re-render and show Dashboard because isAuthenticated will become true.
     } catch (err: any) {
       setError(err.message || 'Error al iniciar sesión');
     } finally {
