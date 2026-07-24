@@ -1,39 +1,14 @@
 {
-  "name": "boceto",
+  "name": "prototipo-root",
+  "version": "1.0.0",
   "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "engines": {
-    "node": "20.19.0",
-    "npm": ">=9.0.0"
-  },
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "oxlint",
-    "preview": "vite preview",
-    "start": "node server.js"
-  },
-  "dependencies": {
-    "clsx": "^2.1.1",
-    "lucide-react": "^1.23.0",
-    "motion": "^12.42.2",
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7",
-    "recharts": "^3.9.1",
-    "tailwind-merge": "^3.6.0"
+    "dev-all": "echo. && echo ====================================================== && echo [INFO] ENLACES DE DESARROLLO && echo [WEB]  Frontend (React):   http://localhost:5173 && echo [API]  Backend (Django):   http://localhost:8000 && echo [PANEL] Admin (Django):    http://localhost:8000/admin && echo ====================================================== && echo. && concurrently \"npm run dev --prefix frontend\" \"cd backend && call .venv\\Scripts\\activate.bat && python manage.py runserver\"",
+    "install": "npm install --prefix frontend",
+    "build": "npm run build --prefix frontend",
+    "start": "node frontend/server.js"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.3.2",
-    "@types/node": "^24.13.2",
-    "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.3",
-    "autoprefixer": "^10.5.2",
-    "oxlint": "^1.71.0",
-    "postcss": "^8.5.16",
-    "tailwindcss": "^4.3.2",
-    "typescript": "~6.0.2",
-    "vite": "^8.1.1"
+    "concurrently": "^8.2.2"
   }
 }

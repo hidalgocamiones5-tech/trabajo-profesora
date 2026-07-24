@@ -1,0 +1,7 @@
+Django>=5.0
+djangorestframework
+django-cors-headers
+PyMySQL
+cryptography
+django-jazzmin
+djangorestframework-simplejwt
