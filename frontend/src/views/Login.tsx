@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { ShieldAlert, Lock, User, LogIn } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
-const API_URL = 'http://localhost:8000/api';
 
 export const Login: React.FC = () => {
   const [username, setUsername] = useState('');
