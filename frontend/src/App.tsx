@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Header } from './components/layout/Header';
 import { Dashboard } from './views/Dashboard';
 import { Compliance } from './views/Compliance';
@@ -7,12 +7,28 @@ import { Reports } from './views/Reports';
 import { Documents } from './views/Documents';
 import { Configuration } from './views/Configuration';
 import { Login } from './views/Login';
+import { Register } from './views/Register';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from './contexts/AuthContext';
 
 function App() {
   const { isAuthenticated } = useAuth();
   const [currentView, setCurrentView] = useState('Inicio');
+  const [authView, setAuthView] = useState<'login' | 'register'>(
+    window.location.pathname === '/register' ? 'register' : 'login'
+  );
+
+  useEffect(() => {
+    const handlePopState = () => {
+      if (window.location.pathname === '/register') {
+        setAuthView('register');
+      } else {
+        setAuthView('login');
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   const renderView = () => {
     switch (currentView) {
@@ -41,7 +57,16 @@ function App() {
   };
 
   if (!isAuthenticated) {
-    return <Login />;
+    if (authView === 'register') {
+      return <Register onSwitchToLogin={() => {
+        window.history.pushState({}, '', '/login');
+        setAuthView('login');
+      }} />;
+    }
+    return <Login onSwitchToRegister={() => {
+      window.history.pushState({}, '', '/register');
+      setAuthView('register');
+    }} />;
   }
 
   return (

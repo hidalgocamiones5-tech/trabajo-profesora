@@ -29,7 +29,7 @@ function getContentType(filePath) {
 
 async function resolveAsset(requestPath) {
   const normalizedPath = requestPath === '/' ? '/index.html' : requestPath
-  const safePath = path.normalize(normalizedPath).replace(/^([.]{2}[\/])+/, '')
+  const safePath = path.normalize(normalizedPath).replace(/^([.]{2}[/])+/, '')
   const filePath = path.join(distDir, safePath)
 
   try {

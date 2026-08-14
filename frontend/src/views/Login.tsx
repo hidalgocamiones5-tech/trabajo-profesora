@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import { ShieldAlert, Lock, User, LogIn } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { login as apiLogin } from '../services/api';
 
 
-export const Login: React.FC = () => {
+interface LoginProps {
+  onSwitchToRegister?: () => void;
+}
+
+export const Login: React.FC<LoginProps> = ({ onSwitchToRegister }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -17,16 +22,18 @@ export const Login: React.FC = () => {
     setError('');
 
     try {
-      // SIMULACIÓN DE LOGIN PARA PRODUCCIÓN (Sin Backend)
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
-      if (username === 'empleado' && password === 'empleado123') {
-        login('fake-jwt-token-demo');
+      const response = await apiLogin({ username, password });
+      if (response.access) {
+        login(response.access);
       } else {
-        throw new Error('Credenciales inválidas');
+        throw new Error('Token no recibido del servidor');
       }
     } catch (err: any) {
-      setError(err.message || 'Error al iniciar sesión');
+      if (err.response?.data?.detail) {
+        setError(err.response.data.detail);
+      } else {
+        setError(err.message || 'Error al iniciar sesión');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -105,8 +112,18 @@ export const Login: React.FC = () => {
             </button>
           </form>
 
-          <div className="mt-6 text-center">
-            <p className="text-sm text-slate-500">
+          <div className="mt-6 text-center space-y-2">
+            <p className="text-sm text-slate-400">
+              ¿No tienes cuenta de empresa?{' '}
+              <button
+                type="button"
+                onClick={() => onSwitchToRegister ? onSwitchToRegister() : (window.location.href = '/register')}
+                className="text-indigo-400 font-semibold hover:underline cursor-pointer"
+              >
+                Regístrate aquí
+              </button>
+            </p>
+            <p className="text-xs text-slate-500">
               Usa el usuario <span className="text-indigo-400 font-mono bg-indigo-500/10 px-1 rounded">empleado</span> y pass <span className="text-indigo-400 font-mono bg-indigo-500/10 px-1 rounded">empleado123</span>
             </p>
           </div>

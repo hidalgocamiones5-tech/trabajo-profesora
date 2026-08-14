@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev-all": "echo. && echo ====================================================== && echo [INFO] ENLACES DE DESARROLLO && echo [WEB]  Frontend (React):   http://localhost:5173 && echo [API]  Backend (Django):   http://localhost:8000 && echo [PANEL] Admin (Django):    http://localhost:8000/admin && echo ====================================================== && echo. && concurrently \"npm run dev --prefix frontend\" \"cd backend && call .venv\\Scripts\\activate.bat && python manage.py runserver\"",
+    "dev-all": "echo. && echo ====================================================== && echo [INFO] ENLACES DE DESARROLLO && echo [WEB]  Frontend (React):   http://localhost:5173 && echo [API]  Backend (Django):   http://localhost:8000 && echo [PANEL] Admin (Django):    http://localhost:8000/admin && echo ====================================================== && echo. && node monitor.js",
     "install": "npm install --prefix frontend",
     "build": "npm run build --prefix frontend",
     "start": "node frontend/server.js"

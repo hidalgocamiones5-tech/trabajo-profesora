@@ -2,9 +2,53 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Empresa(models.Model):
+    TIPO_SOCIEDAD_CHOICES = [
+        ('SPA', 'Sociedad por Acciones (SpA)'),
+        ('SA', 'Sociedad Anónima (S.A.)'),
+        ('LTDA', 'Sociedad de Responsabilidad Limitada (Ltda.)'),
+        ('EIRL', 'Empresa Individual de Resp. Ltda. (EIRL)'),
+        ('PERSONA_NATURAL', 'Persona Natural con Giro')
+    ]
+    RANGO_EMPLEADOS_CHOICES = [
+        ('MICRO', 'Micro (1-9 colaboradores)'),
+        ('PEQUENA', 'Pequeña (10-49 colaboradores)'),
+        ('MEDIANA', 'Mediana (50-199 colaboradores)'),
+        ('GRANDE', 'Grande (200+ colaboradores)')
+    ]
+    RUBRO_CHOICES = [
+        ('TECNOLOGIA', 'Tecnología y Software'), ('SALUD', 'Salud y Clínicas'), ('MINERIA', 'Minería y Energía'),
+        ('RETAIL', 'Retail y Comercio'), ('ALIMENTOS', 'Alimentos y Bebidas'), ('FINANCIERO', 'Servicios Financieros (Fintech)'),
+        ('CONSTRUCCION', 'Construcción e Inmobiliaria'), ('EDUCACION', 'Educación'), ('SERVICIOS', 'Servicios Profesionales')
+    ]
+    REGION_CHOICES = [('RM', 'Región Metropolitana')]
+    NIVEL_INGRESOS_CHOICES = [('MICRO', 'Micro'), ('PEQUENA', 'Pequeña'), ('MEDIANA', 'Mediana'), ('GRANDE', 'Grande')]
     nombre = models.CharField(max_length=255)
     rut = models.CharField(max_length=50, blank=True, null=True)
     fecha_creacion = models.DateField(auto_now_add=True)
+    rubro = models.CharField(max_length=100, blank=True, null=True)
+    setup_completado = models.BooleanField(default=False)
+    tamano = models.CharField(max_length=50, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    es_b2c_ecommerce = models.BooleanField(default=False)
+    genera_residuos_rep = models.BooleanField(default=False)
+    maneja_datos_personales = models.BooleanField(default=False)
+    procesa_pagos = models.BooleanField(default=False)
+    rango_empleados = models.CharField(max_length=50, choices=RANGO_EMPLEADOS_CHOICES, default='PEQUENA')
+    tiene_trabajadores = models.BooleanField(default=True)
+    tipo_sociedad = models.CharField(max_length=50, choices=TIPO_SOCIEDAD_CHOICES, default='SPA')
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+    estado_matching = models.CharField(max_length=20, default='PENDIENTE')
+    log_matching = models.TextField(blank=True, null=True)
+    importa_exporta = models.BooleanField(default=False)
+    instalaciones_industriales = models.BooleanField(default=False)
+    nivel_ingresos = models.CharField(max_length=20, blank=True, null=True)
+    region_operacion = models.CharField(max_length=100, blank=True, null=True)
+    tiene_sindicato = models.BooleanField(default=False)
+    trabaja_con_estado = models.BooleanField(default=False)
+    comuna = models.CharField(max_length=100, blank=True, null=True)
+    direccion_matriz = models.CharField(max_length=255, blank=True, null=True)
+    nombre_fantasia = models.CharField(max_length=255, blank=True, null=True)
+    solicitud_arco_activa = models.BooleanField(default=False)
 
     def __str__(self):
         return self.nombre
@@ -13,9 +57,23 @@ class PerfilUsuario(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, related_name="usuarios")
     cargo = models.CharField(max_length=100, blank=True, null=True)
+    acepto_terminos_y_privacidad = models.BooleanField(default=False)
+    fecha_aceptacion_consentimiento = models.DateTimeField(blank=True, null=True)
+    ip_registro = models.GenericIPAddressField(blank=True, null=True)
+    nombre_completo = models.CharField(max_length=255, blank=True, null=True)
+    rut_personal = models.CharField(max_length=50, blank=True, null=True)
+    telefono = models.CharField(max_length=50, blank=True, null=True)
+    version_politica_aceptada = models.CharField(max_length=20, default='v1.0')
 
     def __str__(self):
         return f"{self.user.username} - {self.empresa.nombre}"
+
+class RegistroAuditoriaARCO(models.Model):
+    usuario = models.ForeignKey(PerfilUsuario, on_delete=models.CASCADE)
+    tipo_derecho = models.CharField(max_length=20)
+    detalles = models.TextField()
+    estado = models.CharField(max_length=20, default='PENDIENTE')
+    created_at = models.DateTimeField(auto_now_add=True)
 
 class Normativa(models.Model):
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=True, blank=True)
@@ -34,13 +92,48 @@ class Normativa(models.Model):
         ('baja', 'Baja'),
     ]
     criticidad = models.CharField(max_length=50, choices=criticidad_choices)
-    fecha_inicio = models.DateField()
-    fecha_termino = models.DateField()
-    tipo = models.CharField(max_length=100)
+    fecha_inicio = models.DateField(blank=True, null=True)
+    fecha_termino = models.DateField(blank=True, null=True)
+    tipo = models.CharField(max_length=100, default='Ley')
     origen = models.CharField(max_length=100)
+    codigo_bcn = models.CharField(max_length=100, blank=True, null=True)
+    descripcion = models.TextField(blank=True, null=True)
+    es_transversal = models.BooleanField(default=False)
+    min_empleados = models.IntegerField(default=0)
+    requiere_b2c = models.BooleanField(default=False)
+    requiere_datos_personales = models.BooleanField(default=False)
+    requiere_procesa_pagos = models.BooleanField(default=False)
+    requiere_residuos = models.BooleanField(default=False)
+    requiere_trabajadores = models.BooleanField(default=False)
+    resumen = models.TextField(blank=True, null=True)
+    rubro_aplicable = models.CharField(max_length=50, blank=True, null=True)
+    titulo = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return self.nombre
+
+class ComplianceEmpresa(models.Model):
+    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
+    normativa = models.ForeignKey(Normativa, on_delete=models.CASCADE)
+    estado_choices = [
+        ('PRELIMINAR', 'Preliminar (Pendiente Validación)'),
+        ('VERIFICADA', 'Verificada / Asignada'),
+        ('ASIGNADA', 'Asignada'),
+        ('SUGERIDA_IA', 'Sugerida por IA'),
+        ('EN_PROCESO', 'En Proceso'),
+        ('CUMPLIDA', 'Cumplida'),
+        ('NO_APLICA', 'No Aplica'),
+        ('RECHAZADA', 'Rechazada por Admin')
+    ]
+    estado = models.CharField(max_length=50, choices=estado_choices, default='PRELIMINAR')
+    porcentaje_progreso = models.FloatField(default=0.0)
+    origen = models.CharField(max_length=50, default='MOTOR_REGLAS')
+    justificacion_ia = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('empresa', 'normativa')
 
 class ObjetivoChecklist(models.Model):
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=True, blank=True)
