@@ -330,21 +330,38 @@ gemini_service = GeminiAIService()
 
 @api_view(['GET'])
 def recomendaciones_legales(request):
-    rubro = request.query_params.get('rubro', 'Todos')
-    tamano = request.query_params.get('tamano', 'Mediana')
-    
-    leyes = ley_chile_client.buscar_normas_por_rubro(rubro, tamano)
+    rubro = request.query_params.get('rubro')
+    tiene_datos = request.query_params.get('tiene_datos', 'false').lower() == 'true'
+    es_ecommerce = request.query_params.get('es_ecommerce', 'false').lower() == 'true'
+    tiene_residuos = request.query_params.get('tiene_residuos', 'false').lower() == 'true'
+
+    # Si el usuario estÃ¡ autenticado, inferir datos de su empresa
+    if request.user.is_authenticated and hasattr(request.user, 'perfilusuario') and request.user.perfilusuario.empresa:
+        empresa = request.user.perfilusuario.empresa
+        if not rubro:
+            rubro = empresa.rubro
+        tiene_datos = tiene_datos or empresa.maneja_datos_personales
+        es_ecommerce = es_ecommerce or empresa.es_b2c_ecommerce
+        tiene_residuos = tiene_residuos or empresa.genera_residuos_rep
+
+    leyes = ley_chile_client.buscar_normas_por_empresa(
+        rubro=rubro or 'TODOS',
+        tiene_datos=tiene_datos,
+        es_ecommerce=es_ecommerce,
+        tiene_residuos=tiene_residuos
+    )
     return Response(leyes)
 
 @api_view(['POST'])
 def generar_checklist(request):
     ley_data = request.data
-    id_norma = ley_data.get('id')
+    id_norma = ley_data.get('id') or ley_data.get('codigo_bcn')
     
     # 1. Obtener texto de BCN
-    texto_legal = ley_chile_client.obtener_texto_norma(id_norma)
+    texto_legal = ley_chile_client.obtener_xml_bcn(str(id_norma))
     
     # 2. Procesar con Gemini AI
     checklist_estructurado = gemini_service.generar_checklist_desde_ley(texto_legal, ley_data)
     
     return Response(checklist_estructurado)
+
