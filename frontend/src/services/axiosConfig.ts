@@ -39,9 +39,17 @@ axiosInstance.interceptors.response.use(
       console.warn('[⚠️ API Frontend] Sesión expirada o inválida. Cerrando sesión automáticamente...');
       localStorage.removeItem('token');
       localStorage.removeItem('access_token');
-      // Solo redirigir si no estamos ya en login
+      
+      // Emitir evento para que el AuthContext desmonte la vista sin forzar reload
+      window.dispatchEvent(new Event('auth:unauthorized'));
+      
+      // Fallback por si acaso
       if (window.location.pathname !== '/login') {
-        window.location.href = '/login';
+        setTimeout(() => {
+          if (window.location.pathname !== '/login') {
+            window.location.href = '/login';
+          }
+        }, 500);
       }
     }
     
