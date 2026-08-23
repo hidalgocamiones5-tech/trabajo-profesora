@@ -113,19 +113,22 @@ export const Login: React.FC<LoginProps> = ({ onSwitchToRegister }) => {
           </form>
 
           <div className="mt-6 text-center space-y-2">
-            <p className="text-sm text-slate-400">
+            <p className="mt-4 text-center text-sm text-slate-400">
               ¿No tienes cuenta de empresa?{' '}
-              <button
-                type="button"
+              <button 
+                type="button" 
                 onClick={() => onSwitchToRegister ? onSwitchToRegister() : (window.location.href = '/register')}
-                className="text-indigo-400 font-semibold hover:underline cursor-pointer"
+                className="font-medium text-indigo-400 hover:text-indigo-300 transition-colors"
               >
                 Regístrate aquí
               </button>
             </p>
-            <p className="text-xs text-slate-500">
-              Usa el usuario <span className="text-indigo-400 font-mono bg-indigo-500/10 px-1 rounded">empleado</span> y pass <span className="text-indigo-400 font-mono bg-indigo-500/10 px-1 rounded">empleado123</span>
-            </p>
+            <div className="mt-2 text-center text-xs text-slate-500 flex items-center justify-center gap-1.5">
+              <span>Usa el usuario</span>
+              <code className="px-1.5 py-0.5 bg-slate-800 rounded text-indigo-300 font-mono">admin_techcorp</code>
+              <span>y pass</span>
+              <code className="px-1.5 py-0.5 bg-slate-800 rounded text-indigo-300 font-mono">password123</code>
+            </div>
           </div>
         </div>
       </div>

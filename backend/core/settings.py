@@ -133,6 +133,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
+    "http://localhost:5175",
+    "http://127.0.0.1:5175",
 ]
 
 REST_FRAMEWORK = {
@@ -180,7 +184,7 @@ JAZZMIN_SETTINGS = {
     "show_sidebar": True,
     "navigation_expanded": True,
     "hide_apps": [],
-    "hide_models": [],
+    "hide_models": ["api.ComplianceEmpresa", "api.ObjetivoChecklist", "api.TratamientoRAT"],
     "order_with_respect_to": ["api", "api.Empresa", "api.Normativa", "api.TareaPendiente", "api.Riesgo", "api.Incidente", "api.SolicitudTicket"],
     "default_theme_mode": "dark",
 }

@@ -28,6 +28,7 @@ router.register(r'obligaciones', ObligacionViewSet)
 router.register(r'controles', ControlViewSet)
 router.register(r'evidencias', EvidenciaViewSet)
 router.register(r'planes-accion', PlanAccionViewSet)
+router.register(r'alertas-compliance', views.AlertaComplianceViewSet, basename='alerta-compliance')
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -47,5 +48,19 @@ urlpatterns = [
     path('empresa/setup/', views.empresa_setup, name='empresa_setup'),
     path('recomendaciones_legales/', views.recomendaciones_legales, name='recomendaciones_legales'),
     path('generar_checklist/', views.generar_checklist, name='generar_checklist'),
+
+    
+    # GRC Endpoints
+    path('dashboard/ejecutivo/', views.dashboard_ejecutivo_view, name='dashboard_ejecutivo'),
+    path('compliance/normativas/<int:normativa_id>/ficha-completa/', views.ficha_normativa_view, name='ficha_normativa'),
+    path('compliance/areas/<int:area_id>/desempeno/', views.area_desempeno_view, name='area_desempeno'),
+    path('compliance/responsables/<int:responsable_id>/ficha/', views.responsable_ficha_view, name='responsable_ficha'),
+    path('compliance/mi-trabajo/', views.mi_trabajo_view, name='compliance_mi_trabajo'),
+    path('normativas/disponibles/', views.normativas_disponibles_view, name='normativas_disponibles'),
+    path('normativas/asignar/', views.asignar_normativa_view, name='asignar_normativa'),
+    path('alertas/<int:alerta_id>/escalar/', views.escalar_alerta_view, name='escalar_alerta'),
+    path('calendario/eventos/', views.calendario_eventos_view, name='calendario_eventos'),
+    path('dashboard/generar_resumen/', views.generar_resumen_ia_view, name='generar_resumen_ia'),
+    
     path('', include(router.urls)),
 ]

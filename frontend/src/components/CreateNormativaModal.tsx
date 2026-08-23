@@ -7,10 +7,10 @@ interface CreateNormativaModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: (nuevaNormativa: any) => void;
-  empresas: any[];
+  empresas?: any[];
 }
 
-export const CreateNormativaModal: React.FC<CreateNormativaModalProps> = ({ isOpen, onClose, onSuccess, empresas }) => {
+export const CreateNormativaModal: React.FC<CreateNormativaModalProps> = ({ isOpen, onClose, onSuccess, empresas = [] }) => {
   const [formData, setFormData] = useState({
     nombre: '',
     titulo: '',

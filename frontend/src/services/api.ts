@@ -155,6 +155,29 @@ export const api = {
     }
   },
 
+  // ==========================================
+  // COMPLIANCE / NORMATIVAS (Nuevos Endpoints)
+  // ==========================================
+  getNormativasDisponibles: async () => {
+    try {
+      const res = await axiosInstance.get('/api/normativas/disponibles/');
+      return res.data;
+    } catch (error) {
+      console.error('Error in getNormativasDisponibles:', error);
+      throw error;
+    }
+  },
+
+  asignarNormativa: async (normativaId: number) => {
+    try {
+      const res = await axiosInstance.post('/api/normativas/asignar/', { normativa_id: normativaId });
+      return res.data;
+    } catch (error) {
+      console.error('Error in asignarNormativa:', error);
+      throw error;
+    }
+  },
+
   getEmpresas: async (): Promise<any[]> => {
     try {
       const res = await axiosInstance.get('/api/empresas/');
@@ -344,5 +367,37 @@ export const api = {
   generarChecklist: async (leyData: any): Promise<any> => {
     const res = await axiosInstance.post('/api/generar_checklist/', leyData);
     return res.data;
+  },
+
+  // --- GRC ENDPOINTS ---
+  getDashboardEjecutivo: async (): Promise<any> => {
+    const res = await axiosInstance.get('/api/dashboard/ejecutivo/');
+    return res.data;
+  },
+
+  generarResumenIA: async (): Promise<string> => {
+    const res = await axiosInstance.post('/api/dashboard/generar_resumen/');
+    return res.data.resumen || '';
+  },
+
+  getFichaNormativaCompleta: async (id: number | string): Promise<any> => {
+    const res = await axiosInstance.get(`/api/compliance/normativas/${id}/ficha-completa/`);
+    return res.data;
+  },
+
+  getAlertasCompliance: async (): Promise<any[]> => {
+    const res = await axiosInstance.get('/api/alertas-compliance/');
+    return res.data || [];
+  },
+
+  escalarAlerta: async (id: number): Promise<any> => {
+    const res = await axiosInstance.post(`/api/alertas/${id}/escalar/`);
+    return res.data;
+  },
+
+  getCalendarioEventos: async (): Promise<any[]> => {
+    const res = await axiosInstance.get('/api/calendario/eventos/');
+    return res.data || [];
   }
 };
+

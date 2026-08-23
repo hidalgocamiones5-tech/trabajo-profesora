@@ -4,7 +4,7 @@ from .models import (
     Empresa, ComplianceEmpresa, PerfilUsuario, RegistroAuditoriaARCO,
     Normativa, ObjetivoChecklist, TratamientoRAT, SolicitudTicket,
     Incidente, TareaPendiente, Riesgo, Sucursal, Area, Responsable,
-    Obligacion, Control, Evidencia, Auditoria, PlanAccion, EventoCompliance
+    Obligacion, Control, Evidencia, Auditoria, PlanAccion, EventoCompliance, AlertaCompliance
 )
 
 from django.contrib.auth.models import User
@@ -249,4 +249,10 @@ class EventoComplianceSerializer(serializers.ModelSerializer):
     class Meta:
         model = EventoCompliance
         fields = '__all__'
+
+class AlertaComplianceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AlertaCompliance
+        fields = '__all__'
+
 

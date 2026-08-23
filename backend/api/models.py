@@ -248,6 +248,8 @@ class Riesgo(models.Model):
 class Sucursal(models.Model):
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, related_name="sucursales")
     nombre = models.CharField(max_length=255)
+    direccion = models.CharField(max_length=255, blank=True, null=True)
+    ciudad = models.CharField(max_length=100, blank=True, null=True)
     
     def __str__(self):
         return self.nombre
@@ -256,6 +258,7 @@ class Area(models.Model):
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, related_name="areas")
     sucursal = models.ForeignKey(Sucursal, on_delete=models.SET_NULL, null=True, blank=True)
     nombre = models.CharField(max_length=255)
+    responsable_principal = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.nombre
@@ -271,50 +274,128 @@ class Responsable(models.Model):
 
 class Obligacion(models.Model):
     normativa = models.ForeignKey(Normativa, on_delete=models.CASCADE, related_name="obligaciones")
-    nombre = models.CharField(max_length=255)
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, related_name="obligaciones", null=True, blank=True)
+    nombre = models.CharField(max_length=255) # titulo
     descripcion = models.TextField(blank=True, null=True)
-    estado_choices = [('pendiente', 'Pendiente'), ('cumplido', 'Cumplido'), ('en_riesgo', 'En Riesgo')]
+    estado_choices = [('pendiente', 'Pendiente'), ('cumplido', 'Cumplido'), ('parcial', 'Parcial'), ('en_riesgo', 'En Riesgo')]
     estado = models.CharField(max_length=50, choices=estado_choices, default='pendiente')
+    criticidad_choices = [('alta', 'Alta'), ('media', 'Media'), ('baja', 'Baja')]
+    criticidad = models.CharField(max_length=50, choices=criticidad_choices, default='media')
     responsable = models.ForeignKey(Responsable, on_delete=models.SET_NULL, null=True, blank=True)
-    fecha_vencimiento = models.DateField(null=True, blank=True)
+    fecha_vencimiento = models.DateField(null=True, blank=True) # fecha_limite
+
+    def __str__(self):
+        return self.nombre
 
 class Control(models.Model):
-    obligacion = models.ForeignKey(Obligacion, on_delete=models.CASCADE, related_name="controles")
+    normativa = models.ForeignKey(Normativa, on_delete=models.CASCADE, related_name="controles", null=True, blank=True)
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, related_name="controles", null=True, blank=True)
+    obligacion = models.ForeignKey(Obligacion, on_delete=models.CASCADE, related_name="controles", null=True, blank=True)
     nombre = models.CharField(max_length=255)
-    estado = models.CharField(max_length=50, choices=[('activo', 'Activo'), ('inactivo', 'Inactivo'), ('en_revision', 'En Revisión')])
-    periodicidad = models.CharField(max_length=50) # diaria, semanal, mensual...
+    estado_choices = [('activo', 'Activo'), ('inactivo', 'Inactivo'), ('ejecutado', 'Ejecutado'), ('pendiente', 'Pendiente'), ('vencido', 'Vencido'), ('proximo', 'Próximo')]
+    estado = models.CharField(max_length=50, choices=estado_choices, default='pendiente')
+    periodicidad = models.CharField(max_length=50, default='MENSUAL') # diaria, semanal, mensual... (frecuencia)
     responsable = models.ForeignKey(Responsable, on_delete=models.SET_NULL, null=True, blank=True)
+    ultima_ejecucion = models.DateField(null=True, blank=True)
+    proxima_ejecucion = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return self.nombre
 
 class Evidencia(models.Model):
-    control = models.ForeignKey(Control, on_delete=models.CASCADE, related_name="evidencias")
+    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=True, blank=True)
+    normativa = models.ForeignKey(Normativa, on_delete=models.CASCADE, null=True, blank=True)
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, blank=True)
+    obligacion = models.ForeignKey(Obligacion, on_delete=models.CASCADE, null=True, blank=True)
+    control = models.ForeignKey(Control, on_delete=models.CASCADE, related_name="evidencias", null=True, blank=True)
+    responsable = models.ForeignKey(Responsable, on_delete=models.SET_NULL, null=True, blank=True)
+    titulo = models.CharField(max_length=255, default='Evidencia')
+    archivo = models.FileField(upload_to='evidencias/', blank=True, null=True)
     archivo_url = models.URLField(blank=True, null=True)
-    estado = models.CharField(max_length=50, choices=[('vigente', 'Vigente'), ('por_vencer', 'Por Vencer'), ('desactualizado', 'Desactualizado')])
-    fecha_subida = models.DateField(auto_now_add=True)
+    version = models.CharField(max_length=50, default='1.0')
+    estado = models.CharField(max_length=50, choices=[('vigente', 'Vigente'), ('por_vencer', 'Por Vencer'), ('vencido', 'Vencido'), ('pendiente_aprobacion', 'Pendiente Aprobación'), ('desactualizado', 'Desactualizado')], default='vigente')
+    fecha_emision = models.DateField(null=True, blank=True)
     fecha_vencimiento = models.DateField(null=True, blank=True)
+    fecha_subida = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return self.titulo
 
 class Auditoria(models.Model):
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
+    normativa = models.ForeignKey(Normativa, on_delete=models.CASCADE, null=True, blank=True)
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, blank=True)
     nombre = models.CharField(max_length=255)
+    tipo = models.CharField(max_length=50, choices=[('interna', 'Interna'), ('externa', 'Externa')], default='interna')
     fecha_inicio = models.DateField()
     fecha_fin = models.DateField(null=True, blank=True)
     estado = models.CharField(max_length=50, choices=[('planificada', 'Planificada'), ('en_curso', 'En Curso'), ('finalizada', 'Finalizada')])
     responsable = models.ForeignKey(Responsable, on_delete=models.SET_NULL, null=True, blank=True)
+    hallazgos_count = models.IntegerField(default=0)
+    no_conformidades_count = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.nombre
 
 class PlanAccion(models.Model):
+    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=True, blank=True)
+    normativa = models.ForeignKey(Normativa, on_delete=models.CASCADE, null=True, blank=True)
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, blank=True)
     riesgo = models.ForeignKey(Riesgo, on_delete=models.CASCADE, null=True, blank=True)
     incidente = models.ForeignKey(Incidente, on_delete=models.CASCADE, null=True, blank=True)
     auditoria = models.ForeignKey(Auditoria, on_delete=models.CASCADE, null=True, blank=True)
-    nombre = models.CharField(max_length=255)
-    estado = models.CharField(max_length=50, choices=[('abierto', 'Abierto'), ('en_progreso', 'En Progreso'), ('cerrado', 'Cerrado')])
-    fecha_limite = models.DateField()
+    responsable = models.ForeignKey(Responsable, on_delete=models.SET_NULL, null=True, blank=True)
+    nombre = models.CharField(max_length=255) # accion
+    estado = models.CharField(max_length=50, choices=[('abierto', 'Abierto'), ('en_progreso', 'En Progreso'), ('atrasado', 'Atrasado'), ('cerrado', 'Cerrado')], default='abierto')
+    fecha_limite = models.DateField() # fecha_compromiso
+
+    def __str__(self):
+        return self.nombre
 
 class EventoCompliance(models.Model):
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
-    tipo = models.CharField(max_length=100) # Auditoría, Revisión Riesgo, Vencimiento Documento
+    tipo = models.CharField(max_length=100) # OBLIGACION, CONTROL, EVIDENCIA, AUDITORIA, RIESGO, INCIDENTE, PLAN_ACCION, CAPACITACION
     titulo = models.CharField(max_length=255)
+    normativa = models.ForeignKey(Normativa, on_delete=models.CASCADE, null=True, blank=True)
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, blank=True)
+    responsable = models.ForeignKey(Responsable, on_delete=models.SET_NULL, null=True, blank=True)
     fecha_inicio = models.DateTimeField()
     fecha_fin = models.DateTimeField(null=True, blank=True)
-    estado = models.CharField(max_length=50)
-    recurrencia = models.CharField(max_length=50, blank=True, null=True) # diaria, mensual, etc.
+    prioridad = models.CharField(max_length=50, choices=[('alta', 'Alta'), ('media', 'Media'), ('baja', 'Baja')], default='media')
+    estado = models.CharField(max_length=50, choices=[('pendiente', 'Pendiente'), ('en_proceso', 'En Proceso'), ('cumplido', 'Cumplido'), ('vencido', 'Vencido')], default='pendiente')
+    recurrencia = models.CharField(max_length=50, blank=True, null=True) # regla_recurrencia
+    es_recurrente = models.BooleanField(default=False)
     entidad_relacionada_id = models.IntegerField(null=True, blank=True)
     entidad_tipo = models.CharField(max_length=100, blank=True, null=True)
+
+    def __str__(self):
+        return self.titulo
+
+class AlertaCompliance(models.Model):
+    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
+    origen_modulo = models.CharField(max_length=50) # NORMATIVA, OBLIGACION, CONTROL, EVIDENCIA, RIESGO, INCIDENTE, AUDITORIA, PLAN_ACCION
+    referencia_id = models.IntegerField(null=True, blank=True)
+    titulo = models.CharField(max_length=255)
+    mensaje = models.TextField()
+    criticidad = models.CharField(max_length=20, default='MEDIA') # CRITICA, ALTA, MEDIA, INFORMATIVA
+    estado = models.CharField(max_length=20, default='ABIERTA') # ABIERTA, REVISADA, ESCALADA, RESUELTA
+    fecha_generacion = models.DateTimeField(auto_now_add=True)
+    fecha_escalamiento = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f"[{self.criticidad}] {self.titulo}"
+
+class HistoricoCumplimientoMensual(models.Model):
+    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
+    sucursal = models.ForeignKey(Sucursal, on_delete=models.CASCADE, null=True, blank=True)
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, blank=True)
+    mes = models.IntegerField()
+    anio = models.IntegerField()
+    porcentaje_cumplimiento = models.FloatField(default=0.0)
+
+    class Meta:
+        unique_together = ('empresa', 'sucursal', 'area', 'mes', 'anio')
+
+    def __str__(self):
+        return f"{self.empresa.nombre} - {self.mes}/{self.anio}: {self.porcentaje_cumplimiento}%"
+

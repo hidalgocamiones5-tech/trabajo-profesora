@@ -3,7 +3,9 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from .models import (
     Empresa, PerfilUsuario, Normativa, ComplianceEmpresa, ObjetivoChecklist,
-    TratamientoRAT, SolicitudTicket, Incidente, TareaPendiente, Riesgo
+    TratamientoRAT, SolicitudTicket, Incidente, TareaPendiente, Riesgo,
+    Sucursal, Area, Responsable, Obligacion, Control, Evidencia, Auditoria,
+    PlanAccion, EventoCompliance, AlertaCompliance, HistoricoCumplimientoMensual
 )
 
 # ----------------------------------------------------
@@ -35,6 +37,22 @@ class TratamientoRATInline(admin.TabularInline):
     fields = ('tratamiento', 'area', 'estado', 'base_licitud')
     show_change_link = True
 
+class SucursalInline(admin.TabularInline):
+    model = Sucursal
+    extra = 0
+    show_change_link = True
+
+class AreaInline(admin.TabularInline):
+    model = Area
+    extra = 0
+    show_change_link = True
+
+class ObligacionInline(admin.TabularInline):
+    model = Obligacion
+    extra = 0
+    fields = ('nombre', 'area', 'estado', 'criticidad', 'responsable', 'fecha_vencimiento')
+    show_change_link = True
+
 # ----------------------------------------------------
 # ADMIN REGISTRATIONS
 # ----------------------------------------------------
@@ -63,7 +81,7 @@ class EmpresaAdmin(admin.ModelAdmin):
     list_display = ('nombre', 'rut', 'rubro', 'tamano', 'rango_empleados', 'estado_matching', 'setup_completado', 'fecha_creacion')
     list_filter = ('rubro', 'tamano', 'rango_empleados', 'estado_matching', 'setup_completado', 'tipo_sociedad')
     search_fields = ('nombre', 'rut', 'comuna', 'direccion_matriz')
-    inlines = [ComplianceEmpresaInline, ObjetivoChecklistInline, TratamientoRATInline]
+    inlines = [SucursalInline, AreaInline, ComplianceEmpresaInline, ObjetivoChecklistInline, TratamientoRATInline]
     
     fieldsets = (
         ('Datos Básicos', {
@@ -89,7 +107,7 @@ class NormativaAdmin(admin.ModelAdmin):
     list_display = ('nombre', 'codigo_bcn', 'criticidad', 'tipo', 'origen', 'es_transversal', 'min_empleados')
     list_filter = ('criticidad', 'tipo', 'es_transversal', 'origen')
     search_fields = ('nombre', 'codigo_bcn', 'descripcion', 'resumen')
-    inlines = [ComplianceEmpresaInline]
+    inlines = [ObligacionInline, ComplianceEmpresaInline]
 
 @admin.register(ComplianceEmpresa)
 class ComplianceEmpresaAdmin(admin.ModelAdmin):
@@ -115,11 +133,6 @@ class ObjetivoChecklistAdmin(admin.ModelAdmin):
     list_display = ('nombre', 'empresa', 'categoria', 'estado', 'responsable')
     list_filter = ('empresa', 'estado', 'categoria')
     search_fields = ('nombre', 'responsable')
-    actions = ['marcar_completado']
-
-    def marcar_completado(self, request, queryset):
-        queryset.update(estado='completado')
-    marcar_completado.short_description = "Marcar objetivos como Completados"
 
 @admin.register(TratamientoRAT)
 class TratamientoRATAdmin(admin.ModelAdmin):
@@ -155,3 +168,58 @@ class RiesgoAdmin(admin.ModelAdmin):
     list_display = ('nombre', 'empresa', 'estado', 'impacto', 'probabilidad')
     list_filter = ('empresa', 'estado')
     search_fields = ('nombre', 'responsable')
+
+@admin.register(Sucursal)
+class SucursalAdmin(admin.ModelAdmin):
+    list_display = ('nombre', 'empresa', 'ciudad')
+    list_filter = ('empresa', 'ciudad')
+
+@admin.register(Area)
+class AreaAdmin(admin.ModelAdmin):
+    list_display = ('nombre', 'empresa', 'sucursal', 'responsable_principal')
+    list_filter = ('empresa', 'sucursal')
+
+@admin.register(Responsable)
+class ResponsableAdmin(admin.ModelAdmin):
+    list_display = ('nombre', 'empresa', 'area', 'cargo')
+    list_filter = ('empresa', 'area')
+
+@admin.register(Obligacion)
+class ObligacionAdmin(admin.ModelAdmin):
+    list_display = ('nombre', 'normativa', 'area', 'estado', 'criticidad', 'responsable')
+    list_filter = ('estado', 'criticidad', 'normativa')
+
+@admin.register(Control)
+class ControlAdmin(admin.ModelAdmin):
+    list_display = ('nombre', 'obligacion', 'estado', 'periodicidad', 'responsable', 'ultima_ejecucion', 'proxima_ejecucion')
+    list_filter = ('estado', 'periodicidad')
+
+@admin.register(Evidencia)
+class EvidenciaAdmin(admin.ModelAdmin):
+    list_display = ('titulo', 'empresa', 'normativa', 'estado', 'version', 'fecha_vencimiento')
+    list_filter = ('estado', 'empresa', 'normativa')
+
+@admin.register(Auditoria)
+class AuditoriaAdmin(admin.ModelAdmin):
+    list_display = ('nombre', 'empresa', 'tipo', 'estado', 'fecha_inicio', 'hallazgos_count')
+    list_filter = ('estado', 'tipo', 'empresa')
+
+@admin.register(PlanAccion)
+class PlanAccionAdmin(admin.ModelAdmin):
+    list_display = ('nombre', 'empresa', 'estado', 'responsable', 'fecha_limite')
+    list_filter = ('estado', 'empresa')
+
+@admin.register(EventoCompliance)
+class EventoComplianceAdmin(admin.ModelAdmin):
+    list_display = ('titulo', 'empresa', 'tipo', 'prioridad', 'estado', 'fecha_inicio')
+    list_filter = ('estado', 'prioridad', 'tipo', 'empresa')
+
+@admin.register(AlertaCompliance)
+class AlertaComplianceAdmin(admin.ModelAdmin):
+    list_display = ('titulo', 'empresa', 'origen_modulo', 'criticidad', 'estado', 'fecha_generacion')
+    list_filter = ('estado', 'criticidad', 'origen_modulo', 'empresa')
+
+@admin.register(HistoricoCumplimientoMensual)
+class HistoricoCumplimientoMensualAdmin(admin.ModelAdmin):
+    list_display = ('empresa', 'mes', 'anio', 'porcentaje_cumplimiento')
+    list_filter = ('empresa', 'anio', 'mes')

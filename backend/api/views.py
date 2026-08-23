@@ -168,9 +168,6 @@ def empresas_onboarding(request):
     # 1. Motor de Matching Automático (Reglas base)
     compliances_base = asignar_normativas_base(empresa)
 
-    # 2. Smart Discovery con Gemini 1.5 Pro
-    compliances_ia = smart_discovery_service.ejecutar_smart_discovery(empresa)
-
     # 3. Serializar y devolver respuesta enriquecida
     todos_compliances = ComplianceEmpresa.objects.filter(empresa=empresa).select_related('normativa')
     
@@ -212,7 +209,6 @@ def empresa_setup(request):
     if serializer.is_valid():
         empresa = serializer.save(setup_completado=True)
         asignar_normativas_base(empresa)
-        smart_discovery_service.ejecutar_smart_discovery(empresa)
         return Response({
             "mensaje": "Empresa actualizada",
             "empresa": EmpresaOnboardingSerializer(empresa).data
@@ -252,7 +248,7 @@ class EmpresaViewSet(viewsets.ModelViewSet):
             return self.queryset.none()
         return self.queryset
 
-class NormativaViewSet(BaseEmpresaViewSet):
+class NormativaViewSet(viewsets.ModelViewSet):
     queryset = Normativa.objects.all()
     serializer_class = NormativaSerializer
 
@@ -364,4 +360,175 @@ def generar_checklist(request):
     checklist_estructurado = gemini_service.generar_checklist_desde_ley(texto_legal, ley_data)
     
     return Response(checklist_estructurado)
+
+# -------------------------------------------------------------
+# FASE 3: ENDPOINTS GRC & SERVICIOS
+# -------------------------------------------------------------
+from .models import AlertaCompliance
+from .serializers import AlertaComplianceSerializer
+from .services.score_engine import ScoreEngine
+from .services.alert_engine import AlertEngine
+from .services.calendar_engine import CalendarEngine
+from .services.executive_report_engine import ExecutiveReportEngine
+
+class AlertaComplianceViewSet(BaseEmpresaViewSet):
+    queryset = AlertaCompliance.objects.all()
+    serializer_class = AlertaComplianceSerializer
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def dashboard_ejecutivo_view(request):
+    user = request.user
+    empresa = getattr(user.perfilusuario, 'empresa', None) if hasattr(user, 'perfilusuario') else None
+    if not empresa:
+        empresa, _ = Empresa.objects.get_or_create(nombre=f"Empresa de {user.username}")
+    
+    # Escanear alertas y calendarizar
+    AlertEngine.escanear_vencimientos(empresa)
+    AlertEngine.verificar_reglas_escalamiento(empresa)
+    CalendarEngine.sincronizar_todo(empresa)
+    
+    reporte = ExecutiveReportEngine.generar_reporte_ejecutivo_global(empresa)
+    return Response(reporte)
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def ficha_normativa_view(request, normativa_id):
+    try:
+        normativa = Normativa.objects.get(id=normativa_id)
+        ficha = ExecutiveReportEngine.generar_ficha_normativa(normativa)
+        return Response(ficha)
+    except Normativa.DoesNotExist:
+        return Response({'error': 'Normativa no encontrada'}, status=404)
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def area_desempeno_view(request, area_id):
+    try:
+        area = Area.objects.get(id=area_id)
+        score = ScoreEngine.get_score_area(area)
+        controles = Control.objects.filter(obligacion__area=area)
+        return Response({
+            "area": area.nombre,
+            "score": score,
+            "controles_count": controles.count()
+        })
+    except Area.DoesNotExist:
+        return Response({'error': 'Área no encontrada'}, status=404)
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def responsable_ficha_view(request, responsable_id):
+    try:
+        resp = Responsable.objects.get(id=responsable_id)
+        obligaciones = Obligacion.objects.filter(responsable=resp)
+        score = ScoreEngine.calcular_score_obligaciones(obligaciones)
+        return Response({
+            "responsable": resp.nombre,
+            "cargo": resp.cargo,
+            "score": score,
+            "carga_laboral_count": obligaciones.count()
+        })
+    except Responsable.DoesNotExist:
+        return Response({'error': 'Responsable no encontrado'}, status=404)
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def mi_trabajo_view(request):
+    user = request.user
+    empresa = getattr(user.perfilusuario, 'empresa', None) if hasattr(user, 'perfilusuario') else None
+    
+    tareas = TareaPendiente.objects.all()
+    if empresa:
+        tareas = tareas.filter(empresa=empresa)
+    
+    # Filtrar si hay responsable que coincida con el nombre de usuario
+    tareas_usuario = tareas.filter(responsable_asignado__icontains=user.username)
+    if not tareas_usuario.exists():
+        tareas_usuario = tareas
+
+    serializer = TareaPendienteSerializer(tareas_usuario, many=True)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def escalar_alerta_view(request, alerta_id):
+    try:
+        alerta = AlertaCompliance.objects.get(id=alerta_id)
+        alerta.estado = 'ESCALADA'
+        alerta.fecha_escalamiento = timezone.now()
+        alerta.save()
+        return Response({'mensaje': 'Alerta escalada con éxito', 'alerta': AlertaComplianceSerializer(alerta).data})
+    except AlertaCompliance.DoesNotExist:
+        return Response({'error': 'Alerta no encontrada'}, status=404)
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def calendario_eventos_view(request):
+    user = request.user
+    empresa = getattr(user.perfilusuario, 'empresa', None) if hasattr(user, 'perfilusuario') else None
+    if empresa:
+        eventos = EventoCompliance.objects.filter(empresa=empresa)
+    else:
+        eventos = EventoCompliance.objects.all()
+    
+    serializer = EventoComplianceSerializer(eventos, many=True)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def generar_resumen_ia_view(request):
+    user = request.user
+    empresa = getattr(user.perfilusuario, 'empresa', None) if hasattr(user, 'perfilusuario') else None
+    reporte = ExecutiveReportEngine.generar_reporte_ejecutivo_global(empresa) if empresa else {}
+    
+    prompt = f"Genera un resumen ejecutivo directivo de 3 líneas para la empresa {empresa.nombre if empresa else 'General'}. Contexto: Cumplimiento global del {reporte.get('score_global', {}).get('porcentaje', 80)}%, Gravedad de riesgos: {reporte.get('gravedad_riesgos', 'Media')}."
+    
+    resumen = gemini_service.generar_respuesta_libre(prompt)
+    return Response({'resumen': resumen})
+
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def normativas_disponibles_view(request):
+    user = request.user
+    empresa = getattr(user.perfilusuario, 'empresa', None) if hasattr(user, 'perfilusuario') else None
+    if not empresa:
+        return Response([])
+    
+    asignadas = ComplianceEmpresa.objects.filter(empresa=empresa).values_list('normativa_id', flat=True)
+    disponibles = Normativa.objects.exclude(id__in=asignadas)
+    
+    serializer = NormativaSerializer(disponibles, many=True)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def asignar_normativa_view(request):
+    user = request.user
+    empresa = getattr(user.perfilusuario, 'empresa', None) if hasattr(user, 'perfilusuario') else None
+    if not empresa:
+        return Response({'error': 'Usuario no tiene empresa asignada'}, status=400)
+        
+    normativa_id = request.data.get('normativa_id')
+    if not normativa_id:
+        return Response({'error': 'normativa_id es requerido'}, status=400)
+        
+    try:
+        normativa = Normativa.objects.get(id=normativa_id)
+        compliance, created = ComplianceEmpresa.objects.get_or_create(
+            empresa=empresa,
+            normativa=normativa,
+            defaults={
+                'estado': 'PRELIMINAR',
+                'origen': 'CATALOGO_MANUAL',
+                'porcentaje_progreso': 0.0
+            }
+        )
+        if created:
+            return Response({'mensaje': 'Normativa asignada con éxito'}, status=201)
+        else:
+            return Response({'mensaje': 'La normativa ya estaba asignada'}, status=200)
+    except Normativa.DoesNotExist:
+        return Response({'error': 'Normativa no encontrada'}, status=404)
 
