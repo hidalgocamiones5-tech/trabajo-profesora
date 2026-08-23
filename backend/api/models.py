@@ -70,10 +70,14 @@ class PerfilUsuario(models.Model):
 
 class RegistroAuditoriaARCO(models.Model):
     usuario = models.ForeignKey(PerfilUsuario, on_delete=models.CASCADE)
+    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=True, blank=True)
     tipo_derecho = models.CharField(max_length=20)
     detalles = models.TextField()
     estado = models.CharField(max_length=20, default='PENDIENTE')
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.tipo_derecho} - {self.usuario}"
 
 class Normativa(models.Model):
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=True, blank=True)
@@ -146,6 +150,7 @@ class ObjetivoChecklist(models.Model):
     ]
     estado = models.CharField(max_length=50, choices=estado_choices)
     responsable = models.CharField(max_length=100)
+    criticidad = models.CharField(max_length=50, choices=[('alta', 'Alta'), ('media', 'Media'), ('baja', 'Baja')], default='media')
 
     def __str__(self):
         return self.nombre
@@ -205,6 +210,7 @@ class Incidente(models.Model):
     responsable = models.CharField(max_length=100)
     tipo = models.CharField(max_length=100)
     estado = models.CharField(max_length=50)
+    severidad = models.CharField(max_length=50, choices=[('baja', 'Baja'), ('media', 'Media'), ('alta', 'Alta'), ('critica', 'Crítica')], default='media')
     fecha = models.DateField()
 
     def __str__(self):
@@ -230,8 +236,10 @@ class TareaPendiente(models.Model):
 class Riesgo(models.Model):
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=True, blank=True)
     nombre = models.CharField(max_length=255)
+    categoria = models.CharField(max_length=100, blank=True, null=True)
     impacto = models.IntegerField(choices=[(i, str(i)) for i in range(1, 6)])
     probabilidad = models.IntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    estrategia = models.CharField(max_length=50, choices=[('Mitigar', 'Mitigar'), ('Transferir', 'Transferir'), ('Aceptar', 'Aceptar'), ('Eliminar', 'Eliminar')], default='Mitigar')
     estado_choices = [
         ('pendiente', 'Pendiente'),
         ('mitigado', 'Mitigado'),

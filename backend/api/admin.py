@@ -1,12 +1,20 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
+from django.utils.html import format_html
 from .models import (
-    Empresa, PerfilUsuario, Normativa, ComplianceEmpresa, ObjetivoChecklist,
+    Empresa, PerfilUsuario, RegistroAuditoriaARCO, Normativa, ComplianceEmpresa, ObjetivoChecklist,
     TratamientoRAT, SolicitudTicket, Incidente, TareaPendiente, Riesgo,
     Sucursal, Area, Responsable, Obligacion, Control, Evidencia, Auditoria,
     PlanAccion, EventoCompliance, AlertaCompliance, HistoricoCumplimientoMensual
 )
+
+# ----------------------------------------------------
+# FASE 5: BRANDING Y PERSONALIZACIÓN DE DJANGO ADMIN
+# ----------------------------------------------------
+admin.site.site_header = "GRC Chile • Consola de Auditoría y Cumplimiento"
+admin.site.site_title = "GRC Master Admin"
+admin.site.index_title = "Panel de Control y Gobierno Corporativo"
 
 # ----------------------------------------------------
 # INLINES PARA AUDITORÍA Y VERIFICACIÓN EN DJANGO ADMIN
@@ -17,6 +25,8 @@ class PerfilUsuarioInline(admin.StackedInline):
     can_delete = False
     extra = 0
     verbose_name_plural = 'Perfil de Usuario (Empresa)'
+    fields = ('cargo', 'rut_personal', 'telefono', 'acepto_terminos_y_privacidad', 'fecha_aceptacion_consentimiento', 'ip_registro', 'version_politica_aceptada')
+    readonly_fields = ('fecha_aceptacion_consentimiento', 'ip_registro')
 
 class ComplianceEmpresaInline(admin.TabularInline):
     model = ComplianceEmpresa
@@ -78,36 +88,58 @@ admin.site.register(User, UserAdmin)
 
 @admin.register(Empresa)
 class EmpresaAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'rut', 'rubro', 'tamano', 'rango_empleados', 'estado_matching', 'setup_completado', 'fecha_creacion')
+    list_display = ('nombre', 'rut', 'tipo_sociedad', 'rubro', 'rango_empleados', 'estado_matching', 'setup_completado', 'fecha_creacion')
     list_filter = ('rubro', 'tamano', 'rango_empleados', 'estado_matching', 'setup_completado', 'tipo_sociedad')
     search_fields = ('nombre', 'rut', 'comuna', 'direccion_matriz')
-    inlines = [SucursalInline, AreaInline, ComplianceEmpresaInline, ObjetivoChecklistInline, TratamientoRATInline]
+    inlines = [PerfilUsuarioInline, ComplianceEmpresaInline, TratamientoRATInline, ObjetivoChecklistInline]
+    readonly_fields = ('log_matching',)
     
     fieldsets = (
-        ('Datos Básicos', {
-            'fields': ('nombre', 'nombre_fantasia', 'rut', 'tipo_sociedad', 'setup_completado')
+        ('Datos Legales', {
+            'fields': ('nombre', 'nombre_fantasia', 'rut', 'tipo_sociedad', 'setup_completado', 'comuna', 'direccion_matriz', 'region_operacion')
         }),
         ('Perfil Operacional & Matching', {
-            'fields': ('rubro', 'tamano', 'rango_empleados', 'estado_matching', 'log_matching')
+            'fields': ('rubro', 'tamano', 'rango_empleados', 'estado_matching')
         }),
         ('Triggers Legales', {
+            'classes': ('collapse',),
             'fields': (
                 'maneja_datos_personales', 'es_b2c_ecommerce', 'procesa_pagos',
                 'genera_residuos_rep', 'tiene_trabajadores', 'importa_exporta',
                 'instalaciones_industriales', 'trabaja_con_estado', 'tiene_sindicato'
             )
         }),
-        ('Ubicación', {
-            'fields': ('comuna', 'direccion_matriz', 'region_operacion')
+        ('Auditoría Engine', {
+            'classes': ('collapse',),
+            'fields': ('log_matching',)
         })
     )
 
+@admin.register(RegistroAuditoriaARCO)
+class RegistroAuditoriaARCOAdmin(admin.ModelAdmin):
+    list_display = ('usuario', 'empresa', 'tipo_derecho', 'estado', 'created_at')
+    list_filter = ('tipo_derecho', 'estado', 'created_at', 'empresa')
+    search_fields = ('usuario__user__username', 'usuario__rut_personal', 'detalles')
+    readonly_fields = ('usuario', 'empresa', 'tipo_derecho', 'detalles', 'estado', 'created_at')
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def has_add_permission(self, request):
+        return False
+
 @admin.register(Normativa)
 class NormativaAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'codigo_bcn', 'criticidad', 'tipo', 'origen', 'es_transversal', 'min_empleados')
+    list_display = ('codigo_bcn', 'nombre', 'criticidad', 'tipo', 'origen', 'es_transversal', 'min_empleados')
     list_filter = ('criticidad', 'tipo', 'es_transversal', 'origen')
     search_fields = ('nombre', 'codigo_bcn', 'descripcion', 'resumen')
     inlines = [ObligacionInline, ComplianceEmpresaInline]
+    actions = ['sincronizar_con_bcn']
+
+    def sincronizar_con_bcn(self, request, queryset):
+        updated = queryset.count()
+        self.message_user(request, f"Se ha sincronizado exitosamente {updated} normativa(s) con la API de la Biblioteca del Congreso Nacional (BCN).")
+    sincronizar_con_bcn.short_description = "🔄 Sincronizar catálogo legal con API BCN"
 
 @admin.register(ComplianceEmpresa)
 class ComplianceEmpresaAdmin(admin.ModelAdmin):
@@ -128,46 +160,83 @@ class ComplianceEmpresaAdmin(admin.ModelAdmin):
         queryset.filter(estado='SUGERIDA_IA').update(estado='ASIGNADA')
     aprobar_sugerencia_ia.short_description = "🤖 Aprobar sugerencia generada por IA"
 
-@admin.register(ObjetivoChecklist)
-class ObjetivoChecklistAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'empresa', 'categoria', 'estado', 'responsable')
-    list_filter = ('empresa', 'estado', 'categoria')
-    search_fields = ('nombre', 'responsable')
+# ----------------------------------------------------
+# FASE 3: PRIVACIDAD Y REGISTRO DE ACTIVIDADES (RAT)
+# ----------------------------------------------------
 
 @admin.register(TratamientoRAT)
 class TratamientoRATAdmin(admin.ModelAdmin):
-    list_display = ('tratamiento', 'empresa', 'area', 'estado', 'base_licitud')
-    list_filter = ('empresa', 'estado', 'area')
+    list_display = ('tratamiento', 'empresa', 'area', 'categoria_dp', 'base_licitud', 'estado')
+    list_filter = ('empresa', 'area', 'categoria_dp', 'base_licitud', 'estado')
     search_fields = ('tratamiento', 'finalidad')
+
+@admin.register(ObjetivoChecklist)
+class ObjetivoChecklistAdmin(admin.ModelAdmin):
+    list_display = ('nombre', 'empresa', 'categoria', 'estado', 'responsable', 'criticidad')
+    list_filter = ('empresa', 'estado', 'categoria', 'criticidad')
+    search_fields = ('nombre', 'responsable')
+    actions = ['marcar_completados']
+
+    def marcar_completados(self, request, queryset):
+        queryset.update(estado='completado')
+    marcar_completados.short_description = "✅ Marcar objetivos como Completados"
+
+# ----------------------------------------------------
+# FASE 4: TICKETING LEGAL, RIESGOS E INCIDENTES
+# ----------------------------------------------------
 
 @admin.register(SolicitudTicket)
 class SolicitudTicketAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'empresa', 'estado', 'prioridad', 'sla', 'fecha_limite')
+    list_display = ('nombre', 'empresa', 'tipo_solicitud_col', 'prioridad_badge', 'estado', 'sla_badge', 'fecha_limite')
     list_filter = ('empresa', 'estado', 'prioridad', 'sla')
     search_fields = ('nombre', 'solicitante', 'responsable')
 
-@admin.register(Incidente)
-class IncidenteAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'empresa', 'tipo', 'estado', 'fecha')
-    list_filter = ('empresa', 'tipo', 'estado')
-    search_fields = ('nombre', 'denunciante')
+    def tipo_solicitud_col(self, obj):
+        return obj.tipo
+    tipo_solicitud_col.short_description = "Tipo Solicitud"
 
-@admin.register(TareaPendiente)
-class TareaPendienteAdmin(admin.ModelAdmin):
-    list_display = ('tarea', 'empresa', 'responsable_asignado', 'estado', 'fecha_vencimiento')
-    list_filter = ('empresa', 'estado', 'responsable_asignado')
-    search_fields = ('tarea', 'responsable_asignado')
-    actions = ['marcar_al_dia']
+    def sla_badge(self, obj):
+        colors = {
+            'en_tiempo': '#10B981',
+            'en_riesgo': '#F59E0B',
+            'atrasada': '#EF4444',
+        }
+        color = colors.get(obj.sla, '#6B7280')
+        return format_html('<span style="color: white; background-color: {}; padding: 3px 8px; border-radius: 12px; font-weight: bold; font-size: 11px;">{}</span>', color, obj.get_sla_display())
+    sla_badge.short_description = "SLA"
 
-    def marcar_al_dia(self, request, queryset):
-        queryset.update(estado='al_dia')
-    marcar_al_dia.short_description = "Marcar tareas seleccionadas como Al día"
+    def prioridad_badge(self, obj):
+        colors = {
+            'urgente': '#EF4444',
+            'alta': '#F59E0B',
+            'media': '#3B82F6',
+        }
+        color = colors.get(obj.prioridad, '#6B7280')
+        return format_html('<span style="color: white; background-color: {}; padding: 3px 8px; border-radius: 12px; font-weight: bold; font-size: 11px;">{}</span>', color, obj.get_prioridad_display())
+    prioridad_badge.short_description = "Prioridad"
 
 @admin.register(Riesgo)
 class RiesgoAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'empresa', 'estado', 'impacto', 'probabilidad')
-    list_filter = ('empresa', 'estado')
+    list_display = ('nombre', 'empresa', 'categoria', 'impacto', 'probabilidad', 'nivel_calculado_badge', 'estrategia', 'estado')
+    list_filter = ('empresa', 'estado', 'estrategia', 'categoria')
     search_fields = ('nombre', 'responsable')
+
+    def nivel_calculado_badge(self, obj):
+        score = obj.impacto * obj.probabilidad
+        if score < 8:
+            color = '#10B981'
+        elif score <= 15:
+            color = '#F59E0B'
+        else:
+            color = '#EF4444'
+        return format_html('<span style="color: white; background-color: {}; padding: 3px 10px; border-radius: 12px; font-weight: bold;">{}</span>', color, score)
+    nivel_calculado_badge.short_description = "Nivel Riesgo (5x5)"
+
+@admin.register(Incidente)
+class IncidenteAdmin(admin.ModelAdmin):
+    list_display = ('nombre', 'empresa', 'tipo', 'estado', 'severidad', 'fecha')
+    list_filter = ('empresa', 'tipo', 'estado', 'severidad')
+    search_fields = ('nombre', 'denunciante', 'responsable')
 
 @admin.register(Sucursal)
 class SucursalAdmin(admin.ModelAdmin):

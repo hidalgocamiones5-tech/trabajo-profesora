@@ -1,17 +1,33 @@
 import { useState } from 'react';
-import { Settings, User, Bell, Shield, Database, Building2, Save } from 'lucide-react';
-import { motion } from 'motion/react';
+import { Settings, User, Bell, Shield, Database, Building2, Save, Users, Plus, MailPlus, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import toast from 'react-hot-toast';
+import clsx from 'clsx';
+
+const mockUsers = [
+  { id: 1, name: 'Felipe Sanchez', email: 'fsanchez@empresa.com', role: 'Administrador', area: 'Cumplimiento', status: 'Activo' },
+  { id: 2, name: 'Ana García', email: 'agarcia@empresa.com', role: 'DPO', area: 'Legal', status: 'Activo' },
+  { id: 3, name: 'Carlos López', email: 'clopez@empresa.com', role: 'Lector', area: 'RRHH', status: 'Pendiente' },
+];
 
 export function Configuration() {
   const [activeTab, setActiveTab] = useState('perfil');
+  const [isInviting, setIsInviting] = useState(false);
 
   const tabs = [
     { id: 'perfil', name: 'Perfil de Usuario', icon: User },
     { id: 'empresa', name: 'Datos de la Empresa', icon: Building2 },
+    { id: 'equipo', name: 'Equipo y Usuarios', icon: Users },
     { id: 'notificaciones', name: 'Notificaciones', icon: Bell },
     { id: 'seguridad', name: 'Seguridad', icon: Shield },
     { id: 'api', name: 'API & Integraciones', icon: Database },
   ];
+
+  const handleInvite = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsInviting(false);
+    toast.success('Invitación enviada exitosamente.');
+  };
 
   return (
     <motion.div
@@ -22,7 +38,7 @@ export function Configuration() {
     >
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-slate-900">Configuración</h1>
-        <p className="text-slate-500">Administra las preferencias y ajustes de tu cuenta en -------</p>
+        <p className="text-slate-500">Administra las preferencias y ajustes de tu cuenta corporativa.</p>
       </div>
 
       <div className="flex flex-col md:flex-row gap-8">
@@ -35,13 +51,13 @@ export function Configuration() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all cursor-pointer ${
                   isActive 
-                    ? 'bg-lemon-50 text-lemon-700 shadow-sm border border-lemon-100' 
+                    ? 'bg-indigo-50 text-indigo-700 shadow-sm border border-indigo-100' 
                     : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 border border-transparent'
                 }`}
               >
-                <Icon className={`w-5 h-5 ${isActive ? 'text-lemon-600' : 'text-slate-400'}`} />
+                <Icon className={`w-5 h-5 ${isActive ? 'text-indigo-600' : 'text-slate-400'}`} />
                 {tab.name}
               </button>
             );
@@ -57,14 +73,14 @@ export function Configuration() {
                 <p className="text-sm text-slate-500 mb-6">Actualiza tus datos personales y foto de perfil.</p>
                 
                 <div className="flex items-center gap-6 mb-8">
-                  <div className="w-20 h-20 bg-lemon-100 rounded-full flex items-center justify-center border-4 border-white shadow-md relative group cursor-pointer">
-                    <span className="text-2xl font-bold text-lemon-700">FS</span>
+                  <div className="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center border-4 border-white shadow-md relative group cursor-pointer">
+                    <span className="text-2xl font-bold text-indigo-700">FS</span>
                     <div className="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                       <User className="w-6 h-6 text-white" />
                     </div>
                   </div>
                   <div>
-                    <button className="px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors">
+                    <button className="px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer">
                       Cambiar avatar
                     </button>
                     <p className="text-xs text-slate-500 mt-2">JPG, GIF o PNG. Max size de 800K</p>
@@ -74,25 +90,25 @@ export function Configuration() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-slate-700">Nombre</label>
-                    <input type="text" defaultValue="Felipe" className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-lemon-500 focus:border-lemon-500" />
+                    <input type="text" defaultValue="Felipe" className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-slate-700">Apellido</label>
-                    <input type="text" defaultValue="Sanchez" className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-lemon-500 focus:border-lemon-500" />
+                    <input type="text" defaultValue="Sanchez" className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-slate-700">Email</label>
-                    <input type="email" defaultValue="fsanchez@empresa.com" className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-lemon-500 focus:border-lemon-500" />
+                    <input type="email" defaultValue="fsanchez@empresa.com" className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-slate-700">Cargo</label>
-                    <input type="text" defaultValue="Oficial de Cumplimiento" className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-lemon-500 focus:border-lemon-500" />
+                    <input type="text" defaultValue="Oficial de Cumplimiento" className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
                   </div>
                 </div>
               </div>
 
               <div className="pt-6 border-t border-slate-200 flex justify-end">
-                <button className="flex items-center gap-2 px-6 py-2.5 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors font-medium">
+                <button onClick={() => toast.success('Perfil actualizado correctamente')} className="flex items-center gap-2 px-6 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 shadow-sm transition-colors font-medium cursor-pointer">
                   <Save className="w-4 h-4" />
                   Guardar Cambios
                 </button>
@@ -100,15 +116,180 @@ export function Configuration() {
             </motion.div>
           )}
 
-          {activeTab !== 'perfil' && (
+          {activeTab === 'empresa' && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+              <div>
+                <h2 className="text-lg font-semibold text-slate-900 mb-1">Datos de la Empresa</h2>
+                <p className="text-sm text-slate-500 mb-6">Información fiscal y operativa para los reportes.</p>
+                <div className="grid grid-cols-1 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-700">Razón Social</label>
+                    <input type="text" defaultValue="TechCorp Chile S.A." className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-700">RUT Empresa</label>
+                    <input type="text" defaultValue="76.543.210-K" className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+                  </div>
+                </div>
+              </div>
+              <div className="pt-6 border-t border-slate-200 flex justify-end">
+                <button onClick={() => toast.success('Datos de la empresa guardados')} className="flex items-center gap-2 px-6 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 shadow-sm transition-colors font-medium cursor-pointer">
+                  <Save className="w-4 h-4" /> Guardar
+                </button>
+              </div>
+            </motion.div>
+          )}
+
+          {activeTab === 'equipo' && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h2 className="text-lg font-semibold text-slate-900 mb-1">Equipo y Usuarios</h2>
+                  <p className="text-sm text-slate-500">Administra los accesos y roles de tu equipo.</p>
+                </div>
+                <button 
+                  onClick={() => setIsInviting(true)}
+                  className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium text-sm shadow-sm cursor-pointer"
+                >
+                  <Plus className="w-4 h-4" /> Invitar Trabajador
+                </button>
+              </div>
+
+              <div className="border border-slate-200 rounded-xl shadow-sm overflow-hidden mt-6">
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-slate-50/50 text-slate-500 uppercase tracking-wider text-xs">
+                    <tr>
+                      <th className="px-5 py-3 font-medium">Usuario</th>
+                      <th className="px-5 py-3 font-medium">Rol</th>
+                      <th className="px-5 py-3 font-medium">Área</th>
+                      <th className="px-5 py-3 font-medium">Estado</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 bg-white">
+                    {mockUsers.map((user) => (
+                      <tr key={user.id} className="hover:bg-slate-50/50">
+                        <td className="px-5 py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-xs">
+                              {user.name.split(' ').map(n => n[0]).join('')}
+                            </div>
+                            <div>
+                              <p className="font-medium text-slate-900">{user.name}</p>
+                              <p className="text-xs text-slate-500">{user.email}</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-5 py-4 text-slate-600 font-medium">{user.role}</td>
+                        <td className="px-5 py-4 text-slate-600">{user.area}</td>
+                        <td className="px-5 py-4">
+                          <span className={clsx(
+                            "inline-flex px-2 py-1 rounded-full text-xs font-semibold uppercase tracking-wide",
+                            user.status === 'Activo' ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
+                          )}>
+                            {user.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </motion.div>
+          )}
+
+          {activeTab === 'notificaciones' && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+              <div>
+                <h2 className="text-lg font-semibold text-slate-900 mb-1">Preferencias de Notificaciones</h2>
+                <p className="text-sm text-slate-500 mb-6">Controla cómo y cuándo recibes alertas del sistema.</p>
+                
+                <div className="space-y-4">
+                  {['Alertas de Nuevas Leyes (BCN)', 'Vencimiento de SLAs (Derechos ARCO)', 'Nuevos Incidentes (Ley Karin)', 'Reportes Semanales de Cumplimiento'].map((item, i) => (
+                    <div key={i} className="flex items-center justify-between p-4 border border-slate-200 rounded-xl bg-slate-50/50">
+                      <div>
+                        <p className="font-medium text-slate-800">{item}</p>
+                        <p className="text-xs text-slate-500">Recibir notificación por email y sistema.</p>
+                      </div>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" className="sr-only peer" defaultChecked={i !== 3} />
+                        <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="pt-6 border-t border-slate-200 flex justify-end">
+                <button onClick={() => toast.success('Preferencias de notificaciones guardadas')} className="flex items-center gap-2 px-6 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 shadow-sm transition-colors font-medium cursor-pointer">
+                  <Save className="w-4 h-4" /> Guardar
+                </button>
+              </div>
+            </motion.div>
+          )}
+
+          {['seguridad', 'api'].includes(activeTab) && (
             <div className="h-[400px] flex flex-col items-center justify-center text-slate-400">
               <Settings className="w-12 h-12 mb-4 opacity-20" />
-              <p className="text-lg font-medium text-slate-600">Configuración en construcción</p>
-              <p className="text-sm">Esta sección estará disponible en la próxima versión.</p>
+              <p className="text-lg font-medium text-slate-600">Configuración avanzada</p>
+              <p className="text-sm">Esta sección estará disponible en la próxima versión del prototipo.</p>
             </div>
           )}
         </div>
       </div>
+
+      {/* Modal de Invitación */}
+      <AnimatePresence>
+        {isInviting && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={() => setIsInviting(false)} />
+            <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }} className="relative bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+              <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                    <MailPlus className="w-5 h-5 text-indigo-600" />
+                  </div>
+                  <h3 className="font-semibold text-slate-900 text-lg">Invitar Trabajador</h3>
+                </div>
+                <button onClick={() => setIsInviting(false)} className="text-slate-400 hover:text-slate-600 transition-colors p-1 rounded-lg hover:bg-slate-100 cursor-pointer">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <form onSubmit={handleInvite} className="p-6 space-y-4">
+                <div className="space-y-1.5">
+                  <label className="text-sm font-medium text-slate-700">Nombre Completo</label>
+                  <input required type="text" className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-sm shadow-sm" placeholder="Ej. Juan Pérez" />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-sm font-medium text-slate-700">Correo Electrónico</label>
+                  <input required type="email" className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-sm shadow-sm" placeholder="juan@empresa.com" />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-slate-700">Cargo / Área</label>
+                    <input required type="text" className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-sm shadow-sm" placeholder="RRHH" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-slate-700">Rol en el Sistema</label>
+                    <select className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-sm shadow-sm">
+                      <option>Lector</option>
+                      <option>Editor</option>
+                      <option>Administrador</option>
+                      <option>DPO</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="pt-4 flex justify-end gap-3">
+                  <button type="button" onClick={() => setIsInviting(false)} className="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg font-medium text-sm hover:bg-slate-50 transition-colors cursor-pointer">
+                    Cancelar
+                  </button>
+                  <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium text-sm hover:bg-indigo-700 transition-colors shadow-sm cursor-pointer">
+                    Enviar Invitación
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }

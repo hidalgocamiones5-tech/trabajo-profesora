@@ -31,7 +31,7 @@ export const Header: React.FC<HeaderProps> = ({ currentView, setCurrentView }) =
     }).catch(() => {});
   }, []);
 
-  const menuItems = ['Inicio', 'Cumplimiento', 'Gestión', 'Documentos', 'Reportes', 'Configuración'];
+  const menuItems = ['Inicio', 'Cumplimiento', 'Gestión', 'Privacidad', 'Documentos', 'Reportes', 'Configuración'];
 
   const mockNotifications = [
     { id: 1, title: 'Ley Karin 21.643', message: 'Protocolo de prevención actualizado al 75%.', type: 'success', time: 'Hace 5 min' },

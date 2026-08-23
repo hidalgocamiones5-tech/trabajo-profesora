@@ -8,6 +8,7 @@ import { Documents } from './views/Documents';
 import { Configuration } from './views/Configuration';
 import { Login } from './views/Login';
 import { Register } from './views/Register';
+import { Privacy } from './views/Privacy';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from './contexts/AuthContext';
 
@@ -38,6 +39,8 @@ function App() {
         return <Compliance key="cumplimiento" />;
       case 'Gestión':
         return <Management key="gestion" />;
+      case 'Privacidad':
+        return <Privacy key="privacidad" />;
       case 'Documentos':
         return <Documents key="documentos" />;
       case 'Reportes':

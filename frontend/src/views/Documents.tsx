@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Search, Filter, Plus, FileText, Folder, MoreVertical, Download, Eye, Trash2 } from 'lucide-react';
 import { motion } from 'motion/react';
+import toast from 'react-hot-toast';
 
 interface Document {
   id: string;
@@ -21,10 +22,10 @@ const mockDocuments: Document[] = [
 ];
 
 const folders = [
-  { id: 'f1', name: 'Políticas', count: 12, color: 'bg-blue-500' },
-  { id: 'f2', name: 'Procedimientos', count: 24, color: 'bg-indigo-500' },
-  { id: 'f3', name: 'Evidencias', count: 156, color: 'bg-green-500' },
-  { id: 'f4', name: 'Auditorías', count: 8, color: 'bg-purple-500' },
+  { id: 'f1', name: 'Políticas', count: 12, color: 'text-indigo-600 bg-indigo-50 border-indigo-100' },
+  { id: 'f2', name: 'Procedimientos', count: 24, color: 'text-emerald-600 bg-emerald-50 border-emerald-100' },
+  { id: 'f3', name: 'Evidencias', count: 156, color: 'text-amber-600 bg-amber-50 border-amber-100' },
+  { id: 'f4', name: 'Auditorías', count: 8, color: 'text-rose-600 bg-rose-50 border-rose-100' },
 ];
 
 export function Documents() {
@@ -82,8 +83,8 @@ export function Documents() {
           {folders.map((folder) => (
             <div key={folder.id} className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer group">
               <div className="flex items-center justify-between mb-4">
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center bg-opacity-10 ${folder.color.replace('bg-', 'bg-opacity-10 text-').replace('500', '600')}`}>
-                  <Folder className="w-5 h-5" />
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center border ${folder.color}`}>
+                  <Folder className="w-6 h-6" />
                 </div>
                 <MoreVertical className="w-5 h-5 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
@@ -136,10 +137,10 @@ export function Documents() {
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors" title="Ver">
+                      <button onClick={() => toast.success('Previsualizando documento')} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer" title="Ver">
                         <Eye className="w-4 h-4" />
                       </button>
-                      <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors" title="Descargar">
+                      <button onClick={() => toast.success(`Descargando ${doc.name}`)} className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors cursor-pointer" title="Descargar">
                         <Download className="w-4 h-4" />
                       </button>
                       <button className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Eliminar">

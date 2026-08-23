@@ -4,6 +4,7 @@ import { mockRiesgos } from '../data/mockData';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { ChevronLeft, Download, Filter, FileBarChart } from 'lucide-react';
 import clsx from 'clsx';
+import toast from 'react-hot-toast';
 
 const REPORTS = [
   { id: 'riesgos', title: 'Reporte Analítico de Riesgos', description: 'Matriz térmica y distribución de riesgos', date: '29 Abr 2026' },
@@ -19,9 +20,9 @@ const barData = [
 ];
 
 const donutData = [
-  { name: '2025', value: 30, color: '#94a3b8' },
-  { name: '2026', value: 55, color: '#A2D729' },
-  { name: '2027', value: 15, color: '#3b82f6' },
+  { name: 'Cumplimiento Alto', value: 55, color: '#10b981' }, // emerald-500
+  { name: 'Cumplimiento Medio', value: 30, color: '#f59e0b' }, // amber-500
+  { name: 'Riesgo Crítico', value: 15, color: '#f43f5e' }, // rose-500
 ];
 
 export const Reports = () => {
@@ -58,8 +59,11 @@ export const Reports = () => {
             <div className="flex items-center justify-between mt-auto">
               <span className="text-xs text-slate-400 font-medium">Actualizado: {report.date}</span>
               <button 
-                onClick={() => setSelectedReport(report.id)}
-                className="text-sm font-medium text-lemon-700 hover:underline"
+                onClick={() => {
+                  if (report.id === 'riesgos') setSelectedReport(report.id);
+                  else toast.success(`Abriendo ${report.title}...`);
+                }}
+                className="text-sm font-medium text-indigo-700 hover:underline cursor-pointer"
               >
                 Abrir Reporte
               </button>
@@ -86,7 +90,7 @@ export const Reports = () => {
           <ChevronLeft className="w-4 h-4" />
           Volver a Reportes
         </button>
-        <button className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-md text-sm font-medium hover:bg-slate-50 shadow-sm">
+        <button onClick={() => toast.success('Exportando reporte en PDF...')} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 shadow-sm transition-colors cursor-pointer">
           <Download className="w-4 h-4" /> Exportar PDF
         </button>
       </div>
@@ -156,7 +160,7 @@ export const Reports = () => {
                   <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#64748b' }} axisLine={false} tickLine={false} />
                   <YAxis tick={{ fontSize: 10, fill: '#64748b' }} axisLine={false} tickLine={false} />
                   <RechartsTooltip cursor={{ fill: '#f8fafc' }} />
-                  <Bar dataKey="Riesgos" fill="#A2D729" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="Riesgos" fill="#4f46e5" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
