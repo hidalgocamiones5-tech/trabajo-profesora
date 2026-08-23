@@ -160,7 +160,7 @@ class ComplianceEmpresaAdmin(admin.ModelAdmin):
 
     def marcar_cumplida(self, request, queryset):
         queryset.update(estado='CUMPLIDA', porcentaje_progreso=100.0)
-    marcar_cumplida.short_description = "🏆 Marcar como Cumplida (100% Verificado)"
+    marcar_cumplida.short_description = "🏆 Marcar como Cumplida (100%% Verificado)"
 
     def aprobar_sugerencia_ia(self, request, queryset):
         queryset.filter(estado='SUGERIDA_IA').update(estado='ASIGNADA')
