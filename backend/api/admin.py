@@ -47,6 +47,12 @@ class TratamientoRATInline(admin.TabularInline):
     fields = ('tratamiento', 'area', 'estado', 'base_licitud')
     show_change_link = True
 
+class SolicitudTicketInline(admin.TabularInline):
+    model = SolicitudTicket
+    extra = 0
+    fields = ('nombre', 'tipo', 'prioridad', 'estado', 'sla', 'fecha_limite')
+    show_change_link = True
+
 class SucursalInline(admin.TabularInline):
     model = Sucursal
     extra = 0
@@ -91,7 +97,7 @@ class EmpresaAdmin(admin.ModelAdmin):
     list_display = ('nombre', 'rut', 'tipo_sociedad', 'rubro', 'rango_empleados', 'estado_matching', 'setup_completado', 'fecha_creacion')
     list_filter = ('rubro', 'tamano', 'rango_empleados', 'estado_matching', 'setup_completado', 'tipo_sociedad')
     search_fields = ('nombre', 'rut', 'comuna', 'direccion_matriz')
-    inlines = [PerfilUsuarioInline, ComplianceEmpresaInline, TratamientoRATInline, ObjetivoChecklistInline]
+    inlines = [PerfilUsuarioInline, ComplianceEmpresaInline, SolicitudTicketInline, TratamientoRATInline]
     readonly_fields = ('log_matching',)
     
     fieldsets = (
@@ -146,7 +152,7 @@ class ComplianceEmpresaAdmin(admin.ModelAdmin):
     list_display = ('empresa', 'normativa', 'estado', 'porcentaje_progreso', 'origen', 'updated_at')
     list_filter = ('estado', 'origen', 'empresa')
     search_fields = ('empresa__nombre', 'normativa__nombre', 'justificacion_ia')
-    actions = ['marcar_verificada', 'marcar_cumplida', 'aprobar_sugerencia_ia']
+    actions = ['marcar_verificada', 'marcar_cumplida', 'aprobar_sugerencia_ia', 'recalcular_score']
 
     def marcar_verificada(self, request, queryset):
         queryset.update(estado='VERIFICADA')
@@ -159,6 +165,11 @@ class ComplianceEmpresaAdmin(admin.ModelAdmin):
     def aprobar_sugerencia_ia(self, request, queryset):
         queryset.filter(estado='SUGERIDA_IA').update(estado='ASIGNADA')
     aprobar_sugerencia_ia.short_description = "🤖 Aprobar sugerencia generada por IA"
+
+    def recalcular_score(self, request, queryset):
+        count = queryset.count()
+        self.message_user(request, f"Se ha forzado el recálculo determinístico de cumplimiento para {count} elementos.")
+    recalcular_score.short_description = "⚡ Recalcular score determinístico de cumplimiento"
 
 # ----------------------------------------------------
 # FASE 3: PRIVACIDAD Y REGISTRO DE ACTIVIDADES (RAT)
@@ -190,6 +201,17 @@ class SolicitudTicketAdmin(admin.ModelAdmin):
     list_display = ('nombre', 'empresa', 'tipo_solicitud_col', 'prioridad_badge', 'estado', 'sla_badge', 'fecha_limite')
     list_filter = ('empresa', 'estado', 'prioridad', 'sla')
     search_fields = ('nombre', 'solicitante', 'responsable')
+    actions = ['marcar_en_revision', 'marcar_resuelta']
+
+    def marcar_en_revision(self, request, queryset):
+        updated = queryset.update(estado='revisando', responsable=request.user.username)
+        self.message_user(request, f"{updated} ticket(s) actualizados a 'En Revisión' y asignados a {request.user.username}.")
+    marcar_en_revision.short_description = "🔍 Marcar como En Revisión (Asignar a mí)"
+
+    def marcar_resuelta(self, request, queryset):
+        updated = queryset.update(estado='resuelta')
+        self.message_user(request, f"{updated} ticket(s) marcados como Resueltos.")
+    marcar_resuelta.short_description = "✅ Marcar como Resuelta"
 
     def tipo_solicitud_col(self, obj):
         return obj.tipo

@@ -7,7 +7,7 @@ django.setup()
 
 from django.contrib.auth.models import User
 from api.models import (
-    Empresa, PerfilUsuario, Sucursal, Area, Responsable, Normativa,
+    Empresa, PerfilUsuario, Sucursal, Area, Responsable, Normativa, ComplianceEmpresa,
     Obligacion, Control, Evidencia, Riesgo, Incidente, Auditoria,
     PlanAccion, EventoCompliance, AlertaCompliance
 )
@@ -27,7 +27,9 @@ def run():
         nombre="Empresa Demo Chile S.A.",
         defaults={
             'rut': '76.543.210-K',
-            'rubro': 'Tecnología',
+            'rubro': 'TECNOLOGIA',
+            'rango_empleados': 'PEQUENA',
+            'tipo_sociedad': 'SPA',
             'maneja_datos_personales': True,
             'es_b2c_ecommerce': True,
             'genera_residuos_rep': False,
@@ -53,23 +55,39 @@ def run():
     resp_rrhh, _ = Responsable.objects.get_or_create(empresa=empresa, area=area_rrhh, nombre="Elena Rivas", defaults={'cargo': 'Jefa de Personas'})
     resp_ti, _ = Responsable.objects.get_or_create(empresa=empresa, area=area_ti, nombre="Felipe Sánchez", defaults={'cargo': 'Lead Security Officer'})
 
-    # 3. Normativas Chilenas
+    # 3. Normativas Chilenas y ComplianceEmpresa
     ley_karin, _ = Normativa.objects.get_or_create(
         empresa=empresa,
         codigo_bcn="LEY-21643",
-        defaults={'nombre': "Ley Karin (Prevención Acoso Laboral)", 'descripcion': "Ley N° 21.643 contra el acoso laboral y de género", 'estado': "en_tiempo"}
+        defaults={'nombre': "Ley Karin (Prevención Acoso Laboral)", 'descripcion': "Ley N° 21.643 contra el acoso laboral y de género", 'estado': "en_tiempo", 'criticidad': 'alta', 'tipo': 'Ley', 'origen': 'BCN'}
     )
 
     ley_datos, _ = Normativa.objects.get_or_create(
         empresa=empresa,
         codigo_bcn="LEY-21719",
-        defaults={'nombre': "Ley N° 21.719 Protección Datos Personales", 'descripcion': "Nueva regulación de protección de datos en Chile", 'estado': "atrasada"}
+        defaults={'nombre': "Ley N° 21.719 Protección Datos Personales", 'descripcion': "Nueva regulación de protección de datos en Chile", 'estado': "atrasada", 'criticidad': 'alta', 'tipo': 'Ley', 'origen': 'BCN'}
     )
 
     ley_20393, _ = Normativa.objects.get_or_create(
         empresa=empresa,
         codigo_bcn="LEY-20393",
-        defaults={'nombre': "Ley N° 20.393 Responsabilidad Penal PJ", 'descripcion': "Prevención de delitos corporativos (Cohecho, Lavado)", 'estado': "en_tiempo"}
+        defaults={'nombre': "Ley N° 20.393 Responsabilidad Penal PJ", 'descripcion': "Prevención de delitos corporativos (Cohecho, Lavado)", 'estado': "en_tiempo", 'criticidad': 'media', 'tipo': 'Ley', 'origen': 'BCN'}
+    )
+
+    ComplianceEmpresa.objects.get_or_create(
+        empresa=empresa,
+        normativa=ley_karin,
+        defaults={'estado': 'EN_PROCESO', 'porcentaje_progreso': 75.0, 'origen': 'MOTOR_REGLAS'}
+    )
+    ComplianceEmpresa.objects.get_or_create(
+        empresa=empresa,
+        normativa=ley_datos,
+        defaults={'estado': 'SUGERIDA_IA', 'porcentaje_progreso': 20.0, 'origen': 'MOTOR_IA', 'justificacion_ia': 'La empresa maneja datos personales en plataforma e-commerce.'}
+    )
+    ComplianceEmpresa.objects.get_or_create(
+        empresa=empresa,
+        normativa=ley_20393,
+        defaults={'estado': 'VERIFICADA', 'porcentaje_progreso': 100.0, 'origen': 'MOTOR_REGLAS'}
     )
 
     # 4. Obligaciones y Controles
