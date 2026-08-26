@@ -92,7 +92,6 @@ class UserAdmin(BaseUserAdmin):
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 
-@admin.register(Empresa)
 class EmpresaAdmin(admin.ModelAdmin):
     list_display = (
         'nombre', 'rut', 'rubro', 'tamano',
@@ -162,7 +161,6 @@ class EmpresaAdmin(admin.ModelAdmin):
         })
     )
 
-@admin.register(RegistroAuditoriaARCO)
 class RegistroAuditoriaARCOAdmin(admin.ModelAdmin):
     list_display = ('usuario', 'empresa', 'tipo_derecho', 'estado', 'created_at')
     list_filter = ('tipo_derecho', 'estado', 'created_at', 'empresa')
@@ -175,7 +173,6 @@ class RegistroAuditoriaARCOAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         return False
 
-@admin.register(Normativa)
 class NormativaAdmin(admin.ModelAdmin):
     list_display = ('codigo_bcn', 'nombre', 'criticidad', 'tipo', 'origen', 'es_transversal', 'min_empleados')
     list_filter = ('criticidad', 'tipo', 'es_transversal', 'origen')
@@ -219,7 +216,6 @@ class ComplianceEmpresaAdmin(admin.ModelAdmin):
 # FASE 3: PRIVACIDAD Y REGISTRO DE ACTIVIDADES (RAT)
 # ----------------------------------------------------
 
-@admin.register(TratamientoRAT)
 class TratamientoRATAdmin(admin.ModelAdmin):
     list_display = ('tratamiento', 'empresa', 'area', 'categoria_dp', 'base_licitud', 'estado')
     list_filter = ('empresa', 'area', 'categoria_dp', 'base_licitud', 'estado')
@@ -240,7 +236,6 @@ class ObjetivoChecklistAdmin(admin.ModelAdmin):
 # FASE 4: TICKETING LEGAL, RIESGOS E INCIDENTES
 # ----------------------------------------------------
 
-@admin.register(SolicitudTicket)
 class SolicitudTicketAdmin(admin.ModelAdmin):
     list_display = ('nombre', 'empresa', 'tipo_solicitud_col', 'prioridad_badge', 'estado', 'sla_badge', 'fecha_limite')
     list_filter = ('empresa', 'estado', 'prioridad', 'sla')
@@ -281,7 +276,6 @@ class SolicitudTicketAdmin(admin.ModelAdmin):
         return format_html('<span style="color: white; background-color: {}; padding: 3px 8px; border-radius: 12px; font-weight: bold; font-size: 11px;">{}</span>', color, obj.get_prioridad_display())
     prioridad_badge.short_description = "Prioridad"
 
-@admin.register(Riesgo)
 class RiesgoAdmin(admin.ModelAdmin):
     list_display = ('nombre', 'empresa', 'categoria', 'impacto', 'probabilidad', 'nivel_calculado_badge', 'estrategia', 'estado')
     list_filter = ('empresa', 'estado', 'estrategia', 'categoria')
@@ -298,7 +292,6 @@ class RiesgoAdmin(admin.ModelAdmin):
         return format_html('<span style="color: white; background-color: {}; padding: 3px 10px; border-radius: 12px; font-weight: bold;">{}</span>', color, score)
     nivel_calculado_badge.short_description = "Nivel Riesgo (5x5)"
 
-@admin.register(Incidente)
 class IncidenteAdmin(admin.ModelAdmin):
     list_display = ('nombre', 'empresa', 'tipo', 'estado', 'severidad', 'fecha')
     list_filter = ('empresa', 'tipo', 'estado', 'severidad')
