@@ -114,6 +114,9 @@ class EmpresaAdmin(admin.ModelAdmin):
     get_cumplimiento_badge.short_description = "Nivel Cumplimiento"
 
     def get_usuarios_badge(self, obj):
+        from django.urls import reverse
+        from django.utils.safestring import mark_safe
+        
         usuarios = obj.usuarios.all()
         if not usuarios.exists():
             return format_html('<span style="color:#9CA3AF;">-</span>')
@@ -122,9 +125,16 @@ class EmpresaAdmin(admin.ModelAdmin):
         for perfil in usuarios:
             nombre = perfil.user.first_name or perfil.user.username
             iniciales = (nombre[:2]).upper() if nombre else 'US'
-            html_parts.append(f'<div title="{nombre}" style="width:28px; height:28px; border-radius:50%; background-color:#4F46E5; color:white; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:bold;">{iniciales}</div>')
+            url = reverse('admin:auth_user_change', args=[perfil.user.id])
+            
+            html_parts.append(
+                f'<a href="{url}" title="{nombre} (Ver detalles)" '
+                f'style="width:28px; height:28px; border-radius:50%; background-color:#4F46E5; '
+                f'color:white; display:flex; align-items:center; justify-content:center; '
+                f'font-size:10px; font-weight:bold; text-decoration:none;">'
+                f'{iniciales}</a>'
+            )
         html_parts.append('</div>')
-        from django.utils.safestring import mark_safe
         return mark_safe("".join(html_parts))
     get_usuarios_badge.short_description = "Usuarios"
 
