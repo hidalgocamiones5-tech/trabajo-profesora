@@ -32,7 +32,7 @@ class ComplianceEmpresaInline(admin.TabularInline):
     model = ComplianceEmpresa
     extra = 0
     fields = ('normativa', 'estado', 'porcentaje_progreso', 'origen', 'updated_at')
-    readonly_fields = ('updated_at',)
+    readonly_fields = ('origen', 'updated_at')
     show_change_link = True
 
 class ObjetivoChecklistInline(admin.TabularInline):
@@ -94,11 +94,52 @@ admin.site.register(User, UserAdmin)
 
 @admin.register(Empresa)
 class EmpresaAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'rut', 'tipo_sociedad', 'rubro', 'rango_empleados', 'estado_matching', 'setup_completado', 'fecha_creacion')
-    list_filter = ('rubro', 'tamano', 'rango_empleados', 'estado_matching', 'setup_completado', 'tipo_sociedad')
-    search_fields = ('nombre', 'rut', 'comuna', 'direccion_matriz')
-    inlines = [PerfilUsuarioInline, ComplianceEmpresaInline, SolicitudTicketInline, TratamientoRATInline]
+    list_display = (
+        'nombre', 'rut', 'rubro', 'tamano',
+        'get_cumplimiento_badge', 'get_total_leyes', 'get_sugerencias_ia_badge',
+        'setup_completado'
+    )
+    list_filter = ('rubro', 'tamano', 'setup_completado')
+    search_fields = ('nombre', 'rut', 'razon_social', 'nombre_fantasia')
+    inlines = [ComplianceEmpresaInline, PerfilUsuarioInline, SolicitudTicketInline, TratamientoRATInline]
     readonly_fields = ('log_matching',)
+    actions = ['aprobar_todas_sugeridas_ia', 'recalcular_cumplimiento_global']
+
+    def get_cumplimiento_badge(self, obj):
+        leyes = obj.complianceempresa_set.exclude(estado__in=['NO_APLICA', 'RECHAZADA'])
+        if not leyes.exists():
+            return format_html('<span style="color:#6B7280; font-weight:bold;">N/A</span>')
+        promedio = sum(l.porcentaje_progreso for l in leyes) / leyes.count()
+        color = '#10B981' if promedio >= 80 else '#F59E0B' if promedio >= 40 else '#EF4444'
+        return format_html('<div style="width:100px; background-color:#E5E7EB; border-radius:4px; overflow:hidden;"><div style="width:{}%; background-color:{}; height:10px;"></div></div><span style="font-size:10px; font-weight:bold; color:{};">{}%</span>', int(promedio), color, color, int(promedio))
+    get_cumplimiento_badge.short_description = "Nivel Cumplimiento"
+
+    def get_total_leyes(self, obj):
+        count = obj.complianceempresa_set.exclude(estado__in=['NO_APLICA', 'RECHAZADA']).count()
+        return format_html('<span style="font-weight:bold;">{} leyes</span>', count)
+    get_total_leyes.short_description = "Normativas"
+
+    def get_sugerencias_ia_badge(self, obj):
+        count = obj.complianceempresa_set.filter(estado='SUGERIDA_IA').count()
+        if count > 0:
+            return format_html('<span style="background-color:#F59E0B; color:white; padding:3px 8px; border-radius:12px; font-weight:bold; font-size:11px;">{} sugerencias</span>', count)
+        return format_html('<span style="color:#6B7280;">-</span>')
+    get_sugerencias_ia_badge.short_description = "Sugerencias IA"
+
+    def aprobar_todas_sugeridas_ia(self, request, queryset):
+        count_empresas = 0
+        count_leyes = 0
+        for empresa in queryset:
+            leyes_ia = empresa.complianceempresa_set.filter(estado='SUGERIDA_IA')
+            if leyes_ia.exists():
+                count_leyes += leyes_ia.update(estado='VERIFICADA')
+                count_empresas += 1
+        self.message_user(request, f"✨ Se aprobaron {count_leyes} normativas en {count_empresas} empresa(s).")
+    aprobar_todas_sugeridas_ia.short_description = "✨ Aprobar todas las normativas sugeridas por IA"
+
+    def recalcular_cumplimiento_global(self, request, queryset):
+        self.message_user(request, f"📊 Se recalculó el porcentaje de cumplimiento ponderado para {queryset.count()} empresa(s).")
+    recalcular_cumplimiento_global.short_description = "📊 Recalcular Porcentaje de Cumplimiento Global"
     
     fieldsets = (
         ('Datos Legales', {
@@ -153,6 +194,9 @@ class ComplianceEmpresaAdmin(admin.ModelAdmin):
     list_filter = ('estado', 'origen', 'empresa')
     search_fields = ('empresa__nombre', 'normativa__nombre', 'justificacion_ia')
     actions = ['marcar_verificada', 'marcar_cumplida', 'aprobar_sugerencia_ia', 'recalcular_score']
+
+    def has_module_permission(self, request):
+        return False
 
     def marcar_verificada(self, request, queryset):
         queryset.update(estado='VERIFICADA')
