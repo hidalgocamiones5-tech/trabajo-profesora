@@ -108,7 +108,7 @@ class EmpresaAdmin(admin.ModelAdmin):
     def get_cumplimiento_badge(self, obj):
         leyes = obj.complianceempresa_set.exclude(estado__in=['NO_APLICA', 'RECHAZADA'])
         if not leyes.exists():
-            return format_html('<span style="color:#6B7280; font-weight:bold;">N/A</span>')
+            return format_html('<span style="color:#6B7280; font-weight:bold;">{}</span>', 'N/A')
         promedio = sum(l.porcentaje_progreso for l in leyes) / leyes.count()
         color = '#10B981' if promedio >= 80 else '#F59E0B' if promedio >= 40 else '#EF4444'
         return format_html('<div style="width:100px; background-color:#E5E7EB; border-radius:4px; overflow:hidden;"><div style="width:{}%; background-color:{}; height:10px;"></div></div><span style="font-size:10px; font-weight:bold; color:{};">{}%</span>', int(promedio), color, color, int(promedio))
@@ -123,7 +123,7 @@ class EmpresaAdmin(admin.ModelAdmin):
         count = obj.complianceempresa_set.filter(estado='SUGERIDA_IA').count()
         if count > 0:
             return format_html('<span style="background-color:#F59E0B; color:white; padding:3px 8px; border-radius:12px; font-weight:bold; font-size:11px;">{} sugerencias</span>', count)
-        return format_html('<span style="color:#6B7280;">-</span>')
+        return format_html('<span style="color:#6B7280;">{}</span>', '-')
     get_sugerencias_ia_badge.short_description = "Sugerencias IA"
 
     def aprobar_todas_sugeridas_ia(self, request, queryset):
