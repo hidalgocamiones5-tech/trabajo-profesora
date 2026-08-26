@@ -1,4 +1,4 @@
-from django.contrib import admin
+﻿from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from django.utils.html import format_html
@@ -10,14 +10,14 @@ from .models import (
 )
 
 # ----------------------------------------------------
-# FASE 5: BRANDING Y PERSONALIZACIÓN DE DJANGO ADMIN
+# FASE 5: BRANDING Y PERSONALIZACIÃ“N DE DJANGO ADMIN
 # ----------------------------------------------------
-admin.site.site_header = "GRC Chile • Consola de Auditoría y Cumplimiento"
+admin.site.site_header = "GRC Chile â€¢ Consola de AuditorÃ­a y Cumplimiento"
 admin.site.site_title = "GRC Master Admin"
 admin.site.index_title = "Panel de Control y Gobierno Corporativo"
 
 # ----------------------------------------------------
-# INLINES PARA AUDITORÍA Y VERIFICACIÓN EN DJANGO ADMIN
+# INLINES PARA AUDITORÃA Y VERIFICACIÃ“N EN DJANGO ADMIN
 # ----------------------------------------------------
 
 class PerfilUsuarioInline(admin.StackedInline):
@@ -133,12 +133,12 @@ class EmpresaAdmin(admin.ModelAdmin):
             if leyes_ia.exists():
                 count_leyes += leyes_ia.update(estado='VERIFICADA')
                 count_empresas += 1
-        self.message_user(request, f"✨ Se aprobaron {count_leyes} normativas en {count_empresas} empresa(s).")
-    aprobar_todas_sugeridas_ia.short_description = "✨ Aprobar todas las normativas sugeridas por IA"
+        self.message_user(request, f"âœ¨ Se aprobaron {count_leyes} normativas en {count_empresas} empresa(s).")
+    aprobar_todas_sugeridas_ia.short_description = "âœ¨ Aprobar todas las normativas sugeridas por IA"
 
     def recalcular_cumplimiento_global(self, request, queryset):
-        self.message_user(request, f"📊 Se recalculó el porcentaje de cumplimiento ponderado para {queryset.count()} empresa(s).")
-    recalcular_cumplimiento_global.short_description = "📊 Recalcular Porcentaje de Cumplimiento Global"
+        self.message_user(request, f"ðŸ“Š Se recalculÃ³ el porcentaje de cumplimiento ponderado para {queryset.count()} empresa(s).")
+    recalcular_cumplimiento_global.short_description = "ðŸ“Š Recalcular Porcentaje de Cumplimiento Global"
     
     fieldsets = (
         ('Datos Legales', {
@@ -155,7 +155,7 @@ class EmpresaAdmin(admin.ModelAdmin):
                 'instalaciones_industriales', 'trabaja_con_estado', 'tiene_sindicato'
             )
         }),
-        ('Auditoría Engine', {
+        ('AuditorÃ­a Engine', {
             'classes': ('collapse',),
             'fields': ('log_matching',)
         })
@@ -183,7 +183,7 @@ class NormativaAdmin(admin.ModelAdmin):
     def sincronizar_con_bcn(self, request, queryset):
         updated = queryset.count()
         self.message_user(request, f"Se ha sincronizado exitosamente {updated} normativa(s) con la API de la Biblioteca del Congreso Nacional (BCN).")
-    sincronizar_con_bcn.short_description = "🔄 Sincronizar catálogo legal con API BCN"
+    sincronizar_con_bcn.short_description = "ðŸ”„ Sincronizar catÃ¡logo legal con API BCN"
 
 @admin.register(ComplianceEmpresa)
 class ComplianceEmpresaAdmin(admin.ModelAdmin):
@@ -197,20 +197,20 @@ class ComplianceEmpresaAdmin(admin.ModelAdmin):
 
     def marcar_verificada(self, request, queryset):
         queryset.update(estado='VERIFICADA')
-    marcar_verificada.short_description = "✅ Validar / Asignar formalmente a la empresa"
+    marcar_verificada.short_description = "âœ… Validar / Asignar formalmente a la empresa"
 
     def marcar_cumplida(self, request, queryset):
         queryset.update(estado='CUMPLIDA', porcentaje_progreso=100.0)
-    marcar_cumplida.short_description = "🏆 Marcar como Cumplida (100%% Verificado)"
+    marcar_cumplida.short_description = "ðŸ† Marcar como Cumplida (100%% Verificado)"
 
     def aprobar_sugerencia_ia(self, request, queryset):
         queryset.filter(estado='SUGERIDA_IA').update(estado='ASIGNADA')
-    aprobar_sugerencia_ia.short_description = "🤖 Aprobar sugerencia generada por IA"
+    aprobar_sugerencia_ia.short_description = "ðŸ¤– Aprobar sugerencia generada por IA"
 
     def recalcular_score(self, request, queryset):
         count = queryset.count()
-        self.message_user(request, f"Se ha forzado el recálculo determinístico de cumplimiento para {count} elementos.")
-    recalcular_score.short_description = "⚡ Recalcular score determinístico de cumplimiento"
+        self.message_user(request, f"Se ha forzado el recÃ¡lculo determinÃ­stico de cumplimiento para {count} elementos.")
+    recalcular_score.short_description = "âš¡ Recalcular score determinÃ­stico de cumplimiento"
 
 # ----------------------------------------------------
 # FASE 3: PRIVACIDAD Y REGISTRO DE ACTIVIDADES (RAT)
@@ -230,7 +230,7 @@ class ObjetivoChecklistAdmin(admin.ModelAdmin):
 
     def marcar_completados(self, request, queryset):
         queryset.update(estado='completado')
-    marcar_completados.short_description = "✅ Marcar objetivos como Completados"
+    marcar_completados.short_description = "âœ… Marcar objetivos como Completados"
 
 # ----------------------------------------------------
 # FASE 4: TICKETING LEGAL, RIESGOS E INCIDENTES
@@ -244,13 +244,13 @@ class SolicitudTicketAdmin(admin.ModelAdmin):
 
     def marcar_en_revision(self, request, queryset):
         updated = queryset.update(estado='revisando', responsable=request.user.username)
-        self.message_user(request, f"{updated} ticket(s) actualizados a 'En Revisión' y asignados a {request.user.username}.")
-    marcar_en_revision.short_description = "🔍 Marcar como En Revisión (Asignar a mí)"
+        self.message_user(request, f"{updated} ticket(s) actualizados a 'En RevisiÃ³n' y asignados a {request.user.username}.")
+    marcar_en_revision.short_description = "ðŸ” Marcar como En RevisiÃ³n (Asignar a mÃ­)"
 
     def marcar_resuelta(self, request, queryset):
         updated = queryset.update(estado='resuelta')
         self.message_user(request, f"{updated} ticket(s) marcados como Resueltos.")
-    marcar_resuelta.short_description = "✅ Marcar como Resuelta"
+    marcar_resuelta.short_description = "âœ… Marcar como Resuelta"
 
     def tipo_solicitud_col(self, obj):
         return obj.tipo
@@ -351,3 +351,31 @@ class AlertaComplianceAdmin(admin.ModelAdmin):
 class HistoricoCumplimientoMensualAdmin(admin.ModelAdmin):
     list_display = ('empresa', 'mes', 'anio', 'porcentaje_cumplimiento')
     list_filter = ('empresa', 'anio', 'mes')
+@admin.register(Empresa)
+class HiddenEmpresaAdmin(EmpresaAdmin):
+    def has_module_permission(self, request): return False
+
+@admin.register(Normativa)
+class HiddenNormativaAdmin(NormativaAdmin):
+    def has_module_permission(self, request): return False
+
+@admin.register(SolicitudTicket)
+class HiddenSolicitudTicketAdmin(SolicitudTicketAdmin):
+    def has_module_permission(self, request): return False
+
+@admin.register(Incidente)
+class HiddenIncidenteAdmin(IncidenteAdmin):
+    def has_module_permission(self, request): return False
+
+@admin.register(Riesgo)
+class HiddenRiesgoAdmin(RiesgoAdmin):
+    def has_module_permission(self, request): return False
+
+@admin.register(TratamientoRAT)
+class HiddenTratamientoRATAdmin(TratamientoRATAdmin):
+    def has_module_permission(self, request): return False
+
+@admin.register(RegistroAuditoriaARCO)
+class HiddenRegistroAuditoriaARCOAdmin(RegistroAuditoriaARCOAdmin):
+    def has_module_permission(self, request): return False
+
