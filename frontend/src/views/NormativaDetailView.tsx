@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import { bcnService } from '../services/bcnService';
 import type { LeyOficialBCN } from '../services/bcnService';
 import {
-  ArrowLeft, Edit3, Plus, CheckCircle, FileText, UploadCloud,
-  ChevronDown, ChevronRight, ShieldCheck, Download, Search, Copy, Check
+  ArrowLeft, Download, ShieldCheck, CheckCircle, AlertTriangle, FileText, UploadCloud,
+  Calendar, Users, Scale, Search, PlayCircle
 } from 'lucide-react';
-import clsx from 'clsx';
 import toast from 'react-hot-toast';
 
 interface NormativaDetailViewProps {
@@ -17,413 +16,269 @@ interface NormativaDetailViewProps {
 export const NormativaDetailView: React.FC<NormativaDetailViewProps> = ({ normativaId, onBack }) => {
   const [ley, setLey] = useState<LeyOficialBCN | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'requisitos' | 'evidencias' | 'articulado'>('requisitos');
-  const [expandedReqs, setExpandedReqs] = useState<Record<string, boolean>>({
-    'req_karin_1': true,
-    'req_karin_2': true,
-    'req_dp_1': true,
-    'req_rep_1': true
-  });
-  const [searchArticle, setSearchArticle] = useState('');
-  const [copiedArt, setCopiedArt] = useState<string | null>(null);
+  const [activeSection, setActiveSection] = useState('resumen');
 
   useEffect(() => {
-    const fetchLeyData = async () => {
+    const fetchLey = async () => {
       setIsLoading(true);
       const data = await bcnService.getLeyPorId(normativaId);
       if (data) {
         setLey(data);
-      } else {
-        // Fallback default ley Ley Karin if ID not found directly
-        const fallback = await bcnService.getLeyPorId('ley_21643');
-        setLey(fallback || null);
       }
       setIsLoading(false);
     };
-    fetchLeyData();
+    fetchLey();
   }, [normativaId]);
 
+  const handleGenerarInforme = () => {
+    toast.success('Generando Informe Ejecutivo... El PDF se descargará en breve 📄');
+  };
+
   if (isLoading) {
-    return (
-      <div className="p-16 flex flex-col items-center justify-center text-slate-400">
-        <div className="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-        <p className="text-sm font-medium">Cargando Ficha 360° de la Normativa BCN...</p>
-      </div>
-    );
+    return <div className="p-12 text-center text-slate-500 font-medium animate-pulse">Cargando expediente 360°...</div>;
   }
 
   if (!ley) {
-    return (
-      <div className="p-10 text-center text-slate-500">
-        <p>No se encontró la información de la normativa seleccionada.</p>
-        <button onClick={onBack} className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-semibold">
-          Volver a Normativas
-        </button>
-      </div>
-    );
+    return <div className="p-12 text-center text-slate-500 font-medium">No se encontró la normativa.</div>;
   }
 
-  const toggleReq = (id: string) => {
-    setExpandedReqs(prev => ({ ...prev, [id]: !prev[id] }));
-  };
-
-  const handleCopyText = (num: string, text: string) => {
-    navigator.clipboard.writeText(`${num}: ${text}`);
-    setCopiedArt(num);
-    toast.success(`Copiado ${num} al portapapeles`);
-    setTimeout(() => setCopiedArt(null), 2000);
-  };
-
-  const filteredArticles = ley.articulos.filter(art =>
-    art.numero.toLowerCase().includes(searchArticle.toLowerCase()) ||
-    art.contenido.toLowerCase().includes(searchArticle.toLowerCase()) ||
-    (art.capitulo && art.capitulo.toLowerCase().includes(searchArticle.toLowerCase()))
-  );
+  const sections = [
+    { id: 'resumen', label: '1. Resumen & Ficha', icon: <FileText className="w-4 h-4" /> },
+    { id: 'obligaciones', label: '2. Obligaciones', icon: <CheckCircle className="w-4 h-4" /> },
+    { id: 'brechas', label: '3. Mapa de Brechas', icon: <AlertTriangle className="w-4 h-4" /> },
+    { id: 'controles', label: '4. Controles', icon: <ShieldCheck className="w-4 h-4" /> },
+    { id: 'evidencias', label: '5. Evidencias', icon: <UploadCloud className="w-4 h-4" /> },
+    { id: 'riesgos', label: '6. Riesgos & Incidentes', icon: <Scale className="w-4 h-4" /> },
+    { id: 'auditorias', label: '7. Auditorías & Plan', icon: <Search className="w-4 h-4" /> },
+  ];
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
-      className="p-6 max-w-7xl mx-auto space-y-6"
-    >
-      {/* Back button */}
-      <button
-        onClick={onBack}
-        className="flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors cursor-pointer"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        Volver a Catálogo de Normativas
-      </button>
-
-      {/* Header Ficha 360° */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs relative overflow-hidden">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="px-2.5 py-0.5 rounded-md text-xs font-bold bg-sky-50 text-sky-700 border border-sky-200">
-                {ley.origen}
-              </span>
-              <span className="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200">
-                {ley.tipo}
-              </span>
-              <span className={clsx(
-                "px-2.5 py-0.5 rounded-md text-xs font-bold border",
-                ley.criticidad === 'Crítica' ? "bg-rose-50 text-rose-700 border-rose-200" :
-                ley.criticidad === 'Alta' ? "bg-amber-50 text-amber-700 border-amber-200" :
-                "bg-emerald-50 text-emerald-700 border-emerald-200"
-              )}>
-                Criticidad: {ley.criticidad}
-              </span>
-            </div>
-
-            <h1 className="text-2xl font-display font-bold text-slate-900 leading-tight">
-              {ley.numero} - {ley.alias}
-            </h1>
-            <p className="text-xs text-slate-500 max-w-3xl leading-relaxed">
-              {ley.nombre}
-            </p>
-            <p className="text-xs text-slate-400 italic">
-              Organismo fiscalizador: {ley.organismo}
-            </p>
-          </div>
-
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 shrink-0">
-            <div className="text-right hidden sm:block">
-              <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Vigencia Oficial</div>
-              <div className="text-xs font-mono font-semibold text-slate-700">{ley.fechaInicio} a {ley.fechaTermino}</div>
-            </div>
-            <button
-              onClick={() => toast.success("Modo de edición activado")}
-              className="flex items-center gap-2 px-4 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 transition-colors shadow-2xs cursor-pointer"
+    <div className="max-w-7xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      
+      {/* Header Ficha 360 */}
+      <header className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 sticky top-0 z-20">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={onBack}
+              className="p-2 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-xl transition-colors cursor-pointer border border-slate-200 shadow-xs"
             >
-              <Edit3 className="w-3.5 h-3.5 text-slate-500" />
-              Editar Ficha
+              <ArrowLeft className="w-5 h-5" />
             </button>
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="px-2.5 py-0.5 bg-indigo-50 text-indigo-700 text-[10px] font-bold rounded-full uppercase tracking-wider border border-indigo-100">Ficha 360°</span>
+                <span className="px-2.5 py-0.5 bg-slate-100 text-slate-600 text-[10px] font-bold rounded-full border border-slate-200">ID: {ley.numero}</span>
+              </div>
+              <h1 className="text-2xl font-bold text-slate-900 tracking-tight leading-tight">{ley.nombre}</h1>
+            </div>
           </div>
-        </div>
-
-        {/* KPIs Bar */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6 border-t border-slate-100">
-          <div className="bg-slate-50/70 p-3.5 rounded-xl border border-slate-200/80">
-            <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Tareas completadas</div>
-            <div className="text-lg font-bold text-slate-900 mt-0.5">1/35</div>
-          </div>
-          <div className="bg-emerald-50/60 p-3.5 rounded-xl border border-emerald-200/80">
-            <div className="text-[11px] font-semibold text-emerald-700 uppercase tracking-wider">Completado</div>
-            <div className="text-lg font-bold text-emerald-800 mt-0.5">{ley.progreso}%</div>
-          </div>
-          <div className="bg-amber-50/60 p-3.5 rounded-xl border border-amber-200/80">
-            <div className="text-[11px] font-semibold text-amber-700 uppercase tracking-wider">En progreso</div>
-            <div className="text-lg font-bold text-amber-800 mt-0.5">15%</div>
-          </div>
-          <div className="flex items-center justify-end">
-            <button
-              onClick={() => toast.success("Nuevo requisito añadido")}
-              className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-xl transition-colors shadow-xs flex items-center justify-center gap-2 cursor-pointer"
-            >
-              <Plus className="w-4 h-4" />
-              + Agregar requisito
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Tabs Bar */}
-      <div className="flex items-center gap-2 border-b border-slate-200 bg-white px-2 rounded-xl shadow-2xs">
-        <button
-          onClick={() => setActiveTab('requisitos')}
-          className={clsx(
-            "px-4 py-3 text-xs font-semibold border-b-2 transition-all flex items-center gap-2 cursor-pointer",
-            activeTab === 'requisitos' ? "border-indigo-600 text-indigo-600" : "border-transparent text-slate-500 hover:text-slate-800"
-          )}
-        >
-          <CheckCircle className="w-4 h-4" />
-          Pestaña 1: Requisitos & Hitos
-        </button>
-        <button
-          onClick={() => setActiveTab('evidencias')}
-          className={clsx(
-            "px-4 py-3 text-xs font-semibold border-b-2 transition-all flex items-center gap-2 cursor-pointer",
-            activeTab === 'evidencias' ? "border-indigo-600 text-indigo-600" : "border-transparent text-slate-500 hover:text-slate-800"
-          )}
-        >
-          <FileText className="w-4 h-4" />
-          Pestaña 2: Documentos & Evidencias
-        </button>
-        <button
-          onClick={() => setActiveTab('articulado')}
-          className={clsx(
-            "px-4 py-3 text-xs font-semibold border-b-2 transition-all flex items-center gap-2 cursor-pointer",
-            activeTab === 'articulado' ? "border-indigo-600 text-indigo-600" : "border-transparent text-slate-500 hover:text-slate-800"
-          )}
-        >
-          <ShieldCheck className="w-4 h-4" />
-          Pestaña 3: Detalle Normativo BCN
-        </button>
-      </div>
-
-      {/* Tab 1: Requisitos & Hitos (Hierarchical Accordion) */}
-      {activeTab === 'requisitos' && (
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-slate-900">Desglose Jerárquico de Requisitos e Hitos de Cumplimiento</h3>
-            <span className="text-xs text-slate-400 font-medium">{ley.requisitos.length} categorías oficiales</span>
-          </div>
-
-          <div className="space-y-4">
-            {ley.requisitos.map((req) => {
-              const isExpanded = expandedReqs[req.id] ?? true;
-              return (
-                <div key={req.id} className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
-                  {/* Category Header Accordion */}
-                  <div
-                    onClick={() => toggleReq(req.id)}
-                    className="p-4 bg-slate-50/70 border-b border-slate-200/80 flex items-center justify-between cursor-pointer hover:bg-slate-100/60 transition-colors"
-                  >
-                    <div className="flex items-center gap-3">
-                      {isExpanded ? <ChevronDown className="w-4 h-4 text-indigo-600" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
-                      <div>
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-600">{req.categoria}</span>
-                        <h4 className="text-sm font-bold text-slate-800">{req.titulo}</h4>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className={clsx(
-                        "px-2.5 py-1 rounded-full text-xs font-bold border",
-                        req.estado === 'completado' ? "bg-emerald-50 text-emerald-700 border-emerald-200" :
-                        req.estado === 'en_progreso' ? "bg-amber-50 text-amber-700 border-amber-200" :
-                        "bg-slate-100 text-slate-700 border-slate-200"
-                      )}>
-                        {req.estado.replace('_', ' ').toUpperCase()}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Collapsible Content */}
-                  <AnimatePresence>
-                    {isExpanded && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="p-4"
-                      >
-                        <p className="text-xs text-slate-500 mb-4 font-medium">{req.descripcion}</p>
-
-                        {/* Milestones / Tasks Table */}
-                        <div className="overflow-x-auto border border-slate-100 rounded-xl">
-                          <table className="w-full text-left text-xs">
-                            <thead className="bg-slate-50 text-slate-500 font-semibold border-b border-slate-100">
-                              <tr>
-                                <th className="px-4 py-2.5 w-16">ID Hito</th>
-                                <th className="px-4 py-2.5">Nombre del Hito / Tarea</th>
-                                <th className="px-4 py-2.5 w-32">Estado</th>
-                                <th className="px-4 py-2.5 w-32">Vencimiento</th>
-                                <th className="px-4 py-2.5 w-40">Responsable</th>
-                              </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-100 font-medium">
-                              {req.hitos.map((hito) => (
-                                <tr key={hito.id} className="hover:bg-slate-50/60 transition-colors">
-                                  <td className="px-4 py-3 font-mono text-slate-400 text-[11px]">{hito.id}</td>
-                                  <td className="px-4 py-3 text-slate-800 font-semibold">{hito.nombre}</td>
-                                  <td className="px-4 py-3">
-                                    <span className={clsx(
-                                      "px-2 py-0.5 rounded-md text-[11px] font-bold border",
-                                      hito.estado === 'completado' ? "bg-emerald-50 text-emerald-700 border-emerald-200" :
-                                      hito.estado === 'en_progreso' ? "bg-sky-50 text-sky-700 border-sky-200" :
-                                      hito.estado === 'atrasada' ? "bg-rose-50 text-rose-700 border-rose-200" :
-                                      "bg-slate-100 text-slate-600 border-slate-200"
-                                    )}>
-                                      {hito.estado.replace('_', ' ').toUpperCase()}
-                                    </span>
-                                  </td>
-                                  <td className="px-4 py-3 text-slate-500 font-mono">{hito.fechaVencimiento}</td>
-                                  <td className="px-4 py-3">
-                                    <div className="flex items-center gap-2">
-                                      <div className="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center text-[10px]">
-                                        {hito.avatarInitials}
-                                      </div>
-                                      <span className="text-slate-700">{hito.responsable}</span>
-                                    </div>
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* Tab 2: Documentos & Evidencias */}
-      {activeTab === 'evidencias' && (
-        <div className="space-y-6">
-          {/* Upload Dropzone */}
-          <div
-            onClick={() => toast.success("Selecciona un archivo PDF o documento de respaldo")}
-            className="border-2 border-dashed border-slate-300 hover:border-indigo-500 rounded-2xl p-8 flex flex-col items-center justify-center text-center bg-slate-50/50 hover:bg-indigo-50/20 transition-all cursor-pointer group"
+          <button 
+            onClick={handleGenerarInforme}
+            className="px-5 py-2.5 bg-[#84CC16] hover:bg-[#65A30D] text-white rounded-xl font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer whitespace-nowrap"
           >
-            <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-              <UploadCloud className="w-6 h-6" />
-            </div>
-            <h4 className="text-sm font-bold text-slate-800">Subir evidencia o documento oficial</h4>
-            <p className="text-xs text-slate-400 mt-1">Arrastra tus archivos aquí o haz clic para explorar en tu equipo (PDF, DOCX, XLSX)</p>
-          </div>
+            <Download className="w-4 h-4" />
+            <span>Generar Informe Ejecutivo</span>
+          </button>
+        </div>
 
-          {/* Documents Table */}
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden">
-            <div className="p-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
-              <h4 className="font-bold text-slate-800 text-sm">Evidencias Cargadas para {ley.alias}</h4>
-              <span className="text-xs text-slate-400 font-medium">{ley.evidencias.length} archivos adjuntos</span>
+        {/* Tab Navigation for sections */}
+        <div className="flex overflow-x-auto gap-2 mt-6 pb-2 hide-scrollbar">
+          {sections.map(sec => (
+            <button
+              key={sec.id}
+              onClick={() => setActiveSection(sec.id)}
+              className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-colors flex items-center gap-2 cursor-pointer border ${
+                activeSection === sec.id 
+                  ? 'bg-slate-800 text-white border-slate-800 shadow-md' 
+                  : 'bg-white text-slate-600 hover:bg-slate-50 border-slate-200 hover:border-slate-300'
+              }`}
+            >
+              {sec.icon} {sec.label}
+            </button>
+          ))}
+        </div>
+      </header>
+
+      {/* Main Content Area */}
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 min-h-[500px]">
+        
+        {/* 1. Resumen General */}
+        {activeSection === 'resumen' && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
+            <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2"><FileText className="w-5 h-5 text-indigo-600"/> Resumen General & Ficha</h2>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Estado Global</p>
+                <div className="text-3xl font-bold text-[#84CC16]">{ley.progreso}%</div>
+                <p className="text-xs text-slate-500 font-medium mt-1">Cumplimiento {ley.estado}</p>
+              </div>
+              <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Semáforo</p>
+                <div className="flex items-center gap-2 mt-2">
+                  <div className={`w-4 h-4 rounded-full shadow-inner ${ley.criticidad === 'Crítica' ? 'bg-red-500' : ley.criticidad === 'Alta' ? 'bg-orange-500' : 'bg-amber-500'}`}></div>
+                  <span className={`font-bold ${ley.criticidad === 'Crítica' ? 'text-red-700' : ley.criticidad === 'Alta' ? 'text-orange-700' : 'text-amber-700'}`}>Riesgo {ley.criticidad}</span>
+                </div>
+              </div>
+              <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Responsable</p>
+                <div className="flex items-center gap-2 mt-1">
+                  <Users className="w-4 h-4 text-slate-400" />
+                  <span className="font-bold text-slate-700">Equipo Legal & GRC</span>
+                </div>
+              </div>
+              <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Última Revisión</p>
+                <div className="flex items-center gap-2 mt-1">
+                  <Calendar className="w-4 h-4 text-slate-400" />
+                  <span className="font-bold text-slate-700">Hace 15 días</span>
+                </div>
+              </div>
             </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-slate-50 text-slate-500 font-semibold border-b border-slate-100">
+            
+            <div>
+              <p className="text-sm font-bold text-slate-500 mb-2">Descripción Oficial (Extraída BCN):</p>
+              <div className="p-4 bg-slate-50 rounded-xl text-slate-700 text-sm leading-relaxed border border-slate-100">
+                {ley.resumen}
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* 2. Obligaciones Asociadas */}
+        {activeSection === 'obligaciones' && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+            <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2"><CheckCircle className="w-5 h-5 text-emerald-600"/> Checklist de Obligaciones</h2>
+            <div className="space-y-3">
+              {[
+                { title: 'Actualizar Reglamento Interno', status: 'Cumplida', color: 'bg-emerald-100 text-emerald-700' },
+                { title: 'Protocolo de Prevención', status: 'Parcial', color: 'bg-amber-100 text-amber-700' },
+                { title: 'Canal de Denuncias Anónimo', status: 'Pendiente', color: 'bg-red-100 text-red-700' }
+              ].map((obl, i) => (
+                <div key={i} className="p-4 border border-slate-200 rounded-xl flex justify-between items-center bg-white hover:border-[#84CC16] transition-colors cursor-pointer shadow-xs">
+                  <div className="flex items-center gap-3">
+                    <div className="w-5 h-5 rounded border border-slate-300 flex items-center justify-center">
+                      {obl.status === 'Cumplida' && <CheckCircle className="w-4 h-4 text-[#84CC16]" />}
+                    </div>
+                    <span className="font-semibold text-slate-800">{obl.title}</span>
+                  </div>
+                  <span className={`px-3 py-1 rounded-full text-xs font-bold ${obl.color}`}>{obl.status}</span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* 3. Mapa de Brechas */}
+        {activeSection === 'brechas' && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+            <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2"><AlertTriangle className="w-5 h-5 text-amber-500"/> Mapa de Brechas (GAP Analysis)</h2>
+            <div className="overflow-x-auto border border-slate-200 rounded-xl">
+              <table className="w-full text-left text-sm text-slate-600">
+                <thead className="bg-slate-50 text-xs font-bold text-slate-500 uppercase">
                   <tr>
-                    <th className="px-4 py-3">Documento</th>
-                    <th className="px-4 py-3">Tipo</th>
-                    <th className="px-4 py-3">Tamaño</th>
-                    <th className="px-4 py-3">Versión</th>
-                    <th className="px-4 py-3">Fecha Subida</th>
-                    <th className="px-4 py-3">Subido por</th>
-                    <th className="px-4 py-3 text-right">Acción</th>
+                    <th className="px-4 py-3">Hallazgo / Brecha</th>
+                    <th className="px-4 py-3">Nivel Riesgo</th>
+                    <th className="px-4 py-3">Acción Requerida</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 font-medium">
-                  {ley.evidencias.map((doc) => (
-                    <tr key={doc.id} className="hover:bg-slate-50/60 transition-colors">
-                      <td className="px-4 py-3.5 font-semibold text-slate-800 flex items-center gap-2">
-                        <FileText className="w-4 h-4 text-indigo-600" />
-                        {doc.nombre}
-                      </td>
-                      <td className="px-4 py-3 text-slate-500">{doc.tipo}</td>
-                      <td className="px-4 py-3 text-slate-500 font-mono">{doc.tamano}</td>
-                      <td className="px-4 py-3">
-                        <span className="px-2 py-0.5 bg-slate-100 text-slate-700 rounded text-[10px] font-bold">
-                          v{doc.version}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-slate-500 font-mono">{doc.fechaSubida}</td>
-                      <td className="px-4 py-3 text-slate-700">{doc.subidoPor}</td>
-                      <td className="px-4 py-3 text-right">
-                        <button
-                          onClick={() => toast.success(`Descargando ${doc.nombre}`)}
-                          className="px-3 py-1 bg-slate-100 hover:bg-indigo-50 text-slate-700 hover:text-indigo-600 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5 ml-auto cursor-pointer"
-                        >
-                          <Download className="w-3.5 h-3.5" /> Descargar
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                <tbody className="divide-y divide-slate-100 bg-white">
+                  <tr>
+                    <td className="px-4 py-3 font-semibold text-slate-800">Falta capacitación anual a geraturas</td>
+                    <td className="px-4 py-3"><span className="px-2 py-1 bg-red-100 text-red-700 rounded-md font-bold text-[10px]">Alto</span></td>
+                    <td className="px-4 py-3">Agendar capacitación en plataforma externa</td>
+                  </tr>
+                  <tr>
+                    <td className="px-4 py-3 font-semibold text-slate-800">Políticas no firmadas por 15% de empleados</td>
+                    <td className="px-4 py-3"><span className="px-2 py-1 bg-amber-100 text-amber-700 rounded-md font-bold text-[10px]">Medio</span></td>
+                    <td className="px-4 py-3">Enviar recordatorio automático vía RRHH</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
 
-      {/* Tab 3: Detalle Normativo BCN */}
-      {activeTab === 'articulado' && (
-        <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
-            <div className="relative flex-1">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Buscar artículo por palabra clave o número (ej. Art 1°)..."
-                value={searchArticle}
-                onChange={(e) => setSearchArticle(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium"
-              />
-            </div>
-            <div className="text-xs text-slate-400 font-medium">
-              Mostrando {filteredArticles.length} artículos oficiales de la BCN
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            {filteredArticles.map((art, idx) => (
-              <div key={idx} className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs relative hover:border-indigo-300 transition-colors">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="px-2.5 py-0.5 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-md font-bold text-xs">
-                      {art.numero}
-                    </span>
-                    {art.capitulo && (
-                      <span className="text-xs font-semibold text-slate-400">
-                        {art.capitulo}
-                      </span>
-                    )}
+        {/* 4. Controles */}
+        {activeSection === 'controles' && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+            <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2"><ShieldCheck className="w-5 h-5 text-blue-500"/> Controles Asociados</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {[1, 2].map(i => (
+                <div key={i} className="p-4 border border-slate-200 rounded-xl bg-slate-50 flex flex-col gap-2">
+                  <div className="flex justify-between items-start">
+                    <h4 className="font-bold text-slate-800">Control de Accesos Lógicos (C-{i})</h4>
+                    <span className="px-2 py-1 bg-white border border-slate-200 text-slate-500 rounded text-[10px] font-bold">Semestral</span>
                   </div>
-                  <button
-                    onClick={() => handleCopyText(art.numero, art.contenido)}
-                    className="flex items-center gap-1 text-xs text-slate-400 hover:text-indigo-600 transition-colors p-1 cursor-pointer"
-                    title="Copiar texto del artículo"
-                  >
-                    {copiedArt === art.numero ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
+                  <p className="text-xs text-slate-500">Revisión de permisos en sistemas core para asegurar el principio de mínimo privilegio.</p>
+                  <button className="mt-2 text-xs font-bold text-[#84CC16] hover:underline self-start flex items-center gap-1">
+                    <PlayCircle className="w-3.5 h-3.5" /> Ejecutar Control
                   </button>
                 </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
 
-                {art.titulo && (
-                  <h4 className="text-sm font-bold text-slate-800 mb-2">{art.titulo}</h4>
-                )}
-
-                <p className="text-xs text-slate-600 leading-relaxed font-normal bg-slate-50/50 p-3 rounded-xl border border-slate-100">
-                  {art.contenido}
-                </p>
+        {/* 5. Evidencias */}
+        {activeSection === 'evidencias' && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2"><UploadCloud className="w-5 h-5 text-slate-500"/> Repositorio de Evidencias</h2>
+              <button className="px-3 py-1.5 bg-[#84CC16]/10 text-lime-700 border border-[#84CC16]/20 rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer">
+                <UploadCloud className="w-3.5 h-3.5" /> Subir Evidencia
+              </button>
+            </div>
+            <div className="space-y-2">
+              <div className="p-3 border border-slate-200 rounded-xl flex justify-between items-center hover:bg-slate-50 cursor-pointer transition-colors">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-red-50 text-red-500 rounded-lg"><FileText className="w-4 h-4" /></div>
+                  <div>
+                    <p className="text-sm font-bold text-slate-800">Reglamento_Interno_v2.pdf</p>
+                    <p className="text-[10px] font-medium text-slate-400">Subido por Juan Pérez - Hace 2 días</p>
+                  </div>
+                </div>
+                <Download className="w-4 h-4 text-slate-400" />
               </div>
-            ))}
-          </div>
-        </div>
-      )}
-    </motion.div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* 6. Riesgos */}
+        {activeSection === 'riesgos' && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+            <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2"><Scale className="w-5 h-5 text-red-500"/> Riesgos e Incidentes Relacionados</h2>
+            <div className="p-12 text-center border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50">
+              <ShieldCheck className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+              <p className="text-sm font-bold text-slate-600">No hay incidentes reportados</p>
+              <p className="text-xs text-slate-400 mt-1">La matriz de riesgos asociada se encuentra dentro del apetito de riesgo aceptable.</p>
+            </div>
+          </motion.div>
+        )}
+
+        {/* 7. Auditorias */}
+        {activeSection === 'auditorias' && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+            <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2"><Search className="w-5 h-5 text-indigo-500"/> Auditorías y Plan de Acción</h2>
+            <div className="p-4 border border-l-4 border-l-indigo-500 border-slate-200 rounded-r-xl bg-white shadow-xs">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h4 className="font-bold text-slate-800">Auditoría Interna Q3-2026</h4>
+                  <p className="text-xs text-slate-500 mt-1">Revisión de cumplimiento normativo transversal.</p>
+                </div>
+                <span className="px-2 py-1 bg-indigo-50 text-indigo-700 text-[10px] font-bold rounded">En Progreso</span>
+              </div>
+              <div className="mt-4 pt-4 border-t border-slate-100">
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Tareas Correctivas (Plan de Acción)</p>
+                <ul className="list-disc list-inside text-sm text-slate-600 space-y-1 ml-1">
+                  <li>Ajustar cláusulas laborales de teletrabajo. <span className="text-red-500 font-medium">(Vence 15/09)</span></li>
+                </ul>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+      </div>
+    </div>
   );
 };

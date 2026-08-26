@@ -1,366 +1,155 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
-import { ChevronLeft, ChevronRight, Loader2, Calendar as CalendarIcon, Filter } from 'lucide-react';
-import clsx from 'clsx';
-import { api } from '../services/api';
+import { useState } from 'react';
+import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Download, Clock, Plus } from 'lucide-react';
+import toast from 'react-hot-toast';
 
-// Tipos locales para el calendario
-interface CalendarEvent {
-  id: string;
-  title: string;
-  date: Date;
-  type: 'tarea' | 'normativa' | 'incidente' | 'solicitud';
-  status: string;
-}
+const mockEvents = [
+  { id: 1, title: 'Auditoría Ley Karin', date: '2026-08-30', type: 'Auditorías', status: 'pending' },
+  { id: 2, title: 'Capacitación Privacidad', date: '2026-09-02', type: 'Capacitaciones', status: 'pending' },
+  { id: 3, title: 'Revisión Controles ISO', date: '2026-09-05', type: 'Controles', status: 'completed' },
+  { id: 4, title: 'Renovación Política ARCO', date: '2026-08-28', type: 'Documentos', status: 'urgent' },
+  { id: 5, title: 'Evaluación Riesgos TI', date: '2026-09-10', type: 'Riesgos', status: 'pending' },
+];
 
 export const Calendar = () => {
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [events, setEvents] = useState<CalendarEvent[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [view, setView] = useState<'Mes' | 'Semana'>('Mes');
-  
-  // Filtros
-  const [activeFilters, setActiveFilters] = useState({
-    tarea: true,
-    normativa: true,
-    incidente: true,
-    solicitud: true
-  });
+  const [view, setView] = useState<'Mes' | 'Semana' | 'Línea de Tiempo'>('Mes');
+  const [filter, setFilter] = useState<string>('Todos');
 
-  useEffect(() => {
-    const fetchAllEvents = async () => {
-      setIsLoading(true);
-      try {
-        const [tareas, normativas, incidentes, solicitudes] = await Promise.all([
-          api.getTareas({}),
-          api.getNormativas(),
-          api.getIncidentes(),
-          api.getSolicitudes()
-        ]);
-
-        const allEvents: CalendarEvent[] = [];
-
-        // Mapear Tareas (fechaVencimiento)
-        tareas.forEach(t => {
-          if (t.fechaVencimiento) {
-            // Asegurarnos de ajustar la fecha a la zona local para evitar que se pinte en un día diferente si la hora es 00:00 UTC
-            const localDate = new Date(t.fechaVencimiento + 'T12:00:00');
-            allEvents.push({
-              id: `tarea-${t.id}`,
-              title: t.tarea,
-              date: localDate,
-              type: 'tarea',
-              status: t.estado
-            });
-          }
-        });
-
-        // Mapear Normativas (fechaTermino)
-        normativas.forEach(n => {
-          if (n.fechaTermino) {
-            const localDate = new Date(n.fechaTermino + 'T12:00:00');
-            allEvents.push({
-              id: `normativa-${n.id}`,
-              title: n.nombre,
-              date: localDate,
-              type: 'normativa',
-              status: n.estado
-            });
-          }
-        });
-
-        // Mapear Incidentes (fecha)
-        incidentes.forEach(i => {
-          if (i.fecha) {
-            const localDate = new Date(i.fecha + 'T12:00:00');
-            allEvents.push({
-              id: `incidente-${i.id}`,
-              title: i.nombre,
-              date: localDate,
-              type: 'incidente',
-              status: i.estado
-            });
-          }
-        });
-
-        // Mapear Solicitudes (fechaLimite)
-        solicitudes.forEach(s => {
-          if (s.fechaLimite) {
-            const localDate = new Date(s.fechaLimite + 'T12:00:00');
-            allEvents.push({
-              id: `solicitud-${s.id}`,
-              title: s.nombre,
-              date: localDate,
-              type: 'solicitud',
-              status: s.estado
-            });
-          }
-        });
-
-        setEvents(allEvents);
-      } catch (err) {
-        console.error("Error cargando eventos para el calendario", err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchAllEvents();
-  }, []);
-
-  const nextMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
+  const handleGenerateAgenda = () => {
+    toast.success('Agenda generada y exportada a PDF/ICS correctamente 📅');
   };
 
-  const prevMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
-  };
-
-  const getDaysInMonth = (year: number, month: number) => {
-    return new Date(year, month + 1, 0).getDate();
-  };
-
-  const getFirstDayOfMonth = (year: number, month: number) => {
-    const day = new Date(year, month, 1).getDay();
-    return day === 0 ? 6 : day - 1; // Ajustar para que Lunes sea 0 y Domingo 6
-  };
-
-  const getEventsForDate = (day: number) => {
-    return events.filter(e => {
-      // Aplicar filtros visuales
-      if (!activeFilters[e.type]) return false;
-      
-      return e.date.getFullYear() === currentDate.getFullYear() &&
-             e.date.getMonth() === currentDate.getMonth() &&
-             e.date.getDate() === day;
-    });
-  };
-
-  const renderMonthGrid = () => {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
-    const daysInMonth = getDaysInMonth(year, month);
-    const firstDay = getFirstDayOfMonth(year, month); // Lunes(0) - Domingo(6)
-    
-    const days = [];
-    const weekDays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
-
-    // Cabecera de días
-    const headers = weekDays.map(day => (
-      <div key={`header-${day}`} className="text-center font-semibold text-xs text-slate-400 uppercase py-2 bg-slate-50">
-        {day}
-      </div>
-    ));
-
-    // Días vacíos del mes anterior
-    for (let i = 0; i < firstDay; i++) {
-      days.push(<div key={`empty-${i}`} className="min-h-[100px] sm:min-h-[120px] p-2 border border-slate-100 bg-slate-50/50"></div>);
-    }
-
-    const today = new Date();
-    const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
-
-    // Días reales del mes
-    for (let day = 1; day <= daysInMonth; day++) {
-      const isToday = isCurrentMonth && today.getDate() === day;
-      const dayEvents = getEventsForDate(day);
-      
-      days.push(
-        <div 
-          key={`day-${day}`} 
-          className={clsx(
-            "min-h-[100px] sm:min-h-[120px] p-2 border border-slate-100 transition-colors hover:bg-slate-50 group flex flex-col relative",
-            isToday ? "bg-indigo-50/30 ring-1 ring-inset ring-indigo-100" : "bg-white"
-          )}
-        >
-          <div className="flex justify-between items-start mb-2">
-            <span className={clsx(
-              "w-7 h-7 flex items-center justify-center rounded-full text-sm font-medium",
-              isToday ? "bg-indigo-600 text-white shadow-sm" : "text-slate-700 group-hover:text-indigo-600"
-            )}>
-              {day}
-            </span>
-            {dayEvents.length > 0 && (
-              <span className="text-[10px] font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">
-                {dayEvents.length}
-              </span>
-            )}
-          </div>
-          
-          <div className="flex-1 space-y-1.5 overflow-y-auto custom-scrollbar">
-            {dayEvents.map(event => {
-              // Colores según el tipo
-              let bgColor = "bg-slate-100 text-slate-700 border-slate-200";
-              if (event.type === 'tarea') bgColor = "bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100";
-              if (event.type === 'normativa') bgColor = "bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100";
-              if (event.type === 'incidente') bgColor = "bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100";
-              if (event.type === 'solicitud') bgColor = "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100";
-
-              return (
-                <div 
-                  key={event.id}
-                  title={`${event.type.toUpperCase()}: ${event.title}`}
-                  className={clsx(
-                    "text-[10px] sm:text-xs font-medium px-2 py-1 rounded border cursor-pointer transition-colors shadow-sm",
-                    "whitespace-nowrap overflow-hidden text-ellipsis",
-                    bgColor
-                  )}
-                >
-                  {event.title}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      );
-    }
-
-    return (
-      <div className="grid grid-cols-7 gap-0 rounded-xl overflow-hidden border border-slate-200 shadow-sm bg-white">
-        {headers}
-        {days}
-      </div>
-    );
-  };
-
-  const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+  const filters = ['Todos', 'Auditorías', 'Capacitaciones', 'Controles', 'Evidencias', 'Riesgos', 'Incidentes'];
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
-      <header className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+    <div className="p-6 max-w-7xl mx-auto space-y-8">
+      {/* Header */}
+      <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 tracking-tight flex items-center gap-3">
-            <div className="p-2 bg-indigo-50 rounded-xl text-indigo-600">
-              <CalendarIcon className="w-7 h-7" />
-            </div>
-            Calendario GRC
-          </h1>
-          <p className="text-slate-500 mt-1 ml-[52px]">
-            Visualización unificada de obligaciones, tareas e incidentes
-          </p>
+          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Calendario de Cumplimiento</h1>
+          <p className="text-slate-500 mt-1">Gestión de hitos y plazos normativos</p>
         </div>
-        
-        <div className="flex space-x-2 bg-slate-100 p-1 rounded-xl">
-          {['Mes', 'Semana'].map(v => (
-            <button
-              key={v}
-              onClick={() => setView(v as any)}
-              className={clsx(
-                "px-4 py-2 rounded-lg text-sm font-medium transition-all",
-                view === v ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700"
-              )}
-            >
-              {v}
-            </button>
-          ))}
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={handleGenerateAgenda}
+            className="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl font-medium transition-colors shadow-sm flex items-center gap-2 cursor-pointer"
+          >
+            <Download className="w-4 h-4 text-slate-500" />
+            <span>Generar Agenda</span>
+          </button>
+          <button className="px-4 py-2 bg-[#84CC16] hover:bg-[#65A30D] text-white rounded-xl font-medium transition-colors shadow-sm flex items-center gap-2 cursor-pointer">
+            <Plus className="w-4 h-4" />
+            <span>Nuevo Hito</span>
+          </button>
         </div>
       </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Panel lateral: Proyecciones y Filtros */}
-        <div className="lg:col-span-1 space-y-4">
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-             <h3 className="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2">
-               <Filter className="w-4 h-4 text-slate-400" /> Filtros Activos
-             </h3>
-             <div className="space-y-3">
-               {[
-                 { key: 'tarea', label: 'Tareas y Tiempos', color: 'bg-blue-500' },
-                 { key: 'normativa', label: 'Venc. Normativos', color: 'bg-purple-500' },
-                 { key: 'incidente', label: 'Incidentes', color: 'bg-rose-500' },
-                 { key: 'solicitud', label: 'Tickets & Solicitudes', color: 'bg-emerald-500' }
-               ].map(filter => (
-                 <label key={filter.key} className="flex items-center gap-3 cursor-pointer group select-none">
-                   <div className={clsx(
-                     "w-5 h-5 rounded border flex items-center justify-center transition-all",
-                     activeFilters[filter.key as keyof typeof activeFilters] ? filter.color + " border-transparent shadow-sm" : "border-slate-300 bg-slate-50"
-                   )}>
-                     {activeFilters[filter.key as keyof typeof activeFilters] && <span className="text-white text-xs">✓</span>}
-                   </div>
-                   <span className="text-sm font-medium text-slate-700 group-hover:text-slate-900 transition-colors">
-                     {filter.label}
-                   </span>
-                   <input 
-                     type="checkbox" 
-                     className="hidden" 
-                     checked={activeFilters[filter.key as keyof typeof activeFilters]}
-                     onChange={() => setActiveFilters(prev => ({...prev, [filter.key]: !prev[filter.key as keyof typeof activeFilters]}))}
-                   />
-                 </label>
-               ))}
-             </div>
+      {/* Dashboard Superior */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Próximos 30 días */}
+        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider">Próximos 30 Días</h3>
+            <span className="bg-indigo-50 text-indigo-600 p-2 rounded-lg"><CalendarIcon className="w-4 h-4" /></span>
           </div>
-          
-          <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl shadow-sm border-none p-5 text-white">
-            <h3 className="text-sm font-semibold opacity-90 mb-4">Resumen del Mes</h3>
-            <div className="flex justify-between items-end mb-4">
-               <div>
-                  <div className="text-4xl font-display font-bold">
-                    {events.filter(e => e.date.getMonth() === currentDate.getMonth() && e.date.getFullYear() === currentDate.getFullYear()).length}
-                  </div>
-                  <div className="text-xs opacity-80 uppercase tracking-wider mt-1 font-medium">Eventos Totales</div>
-               </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 text-center">
+              <div className="text-2xl font-bold text-slate-800">3</div>
+              <div className="text-[10px] font-semibold text-slate-500 uppercase mt-1">Auditorías</div>
             </div>
-            
-            <div className="space-y-2 mt-6">
-               <div className="w-full bg-white/20 rounded-full h-1.5">
-                  <div className="bg-white h-1.5 rounded-full" style={{width: '60%'}}></div>
-               </div>
-               <div className="flex justify-between text-xs font-medium opacity-90">
-                 <span>Progreso Mensual</span>
-                 <span>60%</span>
-               </div>
+            <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 text-center">
+              <div className="text-2xl font-bold text-slate-800">5</div>
+              <div className="text-[10px] font-semibold text-slate-500 uppercase mt-1">Capacitaciones</div>
+            </div>
+            <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 text-center">
+              <div className="text-2xl font-bold text-slate-800">18</div>
+              <div className="text-[10px] font-semibold text-slate-500 uppercase mt-1">Controles</div>
+            </div>
+            <div className="bg-red-50 p-3 rounded-xl border border-red-100 text-center">
+              <div className="text-2xl font-bold text-red-600">4</div>
+              <div className="text-[10px] font-semibold text-red-500 uppercase mt-1">Vencimientos</div>
             </div>
           </div>
         </div>
 
-        {/* Grilla principal del Calendario */}
-        <div className="lg:col-span-3">
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-            <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
-              <button 
-                onClick={prevMonth}
-                className="p-2 hover:bg-slate-200 rounded-lg text-slate-500 transition-colors"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <h2 className="text-xl font-bold text-slate-800">
-                {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
-              </h2>
-              <button 
-                onClick={nextMonth}
-                className="p-2 hover:bg-slate-200 rounded-lg text-slate-500 transition-colors"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
+        {/* Próximos 90 días */}
+        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm relative overflow-hidden">
+          <div className="flex items-center justify-between mb-4 relative z-10">
+            <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider">Próximos 90 Días</h3>
+            <span className="bg-emerald-50 text-emerald-600 p-2 rounded-lg"><Clock className="w-4 h-4" /></span>
+          </div>
+          <p className="text-sm text-slate-600 leading-relaxed relative z-10">
+            Se proyecta una <strong>carga crítica en Noviembre</strong> debido al ciclo de auditorías internas de ISO 27001 y renovaciones de contratos con encargados de datos (Ley 21.719).
+          </p>
+          <div className="mt-4 flex items-center gap-2 relative z-10">
+            <div className="h-2 flex-1 bg-slate-100 rounded-full overflow-hidden">
+              <div className="h-full bg-[#84CC16] w-1/3 rounded-full"></div>
             </div>
+            <span className="text-xs font-bold text-slate-500">Q4</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Calendar Section */}
+      <div className="bg-white border border-slate-200 rounded-2xl shadow-sm flex flex-col min-h-[500px]">
+        {/* Controls */}
+        <div className="p-4 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-50/50 rounded-t-2xl">
+          <div className="flex flex-wrap items-center gap-2">
+            <button className="p-2 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 text-slate-600 cursor-pointer shadow-xs"><ChevronLeft className="w-4 h-4" /></button>
+            <span className="font-bold text-slate-800 text-lg px-2">Agosto 2026</span>
+            <button className="p-2 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 text-slate-600 cursor-pointer shadow-xs"><ChevronRight className="w-4 h-4" /></button>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center gap-3">
+            <select 
+              value={filter}
+              onChange={e => setFilter(e.target.value)}
+              className="w-full sm:w-auto px-4 py-2 border border-slate-200 rounded-xl text-sm font-medium bg-white text-slate-700 shadow-xs focus:ring-2 focus:ring-[#84CC16] outline-none"
+            >
+              {filters.map(f => <option key={f} value={f}>{f}</option>)}
+            </select>
             
-            <div className="p-4 sm:p-6 bg-slate-50/50">
-              {isLoading ? (
-                <div className="flex flex-col items-center justify-center min-h-[400px] text-slate-400">
-                  <Loader2 className="w-8 h-8 animate-spin mb-4 text-indigo-500" />
-                  <p className="font-medium text-sm">Sincronizando eventos con GRC...</p>
-                </div>
-              ) : (
-                <motion.div 
-                  key={currentDate.toISOString()}
-                  initial={{ opacity: 0, scale: 0.99 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.2 }}
+            <div className="flex items-center p-1 bg-slate-100 rounded-xl border border-slate-200 w-full sm:w-auto">
+              {['Mes', 'Semana', 'Línea de Tiempo'].map(v => (
+                <button
+                  key={v}
+                  onClick={() => setView(v as any)}
+                  className={`px-4 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer w-full sm:w-auto ${
+                    view === v ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+                  }`}
                 >
-                  {view === 'Mes' ? renderMonthGrid() : (
-                    <div className="text-center py-20 text-slate-500 font-medium border-2 border-dashed border-slate-200 rounded-xl bg-white shadow-sm">
-                      <div className="max-w-md mx-auto">
-                        <CalendarIcon className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                        <h3 className="text-lg font-bold text-slate-700 mb-2">Vista Semanal Próximamente</h3>
-                        <p className="text-sm">Esta vista de planificación táctica detallada está actualmente en desarrollo. Por favor, utilice la vista mensual.</p>
-                      </div>
-                    </div>
-                  )}
-                </motion.div>
-              )}
+                  {v}
+                </button>
+              ))}
             </div>
           </div>
+        </div>
+
+        {/* View content placeholder */}
+        <div className="p-6 flex-1 flex flex-col items-center justify-center text-center">
+          <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-100">
+            <CalendarIcon className="w-8 h-8 text-slate-300" />
+          </div>
+          <h3 className="text-lg font-bold text-slate-800">Vista de {view}</h3>
+          <p className="text-sm text-slate-500 max-w-sm mt-1">El calendario interactivo se está sincronizando con tus eventos filtrados por <span className="font-bold">{filter}</span>.</p>
+          
+          {/* Mock Timeline if timeline selected */}
+          {view === 'Línea de Tiempo' && (
+            <div className="mt-8 w-full max-w-2xl text-left space-y-4">
+              {mockEvents.map(ev => (
+                <div key={ev.id} className="flex items-center gap-4 p-4 bg-white border border-slate-200 rounded-xl shadow-xs hover:border-[#84CC16] transition-colors cursor-pointer">
+                  <div className="flex flex-col items-center justify-center w-12 shrink-0">
+                    <span className="text-xs font-bold text-slate-400">AGO</span>
+                    <span className="text-xl font-bold text-slate-800">{ev.date.split('-')[2]}</span>
+                  </div>
+                  <div className="h-10 w-px bg-slate-200"></div>
+                  <div className="flex-1">
+                    <h4 className="font-bold text-slate-800">{ev.title}</h4>
+                    <p className="text-xs font-semibold text-slate-500 mt-0.5 uppercase tracking-wider">{ev.type}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

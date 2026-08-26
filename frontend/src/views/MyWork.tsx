@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import toast from 'react-hot-toast';
-import { CheckCircle, Clock, Search, X, Upload, UserCheck, AlertCircle, FileText, Check, ListTodo, ArchiveRestore, Trash2 } from 'lucide-react';
+import { CheckCircle, Clock, Search, X, Upload, UserCheck, AlertCircle, FileText, Check, ListTodo, ArchiveRestore, Trash2, ExternalLink } from 'lucide-react';
 import { api } from '../services/api';
 
 export const MyWork = () => {
@@ -12,6 +12,8 @@ export const MyWork = () => {
   const [activeTab, setActiveTab] = useState<'activas' | 'historial'>('activas');
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'todas' | 'vencidas' | 'en_tiempo'>('todas');
+  const [mainCategory, setMainCategory] = useState('Mis Vencimientos');
+  const categorias = ['Mis Obligaciones', 'Mis Controles', 'Mis Evidencias', 'Mis Riesgos', 'Mis Acciones', 'Mis Vencimientos'];
   
   // State for Modal/Drawer
   const [selectedTask, setSelectedTask] = useState<any | null>(null);
@@ -142,10 +144,31 @@ export const MyWork = () => {
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-8">
-      <header className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Mi Trabajo</h1>
-          <p className="text-slate-500 mt-1">Gestión operativa de compromisos normativos</p>
+      <header className="mb-6 flex flex-col gap-4">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Mi Trabajo</h1>
+            <p className="text-slate-500 mt-1">Gestión operativa de compromisos normativos</p>
+          </div>
+        </div>
+        
+        {/* Pestañas de Gestión Personal */}
+        <div className="flex overflow-x-auto pb-2 -mx-2 px-2 hide-scrollbar">
+          <div className="flex space-x-2">
+            {categorias.map(cat => (
+              <button
+                key={cat}
+                onClick={() => setMainCategory(cat)}
+                className={`px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-colors cursor-pointer ${
+                  mainCategory === cat
+                    ? 'bg-[#84CC16] text-white shadow-sm'
+                    : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
         </div>
       </header>
 
@@ -157,18 +180,33 @@ export const MyWork = () => {
           className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col"
         >
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Tareas Pendientes</h3>
-            <span className="p-2.5 bg-blue-50 text-blue-600 rounded-xl"><Clock className="w-5 h-5" /></span>
+            <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Pendientes</h3>
+            <span className="p-2.5 bg-blue-50 text-blue-600 rounded-xl"><ListTodo className="w-5 h-5" /></span>
           </div>
           <div className="text-4xl font-bold text-slate-800">{tareasActivas.length}</div>
-          <p className="text-sm text-slate-500 mt-2">En curso para esta semana</p>
+          <p className="text-sm text-slate-500 mt-2">Obligaciones y tareas en curso</p>
         </motion.div>
 
         <motion.div 
           initial={{ y: 20, opacity: 0 }} 
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.1 }}
-          className="bg-white rounded-2xl shadow-sm border border-red-100 p-6 flex flex-col relative overflow-hidden"
+          className="bg-white rounded-2xl shadow-sm border border-amber-200 p-6 flex flex-col relative overflow-hidden"
+        >
+          <div className="absolute top-0 right-0 w-24 h-24 bg-amber-50 rounded-full blur-2xl -mr-8 -mt-8"></div>
+          <div className="flex items-center justify-between mb-4 relative z-10">
+            <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Vencen esta semana</h3>
+            <span className="p-2.5 bg-amber-50 text-amber-600 rounded-xl"><Clock className="w-5 h-5" /></span>
+          </div>
+          <div className="text-4xl font-bold text-amber-600 relative z-10">{tareasActivas.filter(t => !t.esVencida && t.fechaVencimiento).length}</div>
+          <p className="text-sm text-amber-600 mt-2 relative z-10">Próximos compromisos</p>
+        </motion.div>
+
+        <motion.div 
+          initial={{ y: 20, opacity: 0 }} 
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="bg-white rounded-2xl shadow-sm border border-red-200 p-6 flex flex-col relative overflow-hidden"
         >
           <div className="absolute top-0 right-0 w-24 h-24 bg-red-50 rounded-full blur-2xl -mr-8 -mt-8"></div>
           <div className="flex items-center justify-between mb-4 relative z-10">
@@ -176,21 +214,7 @@ export const MyWork = () => {
             <span className="p-2.5 bg-red-50 text-red-600 rounded-xl"><AlertCircle className="w-5 h-5" /></span>
           </div>
           <div className="text-4xl font-bold text-red-600 relative z-10">{tareasAtrasadas.length}</div>
-          <p className="text-sm text-red-500 mt-2 relative z-10">Requieren atención inmediata</p>
-        </motion.div>
-
-        <motion.div 
-          initial={{ y: 20, opacity: 0 }} 
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="bg-gradient-to-br from-[#84CC16] to-emerald-600 rounded-2xl shadow-md p-6 flex flex-col text-white"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-semibold text-lime-50 uppercase tracking-wider">Cumplimiento Global</h3>
-            <span className="p-2.5 bg-white/20 rounded-xl text-white"><CheckCircle className="w-5 h-5" /></span>
-          </div>
-          <div className="text-4xl font-bold">{progressPercent}%</div>
-          <p className="text-sm text-lime-100 mt-2">Tareas resueltas sobre el total asignado</p>
+          <p className="text-sm text-red-600 mt-2 relative z-10">Requieren atención inmediata</p>
         </motion.div>
       </div>
 
@@ -412,8 +436,13 @@ export const MyWork = () => {
                     </p>
                   </div>
                   <div>
-                    <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Vinculada a</label>
-                    <p className="text-sm font-medium text-slate-700 mt-1">{selectedTask.asociada_a || 'Cumplimiento General'}</p>
+                    <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">Vinculada a</label>
+                    <div className="flex items-center justify-between bg-slate-50 border border-slate-200 px-3 py-2 rounded-xl">
+                      <span className="text-sm font-semibold text-slate-700">{selectedTask.asociada_a || 'Cumplimiento General'}</span>
+                      <button className="text-xs text-[#84CC16] font-bold hover:underline flex items-center gap-1 cursor-pointer">
+                        Ver Normativa <ExternalLink className="w-3 h-3" />
+                      </button>
+                    </div>
                   </div>
                 </div>
 
