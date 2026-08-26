@@ -162,7 +162,7 @@ JAZZMIN_SETTINGS = {
     "site_brand": "GRC Backoffice",
     "welcome_sign": "Mesa de Ayuda y Gestión de Clientes GRC",
     "copyright": "GRC Chile LegalTech",
-    "search_model": "api.Empresa",
+    "search_model": ["clientes.EmpresaCliente", "auth.User"],
     "user_avatar": None,
     "topmenu_links": [
         {"name": "Inicio", "url": "admin:index", "permissions": ["auth.view_user"]},
@@ -186,38 +186,20 @@ JAZZMIN_SETTINGS = {
         "api.ObjetivoChecklist",
         "api.AlertaCompliance",
         "api.PerfilUsuario",
-    ],
-    
-    # Agrupación y orden por dominios de soporte
-    "order_with_respect_to": [
-        # 1. Clientes y Onboarding
-        "api.Empresa",
-        "auth.User",
-        "auth.Group",
-        # 2. Catálogo Legal
-        "api.Normativa",
         "api.ComplianceEmpresa",
-        # 3. Mesa de Ayuda y Operaciones
-        "api.SolicitudTicket",
-        "api.Incidente",
-        "api.Riesgo",
-        # 4. Privacidad y Auditoría
-        "api.TratamientoRAT",
-        "api.RegistroAuditoriaARCO",
     ],
     
     "icons": {
         "auth": "fas fa-users-cog",
         "auth.User": "fas fa-user-shield",
         "auth.Group": "fas fa-users",
-        "api.Empresa": "fas fa-building",
-        "api.Normativa": "fas fa-balance-scale",
-        "api.ComplianceEmpresa": "fas fa-tasks",
-        "api.SolicitudTicket": "fas fa-headset",
-        "api.Incidente": "fas fa-exclamation-circle",
-        "api.Riesgo": "fas fa-shield-alt",
-        "api.TratamientoRAT": "fas fa-user-lock",
-        "api.RegistroAuditoriaARCO": "fas fa-fingerprint",
+        "clientes.EmpresaCliente": "fas fa-building",
+        "catalogo.NormativaCatalogo": "fas fa-balance-scale",
+        "soporte.TicketSoporte": "fas fa-headset",
+        "soporte.IncidenteSoporte": "fas fa-exclamation-circle",
+        "soporte.RiesgoSoporte": "fas fa-shield-alt",
+        "privacidad.RATPrivacidad": "fas fa-user-lock",
+        "privacidad.AuditoriaARCO": "fas fa-fingerprint",
     },
     "default_icon_parents": "fas fa-folder",
     "default_icon_children": "fas fa-file",
