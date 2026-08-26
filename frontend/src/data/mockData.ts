@@ -87,3 +87,9 @@ export const mockRiesgos: Riesgo[] = [
   { id: 'r-4', nombre: 'Pérdida de dispositivo móvil', impacto: 3, probabilidad: 4, estado: 'pendiente', responsable: 'Andres Munoz', empresa: 'LemonTech Colombia', fechaIdentificacion: '2026-03-20' },
   { id: 'r-5', nombre: 'Acceso no autorizado a BBDD', impacto: 5, probabilidad: 2, estado: 'en_curso', responsable: 'Felipe Sanchez', empresa: 'Global', fechaIdentificacion: '2026-04-01' },
 ];
+
+export const mockIncidentes: any[] = [
+  { id: 'inc-1', nombre: 'Denuncia por acoso laboral', tipo: 'Ley Karin', fecha: '2026-04-18', estado: 'en_investigacion', responsable: 'Elena Rivas' },
+  { id: 'inc-2', nombre: 'Intento de phishing detectado', tipo: 'Seguridad TI', fecha: '2026-04-20', estado: 'resuelto', responsable: 'Felipe Sánchez' },
+  { id: 'inc-3', nombre: 'Acceso indebido a nómina', tipo: 'Fuga de Datos', fecha: '2026-04-24', estado: 'abierto', responsable: 'Ana Gomez' },
+];
