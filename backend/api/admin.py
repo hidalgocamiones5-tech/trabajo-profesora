@@ -1,4 +1,4 @@
-﻿from django.contrib import admin
+from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from django.utils.html import format_html
@@ -94,7 +94,7 @@ admin.site.register(User, UserAdmin)
 
 class EmpresaAdmin(admin.ModelAdmin):
     list_display = (
-        'nombre', 'rut', 'rubro', 'tamano',
+        'nombre', 'rut', 'get_usuarios_badge', 'rubro', 'tamano',
         'get_cumplimiento_badge', 'get_total_leyes', 'get_sugerencias_ia_badge',
         'setup_completado'
     )
@@ -112,6 +112,21 @@ class EmpresaAdmin(admin.ModelAdmin):
         color = '#10B981' if promedio >= 80 else '#F59E0B' if promedio >= 40 else '#EF4444'
         return format_html('<div style="width:100px; background-color:#E5E7EB; border-radius:4px; overflow:hidden;"><div style="width:{}%; background-color:{}; height:10px;"></div></div><span style="font-size:10px; font-weight:bold; color:{};">{}%</span>', int(promedio), color, color, int(promedio))
     get_cumplimiento_badge.short_description = "Nivel Cumplimiento"
+
+    def get_usuarios_badge(self, obj):
+        usuarios = obj.usuarios.all()
+        if not usuarios.exists():
+            return format_html('<span style="color:#9CA3AF;">-</span>')
+        
+        html_parts = ['<div style="display:flex; gap:4px;">']
+        for perfil in usuarios:
+            nombre = perfil.user.first_name or perfil.user.username
+            iniciales = (nombre[:2]).upper() if nombre else 'US'
+            html_parts.append(f'<div title="{nombre}" style="width:28px; height:28px; border-radius:50%; background-color:#4F46E5; color:white; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:bold;">{iniciales}</div>')
+        html_parts.append('</div>')
+        from django.utils.safestring import mark_safe
+        return mark_safe("".join(html_parts))
+    get_usuarios_badge.short_description = "Usuarios"
 
     def get_total_leyes(self, obj):
         count = obj.complianceempresa_set.exclude(estado__in=['NO_APLICA', 'RECHAZADA']).count()
