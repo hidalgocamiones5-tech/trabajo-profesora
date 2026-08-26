@@ -38,17 +38,17 @@ export const MyWork = () => {
     setEditResponsable(tarea.responsable_asignado || tarea.responsable || 'Usuario Actual');
   };
 
-  const handleToggleComplete = (tareaId: number, e?: React.ChangeEvent<HTMLInputElement>) => {
+  const handleToggleComplete = async (tareaId: number, e?: React.ChangeEvent<HTMLInputElement>) => {
     if (e) e.stopPropagation();
+    const currentTask = tareas.find(t => t.id === tareaId);
+    if (!currentTask) return;
+
+    const isDone = currentTask.estado === 'completada' || currentTask.completada;
+    const newStatus = isDone ? 'pendiente' : 'completada';
+
+    // Actualización optimista en UI
     setTareas(prev => prev.map(t => {
       if (t.id === tareaId) {
-        const isDone = t.estado === 'completada' || t.completada;
-        const newStatus = isDone ? 'pendiente' : 'completada';
-        if (!isDone) {
-          toast.success(`Tarea "${t.tarea}" completada y movida al historial 🎉`);
-        } else {
-          toast('Tarea restaurada a pendientes', { icon: '🔄' });
-        }
         return { 
           ...t, 
           estado: newStatus, 
@@ -58,18 +58,30 @@ export const MyWork = () => {
       }
       return t;
     }));
+
+    try {
+      await api.actualizarEstadoTarea(tareaId, newStatus);
+      if (!isDone) {
+        toast.success(`Tarea "${currentTask.tarea}" completada y recálculo de cumplimiento aplicado 🎉`);
+      } else {
+        toast('Tarea restaurada a pendientes y recálculo actualizado', { icon: '🔄' });
+      }
+    } catch (err) {
+      console.error('Error al actualizar tarea en backend:', err);
+      toast.error('No se pudo sincronizar el estado con el servidor');
+      // Rollback
+      setTareas(prev => prev.map(t => t.id === tareaId ? currentTask : t));
+    }
   };
 
-  const handleSaveTask = () => {
+  const handleSaveTask = async () => {
     if (!selectedTask) return;
+    const previousTask = { ...selectedTask };
+    const justCompleted = editEstado === 'completada' && selectedTask.estado !== 'completada';
+
+    // Actualización optimista
     setTareas(prev => prev.map(t => {
       if (t.id === selectedTask.id) {
-        const justCompleted = editEstado === 'completada' && selectedTask.estado !== 'completada';
-        if (justCompleted) {
-          toast.success(`Tarea movida al historial 🎉`);
-        } else {
-          toast.success('Tarea actualizada correctamente');
-        }
         return {
           ...t,
           estado: editEstado,
@@ -82,6 +94,22 @@ export const MyWork = () => {
       return t;
     }));
     setSelectedTask(null);
+
+    try {
+      await api.actualizarTarea(selectedTask.id, {
+        estado: editEstado,
+        responsable_asignado: editResponsable
+      });
+      if (justCompleted) {
+        toast.success(`Tarea movida al historial e impacto en cumplimiento calculado 🎉`);
+      } else {
+        toast.success('Tarea guardada y sincronizada correctamente');
+      }
+    } catch (err) {
+      console.error('Error al actualizar tarea:', err);
+      toast.error('No se pudo guardar la tarea en el servidor');
+      setTareas(prev => prev.map(t => t.id === previousTask.id ? previousTask : t));
+    }
   };
 
   const handleUploadEvidence = () => {

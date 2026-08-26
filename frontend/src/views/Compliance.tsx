@@ -5,6 +5,7 @@ import { CreateNormativaModal } from '../components/CreateNormativaModal';
 import { CatalogoNormativasModal } from '../components/CatalogoNormativasModal';
 import { bcnService } from '../services/bcnService';
 import type { LeyOficialBCN } from '../services/bcnService';
+import { api } from '../services/api';
 import { NormativaDetailView } from './NormativaDetailView';
 import toast from 'react-hot-toast';
 
@@ -19,9 +20,40 @@ export const Compliance = () => {
   useEffect(() => {
     const fetchLeyes = async () => {
       setIsLoading(true);
-      const data = await bcnService.getLeyes();
-      setLeyes(data);
-      setIsLoading(false);
+      try {
+        const [bcnLeyes, complianceData] = await Promise.all([
+          bcnService.getLeyes(),
+          api.getEmpresaCompliance().catch(() => [])
+        ]);
+
+        if (complianceData && complianceData.length > 0) {
+          const merged = bcnLeyes.map(ley => {
+            const match = complianceData.find((c: any) => 
+              (c.normativa?.codigo_bcn && ley.numero.includes(c.normativa.codigo_bcn)) ||
+              (c.normativa?.nombre && ley.nombre.toLowerCase().includes(c.normativa.nombre.toLowerCase().substring(0, 15))) ||
+              (ley.alias && c.normativa?.nombre?.toLowerCase().includes(ley.alias.toLowerCase()))
+            );
+            if (match) {
+              const liveProg = match.porcentaje_progreso ?? ley.progreso;
+              return {
+                ...ley,
+                progreso: liveProg,
+                estado: liveProg >= 100 ? ('en_tiempo' as const) : (match.estado === 'EN_RIESGO' ? ('en_riesgo' as const) : ley.estado)
+              };
+            }
+            return ley;
+          });
+          setLeyes(merged);
+        } else {
+          setLeyes(bcnLeyes);
+        }
+      } catch (err) {
+        console.error('Error al cargar catálogo:', err);
+        const data = await bcnService.getLeyes();
+        setLeyes(data);
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetchLeyes();
   }, []);
@@ -31,6 +63,13 @@ export const Compliance = () => {
     l.alias.toLowerCase().includes(searchTerm.toLowerCase()) ||
     l.numero.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const totalLeyes = leyes.length;
+  const globalCompliance = totalLeyes > 0 
+    ? (leyes.reduce((acc, l) => acc + (l.progreso || 0), 0) / totalLeyes).toFixed(1)
+    : '0.0';
+  const enTiempoCount = leyes.filter(l => (l.progreso || 0) >= 50 || l.estado === 'en_tiempo').length;
+  const atrasadasCount = leyes.filter(l => l.estado === 'atrasada' || l.estado === 'en_riesgo').length;
 
   const handleCrearConIA = () => {
     toast.success("Iniciando Asistente IA para sugerir normativas según tu rubro...");
@@ -81,7 +120,7 @@ export const Compliance = () => {
         </div>
       </div>
 
-      {/* KPI Bar de Cumplimiento (Fase 2.1) */}
+      {/* KPI Bar de Cumplimiento (Dinámico) */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
         <div className="flex items-center gap-3">
           <div className="p-3 bg-indigo-50 text-indigo-600 rounded-xl">
@@ -89,7 +128,7 @@ export const Compliance = () => {
           </div>
           <div>
             <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Normativas Activas</div>
-            <div className="text-xl font-bold text-slate-900 mt-0.5">11</div>
+            <div className="text-xl font-bold text-slate-900 mt-0.5">{totalLeyes}</div>
           </div>
         </div>
 
@@ -99,7 +138,7 @@ export const Compliance = () => {
           </div>
           <div>
             <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Cumplimiento Global</div>
-            <div className="text-xl font-bold text-emerald-700 mt-0.5">70.0%</div>
+            <div className="text-xl font-bold text-emerald-700 mt-0.5">{globalCompliance}%</div>
           </div>
         </div>
 
@@ -109,7 +148,7 @@ export const Compliance = () => {
           </div>
           <div>
             <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">En Tiempo</div>
-            <div className="text-xl font-bold text-slate-900 mt-0.5">8</div>
+            <div className="text-xl font-bold text-slate-900 mt-0.5">{enTiempoCount}</div>
           </div>
         </div>
 
@@ -119,7 +158,7 @@ export const Compliance = () => {
           </div>
           <div>
             <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Atrasadas / Alertas</div>
-            <div className="text-xl font-bold text-slate-900 mt-0.5">0</div>
+            <div className="text-xl font-bold text-slate-900 mt-0.5">{atrasadasCount}</div>
           </div>
         </div>
       </div>

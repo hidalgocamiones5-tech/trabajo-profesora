@@ -278,10 +278,16 @@ export const api = {
     });
   },
 
-  actualizarEstadoTarea: async (idTarea: string, nuevoEstado: string): Promise<void> => {
-    await axiosInstance.patch(`/api/tareas/${idTarea}/`, {
+  actualizarEstadoTarea: async (idTarea: string | number, nuevoEstado: string): Promise<any> => {
+    const res = await axiosInstance.patch(`/api/tareas/${idTarea}/`, {
       estado: nuevoEstado,
     });
+    return res.data;
+  },
+
+  actualizarTarea: async (idTarea: string | number, data: any): Promise<any> => {
+    const res = await axiosInstance.patch(`/api/tareas/${idTarea}/`, data);
+    return res.data;
   },
 
   getNormativas: async (): Promise<Normativa[]> => {

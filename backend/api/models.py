@@ -139,6 +139,54 @@ class ComplianceEmpresa(models.Model):
     class Meta:
         unique_together = ('empresa', 'normativa')
 
+    def __str__(self):
+        return f"{self.empresa.nombre} - {self.normativa.nombre} ({self.porcentaje_progreso}%)"
+
+    def recalcular_progreso(self):
+        """
+        Recalcula el porcentaje de progreso en cascada basado en las tareas y obligaciones.
+        """
+        # Buscar tareas vinculadas
+        tareas = self.tareas.all()
+        if not tareas.exists() and self.empresa and self.normativa:
+            from django.db.models import Q
+            cod = self.normativa.codigo_bcn or ''
+            alias = self.normativa.nombre or ''
+            tareas = TareaPendiente.objects.filter(
+                Q(compliance_empresa=self) |
+                Q(empresa=self.empresa, normativa=self.normativa) |
+                (Q(empresa=self.empresa) & (Q(asociada_a__icontains=cod) | Q(asociada_a__icontains=alias[:15])))
+            ).distinct()
+
+        if tareas.exists():
+            total = tareas.count()
+            completadas = tareas.filter(estado='completada').count()
+            self.porcentaje_progreso = round((completadas / total) * 100.0, 1)
+        else:
+            # Fallback a obligaciones
+            obligaciones = self.normativa.obligaciones.all()
+            if obligaciones.exists():
+                total = obligaciones.count()
+                cumplidas = obligaciones.filter(estado='cumplido').count()
+                self.porcentaje_progreso = round((cumplidas / total) * 100.0, 1)
+
+        if self.porcentaje_progreso >= 100.0 and self.estado in ['VERIFICADA', 'EN_PROCESO', 'ASIGNADA', 'PRELIMINAR']:
+            self.estado = 'CUMPLIDA'
+        elif self.porcentaje_progreso > 0 and self.estado in ['VERIFICADA', 'ASIGNADA', 'PRELIMINAR']:
+            self.estado = 'EN_PROCESO'
+
+        self.save(update_fields=['porcentaje_progreso', 'estado', 'updated_at'])
+
+        if self.normativa:
+            self.normativa.progreso = int(self.porcentaje_progreso)
+            if self.porcentaje_progreso >= 100:
+                self.normativa.estado = 'completada'
+            elif self.porcentaje_progreso > 0:
+                self.normativa.estado = 'en_tiempo'
+            self.normativa.save(update_fields=['progreso', 'estado'])
+
+        return self.porcentaje_progreso
+
 class ObjetivoChecklist(models.Model):
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=True, blank=True)
     categoria = models.CharField(max_length=100)
@@ -217,21 +265,52 @@ class Incidente(models.Model):
         return self.nombre
 
 class TareaPendiente(models.Model):
-    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=True, blank=True)
+    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=True, blank=True, related_name="tareas_pendientes")
+    normativa = models.ForeignKey(Normativa, on_delete=models.SET_NULL, null=True, blank=True, related_name="tareas")
+    compliance_empresa = models.ForeignKey('ComplianceEmpresa', on_delete=models.SET_NULL, null=True, blank=True, related_name="tareas")
+    obligacion = models.ForeignKey('Obligacion', on_delete=models.SET_NULL, null=True, blank=True, related_name="tareas")
+    control = models.ForeignKey('Control', on_delete=models.SET_NULL, null=True, blank=True, related_name="tareas")
+    
     responsable = models.CharField(max_length=100)
+    responsable_asignado = models.CharField(max_length=100)
+    tarea = models.CharField(max_length=255)
+    asociada_a = models.CharField(max_length=100, blank=True, null=True)
+    fecha_vencimiento = models.DateField(null=True, blank=True)
     estado_choices = [
         ('pendiente', 'Pendiente'),
         ('en_progreso', 'En progreso'),
         ('completada', 'Completada'),
     ]
-    estado = models.CharField(max_length=50, choices=estado_choices)
-    fecha_vencimiento = models.DateField()
-    tarea = models.CharField(max_length=255)
-    asociada_a = models.CharField(max_length=100)
-    responsable_asignado = models.CharField(max_length=100)
+    estado = models.CharField(max_length=50, choices=estado_choices, default='pendiente')
+    prioridad_choices = [
+        ('alta', 'Alta'),
+        ('media', 'Media'),
+        ('baja', 'Baja'),
+        ('critica', 'Crítica'),
+    ]
+    prioridad = models.CharField(max_length=50, choices=prioridad_choices, default='media')
+    fecha_completada = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
 
     def __str__(self):
         return self.tarea
+
+    def save(self, *args, **kwargs):
+        from django.utils import timezone
+        if self.estado == 'completada' and not self.fecha_completada:
+            self.fecha_completada = timezone.now()
+        elif self.estado != 'completada':
+            self.fecha_completada = None
+        super().save(*args, **kwargs)
+        
+        # Propagar recálculo automático al padre ComplianceEmpresa
+        if self.compliance_empresa:
+            self.compliance_empresa.recalcular_progreso()
+        elif self.empresa and self.normativa:
+            ce = ComplianceEmpresa.objects.filter(empresa=self.empresa, normativa=self.normativa).first()
+            if ce:
+                ce.recalcular_progreso()
 
 class Riesgo(models.Model):
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=True, blank=True)
@@ -294,6 +373,13 @@ class Obligacion(models.Model):
 
     def __str__(self):
         return self.nombre
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.normativa:
+            from .models import ComplianceEmpresa
+            for ce in ComplianceEmpresa.objects.filter(normativa=self.normativa):
+                ce.recalcular_progreso()
 
 class Control(models.Model):
     normativa = models.ForeignKey(Normativa, on_delete=models.CASCADE, related_name="controles", null=True, blank=True)

@@ -80,6 +80,43 @@ def asignar_normativas_base(empresa: Empresa) -> List[ComplianceEmpresa]:
             
     empresa.save()
 
+    from datetime import date, timedelta
+    from ..models import TareaPendiente
+
+    TAREAS_BASE_MAP = {
+        '21643': [
+            ("Implementar Protocolo de Prevención de Acoso y Violencia en el Trabajo", "Ley Karin", "alta", 7),
+            ("Capacitación obligatoria al personal sobre prevención de acoso", "Ley Karin", "media", 14),
+            ("Habilitar canal seguro de recepción de denuncias internas", "Ley Karin", "alta", 3),
+        ],
+        '19628': [
+            ("Confección del Registro de Actividades de Tratamiento (RAT)", "Ley 19.628 / 21.719", "alta", 10),
+            ("Actualización de Políticas de Privacidad y Consentimiento", "Ley 19.628 / 21.719", "media", 15),
+            ("Procedimiento de Atención de Derechos ARCO", "Ley 19.628 / 21.719", "media", 20),
+        ],
+        '21719': [
+            ("Auditoría de Bases de Datos y Medidas de Seguridad de la Información", "Ley 21.719", "alta", 12),
+            ("Designación de Oficial de Protección de Datos (DPO)", "Ley 21.719", "media", 30),
+        ],
+        '21663': [
+            ("Revisión del Plan de Continuidad Operacional y Ciberseguridad", "Ley 21.663", "alta", 5),
+            ("Configurar procedimiento de notificación temprana a CSIRT / ANCI", "Ley 21.663", "critica", 2),
+        ],
+        '594': [
+            ("Renovación de Miembros y Actas del Comité Paritario (CPHS)", "D.S. N° 594", "media", 25),
+            ("Inspección de Extintores, Salidas de Emergencia y Botiquines", "D.S. N° 594", "media", 15),
+        ],
+        '20920': [
+            ("Declaración de Envases y Embalajes en Ventanilla Única RETC", "Ley REP 20.920", "alta", 30),
+        ],
+        '19496': [
+            ("Revisión de Cláusulas de Garantía Legal y Retracto Web", "Ley SERNAC 19.496", "media", 14),
+        ],
+        '21521': [
+            ("Adecuación de Políticas de Resguardo y Finanzas Abiertas CMF", "Ley Fintec 21.521", "alta", 20),
+        ]
+    }
+
     for normativa in normativas_coincidentes:
         compliance, created = ComplianceEmpresa.objects.get_or_create(
             empresa=empresa,
@@ -91,5 +128,25 @@ def asignar_normativas_base(empresa: Empresa) -> List[ComplianceEmpresa]:
             }
         )
         compliances_asignados.append(compliance)
+
+        # Generar tareas iniciales vinculadas si no existen
+        cod = str(normativa.codigo_bcn or '')
+        clave = next((k for k in TAREAS_BASE_MAP if k in cod or k in normativa.nombre), None)
+        
+        if clave and not TareaPendiente.objects.filter(empresa=empresa, compliance_empresa=compliance).exists():
+            for tit, asoc, prio, dias in TAREAS_BASE_MAP[clave]:
+                TareaPendiente.objects.create(
+                    empresa=empresa,
+                    normativa=normativa,
+                    compliance_empresa=compliance,
+                    tarea=tit,
+                    asociada_a=asoc,
+                    responsable=empresa.usuarios.first().user.username if empresa.usuarios.exists() else 'Felipe Sanchez',
+                    responsable_asignado=empresa.usuarios.first().user.get_full_name() if (empresa.usuarios.exists() and empresa.usuarios.first().user.get_full_name()) else 'Felipe Sanchez',
+                    prioridad=prio,
+                    estado='pendiente',
+                    fecha_vencimiento=date.today() + timedelta(days=dias)
+                )
+            compliance.recalcular_progreso()
 
     return compliances_asignados

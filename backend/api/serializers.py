@@ -198,6 +198,8 @@ class TareaPendienteSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_es_vencida(self, obj):
+        if not obj.fecha_vencimiento:
+            return False
         return obj.estado != 'completada' and date.today() > obj.fecha_vencimiento
 
 class RiesgoSerializer(serializers.ModelSerializer):
