@@ -6,7 +6,8 @@ import type {
   SolicitudTicket,
   Incidente,
   TratamientoRAT,
-  ObjetivoChecklist
+  ObjetivoChecklist,
+  Responsable
 } from '../types';
 
 // AUTHENTICATION
@@ -55,9 +56,14 @@ const mapTarea = (item: any): TareaPendiente => ({
   estado: item.estado,
   fechaVencimiento: item.fecha_vencimiento || item.fechaVencimiento,
   tarea: item.tarea,
-  asociadaA: item.asociada_a || item.asociadaA,
+  asociadaA: item.asociada_a || item.asociadaA || 'General',
   responsableAsignado: item.responsable_asignado || item.responsableAsignado || item.responsable,
   esVencida: item.es_vencida ?? false,
+  prioridad: item.prioridad || 'media',
+  completada: item.estado === 'completada' || item.estado === 'al_dia',
+  comentarioProgreso: item.comentario_progreso || item.comentarioProgreso || '',
+  comentarioCierre: item.comentario_cierre || item.comentarioCierre || '',
+  nombreArchivoEvidencia: item.nombre_archivo_evidencia || item.nombreArchivoEvidencia || '',
 });
 
 const mapRiesgo = (item: any): Riesgo => ({
@@ -68,20 +74,22 @@ const mapRiesgo = (item: any): Riesgo => ({
   estado: item.estado,
   responsable: item.responsable,
   empresa: item.empresa ? String(item.empresa) : '',
-  fechaIdentificacion: item.fecha_identificacion || item.fechaIdentificacion,
+  fechaIdentificacion: item.fecha_identificacion || item.fechaIdentificacion || new Date().toISOString().split('T')[0],
+  categoria: item.categoria || 'General',
+  estrategia: item.estrategia || 'Mitigar',
 });
 
 const mapSolicitud = (item: any): SolicitudTicket => ({
   id: String(item.id),
-  estado: item.estado,
+  estado: item.estado || 'recibida',
   nombre: item.nombre,
   tipo: item.tipo,
-  fechaCreacion: item.fecha_creacion || item.fechaCreacion,
-  fechaLimite: item.fecha_limite || item.fechaLimite,
-  sla: item.sla,
-  prioridad: item.prioridad,
-  solicitante: item.solicitante,
-  responsable: item.responsable,
+  fechaCreacion: item.fecha_creacion || item.fechaCreacion || new Date().toISOString().split('T')[0],
+  fechaLimite: item.fecha_limite || item.fechaLimite || new Date().toISOString().split('T')[0],
+  sla: item.sla || 'en_tiempo',
+  prioridad: item.prioridad || 'media',
+  solicitante: item.solicitante || 'Usuario',
+  responsable: item.responsable || 'Equipo Legal',
 });
 
 const mapIncidente = (item: any): Incidente => ({
@@ -90,8 +98,9 @@ const mapIncidente = (item: any): Incidente => ({
   denunciante: item.denunciante,
   responsable: item.responsable,
   tipo: item.tipo,
-  estado: item.estado,
-  fecha: item.fecha,
+  estado: item.estado || 'abierto',
+  fecha: item.fecha || new Date().toISOString().split('T')[0],
+  severidad: item.severidad || 'media',
 });
 
 const mapRAT = (item: any): TratamientoRAT => ({
@@ -193,29 +202,57 @@ export const api = {
     return res.data;
   },
 
+  getNormativasAsignadas: async () => {
+    const res = await axiosInstance.get('/api/empresas/compliance/');
+    return res.data;
+  },
+
+  asignarResponsableLey: async (complianceId: number, responsable: string) => {
+    const res = await axiosInstance.patch(`/api/empresas/compliance/${complianceId}/`, { responsable });
+    return res.data;
+  },
+
+  getResponsables: async (): Promise<Responsable[]> => {
+    try {
+      const res = await axiosInstance.get('/api/responsables/');
+      return res.data;
+    } catch (err) {
+      console.error('Error al obtener responsables:', err);
+      return [];
+    }
+  },
+
+  crearResponsable: async (data: Partial<Responsable>): Promise<Responsable> => {
+    const res = await axiosInstance.post('/api/responsables/', data);
+    return res.data;
+  },
+
   getDashboardMetrics: async (): Promise<DashboardMetrics> => {
     try {
-      const [normRes, riesgRes, incRes, solicRes] = await Promise.allSettled([
-        axiosInstance.get('/api/normativas/'),
+      const [compRes, riesgRes, incRes, solicRes] = await Promise.allSettled([
+        axiosInstance.get('/api/empresas/compliance/'),
         axiosInstance.get('/api/riesgos/'),
         axiosInstance.get('/api/incidentes/'),
         axiosInstance.get('/api/tickets/'),
       ]);
 
-      const normativas = normRes.status === 'fulfilled' ? normRes.value.data : [];
+      const compliances = compRes.status === 'fulfilled' ? compRes.value.data : [];
       const riesgos = riesgRes.status === 'fulfilled' ? riesgRes.value.data : [];
       const incidentes = incRes.status === 'fulfilled' ? incRes.value.data : [];
       const solicitudes = solicRes.status === 'fulfilled' ? solicRes.value.data : [];
 
+      const normativasAtrasadas = compliances.filter((n: any) => (n.porcentaje_progreso || 0) < 50 || n.estado === 'EN_RIESGO' || n.estado === 'PENDIENTE').length;
+      const normativasEnTiempo = compliances.filter((n: any) => (n.porcentaje_progreso || 0) >= 50 && n.estado !== 'EN_RIESGO').length;
+
       return {
-        normativasAtrasadas: normativas.filter((n: any) => n.estado === 'atrasada').length,
-        normativasEnTiempo: normativas.filter((n: any) => n.estado === 'en_tiempo').length,
-        riesgosPendientes: riesgos.filter((r: any) => r.estado === 'pendiente').length,
-        riesgosEnCurso: riesgos.filter((r: any) => r.estado === 'en_curso').length,
-        incidentesEnProgreso: incidentes.filter((i: any) => i.estado === 'en_progreso' || i.estado === 'revisando').length,
+        normativasAtrasadas,
+        normativasEnTiempo,
+        riesgosPendientes: riesgos.filter((r: any) => r.estado === 'pendiente' || !r.estado).length,
+        riesgosEnCurso: riesgos.filter((r: any) => r.estado === 'en_curso' || r.estado === 'mitigando').length,
+        incidentesEnProgreso: incidentes.filter((i: any) => i.estado === 'en_progreso' || i.estado === 'revisando' || i.estado === 'abierto').length,
         incidentesCompletados: incidentes.filter((i: any) => i.estado === 'completado' || i.estado === 'cerrado' || i.estado === 'mitigado').length,
-        solicitudesRecibidas: solicitudes.filter((s: any) => s.estado === 'recibida').length,
-        solicitudesEnProgreso: solicitudes.filter((s: any) => s.estado === 'revisando' || s.estado === 'resolviendo').length,
+        solicitudesRecibidas: solicitudes.filter((s: any) => s.estado === 'recibida' || s.estado === 'pendiente').length,
+        solicitudesEnProgreso: solicitudes.filter((s: any) => s.estado === 'revisando' || s.estado === 'resolviendo' || s.estado === 'en_progreso').length,
       };
     } catch {
       return {
@@ -259,6 +296,21 @@ export const api = {
     }
   },
 
+  getAlertas: async (): Promise<any[]> => {
+    try {
+      const res = await axiosInstance.get('/api/alertas-compliance/');
+      return res.data;
+    } catch (err) {
+      console.error('Error al obtener alertas:', err);
+      return [];
+    }
+  },
+
+  actualizarAlerta: async (id: number, data: any): Promise<any> => {
+    const res = await axiosInstance.patch(`/api/alertas-compliance/${id}/`, data);
+    return res.data;
+  },
+
   crearTarea: async (nuevaTarea: Omit<TareaPendiente, 'id'>): Promise<TareaPendiente> => {
     const payload = {
       responsable: nuevaTarea.responsable,
@@ -278,9 +330,14 @@ export const api = {
     });
   },
 
-  actualizarEstadoTarea: async (idTarea: string | number, nuevoEstado: string): Promise<any> => {
+  actualizarEstadoTarea: async (
+    idTarea: string | number, 
+    nuevoEstado: string, 
+    extraData?: { comentario_progreso?: string; comentario_cierre?: string; nombre_archivo_evidencia?: string }
+  ): Promise<any> => {
     const res = await axiosInstance.patch(`/api/tareas/${idTarea}/`, {
       estado: nuevoEstado,
+      ...(extraData || {})
     });
     return res.data;
   },
@@ -315,6 +372,26 @@ export const api = {
     }
   },
 
+  crearRiesgo: async (data: Partial<Riesgo>): Promise<Riesgo> => {
+    const payload = {
+      nombre: data.nombre,
+      categoria: data.categoria || 'Operacional',
+      impacto: data.impacto || 3,
+      probabilidad: data.probabilidad || 3,
+      estrategia: data.estrategia || 'Mitigar',
+      estado: data.estado || 'pendiente',
+      responsable: data.responsable || 'Oficial de Cumplimiento',
+      fecha_identificacion: data.fechaIdentificacion || new Date().toISOString().split('T')[0],
+    };
+    const res = await axiosInstance.post('/api/riesgos/', payload);
+    return mapRiesgo(res.data);
+  },
+
+  actualizarRiesgo: async (id: string | number, data: Partial<Riesgo>): Promise<Riesgo> => {
+    const res = await axiosInstance.patch(`/api/riesgos/${id}/`, data);
+    return mapRiesgo(res.data);
+  },
+
   getIncidentes: async (): Promise<Incidente[]> => {
     try {
       const res = await axiosInstance.get('/api/incidentes/');
@@ -325,6 +402,25 @@ export const api = {
     }
   },
 
+  crearIncidente: async (data: Partial<Incidente>): Promise<Incidente> => {
+    const payload = {
+      nombre: data.nombre,
+      denunciante: data.denunciante || 'Anónimo',
+      responsable: data.responsable || 'Comité de Ética',
+      tipo: data.tipo || 'Acoso Laboral',
+      estado: data.estado || 'abierto',
+      severidad: data.severidad || 'media',
+      fecha: data.fecha || new Date().toISOString().split('T')[0],
+    };
+    const res = await axiosInstance.post('/api/incidentes/', payload);
+    return mapIncidente(res.data);
+  },
+
+  actualizarIncidente: async (id: string | number, data: Partial<Incidente>): Promise<Incidente> => {
+    const res = await axiosInstance.patch(`/api/incidentes/${id}/`, data);
+    return mapIncidente(res.data);
+  },
+
   getSolicitudes: async (): Promise<SolicitudTicket[]> => {
     try {
       const res = await axiosInstance.get('/api/tickets/');
@@ -333,6 +429,26 @@ export const api = {
       console.error('Error al obtener solicitudes:', err);
       return [];
     }
+  },
+
+  crearSolicitud: async (data: Partial<SolicitudTicket>): Promise<SolicitudTicket> => {
+    const payload = {
+      nombre: data.nombre,
+      tipo: data.tipo || 'Derecho ARCO - Acceso',
+      estado: data.estado || 'recibida',
+      prioridad: data.prioridad || 'media',
+      sla: data.sla || 'en_tiempo',
+      fecha_limite: data.fechaLimite || new Date(Date.now() + 15 * 86400000).toISOString().split('T')[0],
+      solicitante: data.solicitante || 'Titular de Datos',
+      responsable: data.responsable || 'Oficial de Privacidad',
+    };
+    const res = await axiosInstance.post('/api/tickets/', payload);
+    return mapSolicitud(res.data);
+  },
+
+  actualizarSolicitud: async (id: string | number, data: Partial<SolicitudTicket>): Promise<SolicitudTicket> => {
+    const res = await axiosInstance.patch(`/api/tickets/${id}/`, data);
+    return mapSolicitud(res.data);
   },
 
   getNormativaDetalle: async (id: string): Promise<any> => {

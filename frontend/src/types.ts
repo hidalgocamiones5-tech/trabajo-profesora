@@ -49,6 +49,7 @@ export interface Incidente {
   tipo: string;
   estado: string;
   fecha: string;
+  severidad?: 'baja' | 'media' | 'alta' | 'critica' | string;
 }
 
 export interface TareaPendiente {
@@ -60,6 +61,11 @@ export interface TareaPendiente {
   asociadaA: string; // Origen (Normativa, etc.)
   responsableAsignado: string;
   esVencida?: boolean;
+  prioridad?: 'baja' | 'media' | 'alta' | 'critica' | string;
+  completada?: boolean;
+  comentarioProgreso?: string;
+  comentarioCierre?: string;
+  nombreArchivoEvidencia?: string;
 }
 
 export interface Riesgo {
@@ -71,4 +77,15 @@ export interface Riesgo {
   responsable: string;
   empresa: string;
   fechaIdentificacion: string;
+  categoria?: string;
+  estrategia?: 'Mitigar' | 'Transferir' | 'Aceptar' | 'Eliminar' | string;
+}
+
+export interface Responsable {
+  id: string;
+  nombre: string;
+  cargo?: string;
+  email?: string;
+  area?: number | string;
+  empresa?: number;
 }

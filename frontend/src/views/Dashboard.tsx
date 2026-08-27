@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'motion/react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, LineChart, Line, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
 import { Search, AlertTriangle, CheckCircle, FileText, Timer, Users, Target, Edit3, Check, Loader2, Plus, Sparkles } from 'lucide-react';
@@ -6,11 +6,13 @@ import clsx from 'clsx';
 import { useDashboard } from '../hooks/useDashboard';
 import { TaskDrawer } from '../components/TaskDrawer';
 import { KPIDetailsModal } from '../components/KPIDetailsModal';
+import { StatusFlowModal } from '../components/StatusFlowModal';
 import { api } from '../services/api';
 import toast from 'react-hot-toast';
 import { MyWork } from './MyWork';
 import { AlertsCenter } from './AlertsCenter';
 import { Calendar } from './Calendar';
+import type { TareaPendiente } from '../types';
 
 const dataParticipation = [
   { name: 'Julian Sosa', value: 45, color: '#6366F1' },
@@ -35,6 +37,11 @@ export const Dashboard = () => {
   const [isTaskDrawerOpen, setIsTaskDrawerOpen] = useState(false);
   const [activeKpiModal, setActiveKpiModal] = useState<'Normativas' | 'Riesgos' | 'Incidentes' | 'Solicitudes' | null>(null);
 
+  // Status Flow Modal State
+  const [selectedTaskForStatusFlow, setSelectedTaskForStatusFlow] = useState<TareaPendiente | null>(null);
+  const [targetStatusFlow, setTargetStatusFlow] = useState<'pendiente' | 'en_progreso' | 'completada'>('en_progreso');
+  const [isStatusFlowModalOpen, setIsStatusFlowModalOpen] = useState(false);
+
   // Executive Dashboard Internal Sub-views
   const [activeDashboardTab, setActiveDashboardTab] = useState<'Vista General' | 'Mi Trabajo' | 'Alertas' | 'Calendario'>('Vista General');
 
@@ -49,36 +56,68 @@ export const Dashboard = () => {
     });
   };
 
+  // Live Compliance Data
+  const [compliances, setCompliances] = useState<any[]>([]);
+
+  useEffect(() => {
+    api.getNormativasAsignadas().then(data => {
+      if (Array.isArray(data)) setCompliances(data);
+    }).catch(() => {});
+  }, [tareas]);
+
+  // Dynamic Normativas Score calculated from actual company compliance & tasks
+  const normativasScore = useMemo(() => {
+    if (compliances.length === 0) {
+      return [
+        { normativa_id: 'ley_21643', nombre: 'Ley Karin N° 21.643', score: { porcentaje: 0, semaforo: 'Rojo' } },
+        { normativa_id: 'ley_19628', nombre: 'Ley 19.628 Datos Personales', score: { porcentaje: 0, semaforo: 'Rojo' } },
+        { normativa_id: 'ley_20920', nombre: 'Ley REP N° 20.920', score: { porcentaje: 0, semaforo: 'Rojo' } },
+        { normativa_id: 'ley_21663', nombre: 'Ley Ciberseguridad 21.663', score: { porcentaje: 0, semaforo: 'Rojo' } },
+      ];
+    }
+    return compliances.map(comp => {
+      const pct = Math.round(comp.porcentaje_progreso || 0);
+      const semaforo = pct >= 85 ? 'Verde' : pct >= 50 ? 'Amarillo' : 'Rojo';
+      return {
+        normativa_id: comp.id,
+        nombre: comp.normativa?.nombre || 'Normativa',
+        score: {
+          porcentaje: pct,
+          semaforo: semaforo
+        }
+      };
+    });
+  }, [compliances]);
+
+  const globalScore = useMemo(() => {
+    if (normativasScore.length === 0) return 0;
+    const sum = normativasScore.reduce((acc: number, curr: any) => acc + (curr.score?.porcentaje || 0), 0);
+    return Math.round(sum / normativasScore.length);
+  }, [normativasScore]);
+
+  // Monthly compliance projection starting from actual current global score
+  const evolucionMensual = useMemo(() => {
+    const meses = ['9/2025', '10/2025', '11/2025', '12/2025', '1/2026', '2/2026', '3/2026', '4/2026', '5/2026', '6/2026', '7/2026'];
+    const current = globalScore;
+    const target = 100;
+    const step = (target - current) / (meses.length - 1);
+    return meses.map((mes, idx) => ({
+      mes,
+      score: Math.min(100, Math.round(current + (step * idx)))
+    }));
+  }, [globalScore]);
+
   // Executive Summary State & IA Generator
   const [isEditingSummary, setIsEditingSummary] = useState(false);
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
-  const [summaryText, setSummaryText] = useState(
-    "La empresa presenta un cumplimiento global del 70.0%. La gravedad de riesgo actual es Crítica con 1 incidentes abiertos."
-  );
+  const [summaryText, setSummaryText] = useState("");
   const [gravedadRiesgo] = useState<string>("Crítica");
 
-  // Monthly compliance projection (9/2025 to 7/2026)
-  const [evolucionMensual] = useState<any[]>([
-    { mes: '9/2025', score: 55 },
-    { mes: '10/2025', score: 58 },
-    { mes: '11/2025', score: 62 },
-    { mes: '12/2025', score: 64 },
-    { mes: '1/2026', score: 67 },
-    { mes: '2/2026', score: 70 },
-    { mes: '3/2026', score: 73 },
-    { mes: '4/2026', score: 78 },
-    { mes: '5/2026', score: 82 },
-    { mes: '6/2026', score: 87 },
-    { mes: '7/2026', score: 92 },
-  ]);
-
-  const [normativasScore] = useState<any[]>([
-    { normativa_id: 'ley_21643', nombre: 'Ley Karin N° 21.643', score: { porcentaje: 75, semaforo: 'Amarillo' } },
-    { normativa_id: 'ley_19628', nombre: 'Ley 19.628 Datos Personales', score: { porcentaje: 50, semaforo: 'Rojo' } },
-    { normativa_id: 'iso_27001', nombre: 'ISO 27001 Seguridad Información', score: { porcentaje: 100, semaforo: 'Verde' } },
-    { normativa_id: 'ley_20920', nombre: 'Ley REP N° 20.920', score: { porcentaje: 100, semaforo: 'Verde' } },
-    { normativa_id: 'ley_21663', nombre: 'Ley Ciberseguridad 21.663', score: { porcentaje: 85, semaforo: 'Verde' } },
-  ]);
+  useEffect(() => {
+    setSummaryText(
+      `La empresa presenta un cumplimiento global del ${globalScore}%. La gravedad de riesgo actual es ${gravedadRiesgo} con ${metrics?.incidentesEnProgreso || 0} incidentes abiertos.`
+    );
+  }, [globalScore, gravedadRiesgo, metrics?.incidentesEnProgreso]);
 
   useEffect(() => {
     api.getDashboardEjecutivo().then(data => {
@@ -93,11 +132,11 @@ export const Dashboard = () => {
       if (res) {
         setSummaryText(res);
       } else {
-        setSummaryText("La empresa presenta un cumplimiento global del 70.0%. La gravedad de riesgo actual es Crítica con 1 incidentes abiertos. Se recomienda priorizar los requerimientos de la Ley de Protección de Datos Personales.");
+        setSummaryText(`La empresa presenta un cumplimiento global del ${globalScore}%. La gravedad de riesgo actual es ${gravedadRiesgo} con ${metrics?.incidentesEnProgreso || 0} incidentes abiertos.`);
       }
       toast.success("Resumen generado con IA con éxito");
     } catch {
-      setSummaryText("La empresa presenta un cumplimiento global del 70.0%. La gravedad de riesgo actual es Crítica con 1 incidentes abiertos.");
+      setSummaryText(`La empresa presenta un cumplimiento global del ${globalScore}%. La gravedad de riesgo actual es ${gravedadRiesgo} con ${metrics?.incidentesEnProgreso || 0} incidentes abiertos.`);
       toast.success("Resumen actualizado con Inteligencia Artificial");
     } finally {
       setIsGeneratingAI(false);
@@ -120,8 +159,16 @@ export const Dashboard = () => {
     {
       title: 'Normativas',
       values: [
-        { label: `${metrics?.normativasAtrasadas || 0} Atrasadas`, color: 'text-rose-700', bg: 'bg-rose-50 border border-rose-200' },
-        { label: `${metrics?.normativasEnTiempo || 8} En tiempo`, color: 'text-emerald-700', bg: 'bg-emerald-50 border border-emerald-200' }
+        { 
+          label: `${normativasScore.filter((n: any) => n.score.porcentaje < 70).length} Atrasadas`, 
+          color: 'text-rose-700', 
+          bg: 'bg-rose-50 border border-rose-200' 
+        },
+        { 
+          label: `${normativasScore.filter((n: any) => n.score.porcentaje >= 70).length} En tiempo`, 
+          color: 'text-emerald-700', 
+          bg: 'bg-emerald-50 border border-emerald-200' 
+        }
       ],
       icon: FileText
     },
@@ -496,28 +543,25 @@ export const Dashboard = () => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 font-medium text-xs">
-                    {!isLoadingTareas && tareas.length === 0 && (
+                    {!isLoadingTareas && tareas.filter(t => t.responsable !== 'Sin Asignar').length === 0 && (
                       <tr>
                         <td colSpan={5} className="text-center py-10 text-slate-400 text-xs">
                           No hay tareas que coincidan con los filtros.
                         </td>
                       </tr>
                     )}
-                    {tareas.map((tarea) => (
+                    {tareas.filter(t => t.responsable !== 'Sin Asignar').map((tarea) => (
                       <tr key={tarea.id} className="hover:bg-slate-50/60 transition-colors">
                         <td className="px-4 py-3">
                           <div className="relative inline-block">
                             <select
                               value={tarea.estado}
-                              onChange={async (e) => {
-                                const newStatus = e.target.value;
-                                try {
-                                  await api.actualizarEstadoTarea(tarea.id, newStatus);
-                                  toast.success('Estado de la tarea actualizado');
-                                  refreshTareas();
-                                } catch {
-                                  toast.error('Error al actualizar tarea');
-                                }
+                              onChange={(e) => {
+                                const newStatus = e.target.value as 'pendiente' | 'en_progreso' | 'completada';
+                                if (newStatus === tarea.estado) return;
+                                setSelectedTaskForStatusFlow(tarea);
+                                setTargetStatusFlow(newStatus);
+                                setIsStatusFlowModalOpen(true);
                               }}
                               className={clsx(
                                 "appearance-none cursor-pointer pl-2.5 pr-6 py-1 rounded-lg text-xs font-semibold border focus:ring-2 outline-none transition-colors",
@@ -573,6 +617,29 @@ export const Dashboard = () => {
             isOpen={activeKpiModal !== null}
             onClose={() => setActiveKpiModal(null)}
             kpiType={activeKpiModal}
+          />
+
+          <StatusFlowModal
+            isOpen={isStatusFlowModalOpen}
+            onClose={() => {
+              setIsStatusFlowModalOpen(false);
+              setSelectedTaskForStatusFlow(null);
+            }}
+            tarea={selectedTaskForStatusFlow}
+            targetState={targetStatusFlow}
+            onConfirm={async (payload) => {
+              if (!selectedTaskForStatusFlow) return;
+              await api.actualizarEstadoTarea(
+                selectedTaskForStatusFlow.id, 
+                payload.estado, 
+                {
+                  comentario_progreso: payload.estado === 'en_progreso' ? payload.comentario : undefined,
+                  comentario_cierre: payload.estado === 'completada' ? payload.comentario : undefined,
+                  nombre_archivo_evidencia: payload.nombreArchivo
+                }
+              );
+              refreshTareas();
+            }}
           />
         </>
       )}

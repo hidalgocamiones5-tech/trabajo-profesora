@@ -166,7 +166,7 @@ class ComplianceEmpresaSerializer(serializers.ModelSerializer):
         model = ComplianceEmpresa
         fields = [
             'id', 'empresa', 'normativa', 'normativa_id', 'estado',
-            'porcentaje_progreso', 'origen', 'justificacion_ia',
+            'porcentaje_progreso', 'origen', 'justificacion_ia', 'responsable',
             'created_at', 'updated_at'
         ]
 

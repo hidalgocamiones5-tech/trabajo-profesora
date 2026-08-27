@@ -1,18 +1,36 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Settings, User, Bell, Shield, Database, Building2, Save, Users, Plus, MailPlus, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import toast from 'react-hot-toast';
 import clsx from 'clsx';
-
-const mockUsers = [
-  { id: 1, name: 'Felipe Sanchez', email: 'fsanchez@empresa.com', role: 'Administrador', area: 'Cumplimiento', status: 'Activo' },
-  { id: 2, name: 'Ana García', email: 'agarcia@empresa.com', role: 'DPO', area: 'Legal', status: 'Activo' },
-  { id: 3, name: 'Carlos López', email: 'clopez@empresa.com', role: 'Lector', area: 'RRHH', status: 'Pendiente' },
-];
+import { api } from '../services/api';
+import type { Responsable } from '../types';
 
 export function Configuration() {
   const [activeTab, setActiveTab] = useState('perfil');
   const [isInviting, setIsInviting] = useState(false);
+  
+  // Responsables state
+  const [responsables, setResponsables] = useState<Responsable[]>([]);
+  const [newRespNombre, setNewRespNombre] = useState('');
+  const [newRespCargo, setNewRespCargo] = useState('');
+  const [newRespEmail, setNewRespEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (activeTab === 'equipo') {
+      cargarResponsables();
+    }
+  }, [activeTab]);
+
+  const cargarResponsables = async () => {
+    try {
+      const resps = await api.getResponsables();
+      setResponsables(resps);
+    } catch (error) {
+      toast.error('Error al cargar responsables');
+    }
+  };
 
   const tabs = [
     { id: 'perfil', name: 'Perfil de Usuario', icon: User },
@@ -23,10 +41,30 @@ export function Configuration() {
     { id: 'api', name: 'API & Integraciones', icon: Database },
   ];
 
-  const handleInvite = (e: React.FormEvent) => {
+  const handleInvite = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsInviting(false);
-    toast.success('Invitación enviada exitosamente.');
+    if (!newRespNombre) {
+      toast.error('El nombre es obligatorio');
+      return;
+    }
+    setLoading(true);
+    try {
+      await api.crearResponsable({
+        nombre: newRespNombre,
+        cargo: newRespCargo,
+        email: newRespEmail,
+      });
+      toast.success('Trabajador registrado exitosamente.');
+      setIsInviting(false);
+      setNewRespNombre('');
+      setNewRespCargo('');
+      setNewRespEmail('');
+      cargarResponsables();
+    } catch (error) {
+      toast.error('Error al registrar trabajador');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -166,27 +204,26 @@ export function Configuration() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 bg-white">
-                    {mockUsers.map((user) => (
+                    {responsables.map((user) => (
                       <tr key={user.id} className="hover:bg-slate-50/50">
                         <td className="px-5 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-xs">
-                              {user.name.split(' ').map(n => n[0]).join('')}
+                            <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-xs uppercase">
+                              {user.nombre.split(' ').map(n => n[0]).join('').substring(0, 2)}
                             </div>
                             <div>
-                              <p className="font-medium text-slate-900">{user.name}</p>
-                              <p className="text-xs text-slate-500">{user.email}</p>
+                              <p className="font-medium text-slate-900">{user.nombre}</p>
+                              <p className="text-xs text-slate-500">{user.email || 'Trabajador'}</p>
                             </div>
                           </div>
                         </td>
-                        <td className="px-5 py-4 text-slate-600 font-medium">{user.role}</td>
-                        <td className="px-5 py-4 text-slate-600">{user.area}</td>
+                        <td className="px-5 py-4 text-slate-600 font-medium">{user.cargo || 'N/A'}</td>
+                        <td className="px-5 py-4 text-slate-600">N/A</td>
                         <td className="px-5 py-4">
                           <span className={clsx(
-                            "inline-flex px-2 py-1 rounded-full text-xs font-semibold uppercase tracking-wide",
-                            user.status === 'Activo' ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
+                            "inline-flex px-2 py-1 rounded-full text-xs font-semibold uppercase tracking-wide bg-emerald-100 text-emerald-700"
                           )}>
-                            {user.status}
+                            Activo
                           </span>
                         </td>
                       </tr>
@@ -247,7 +284,7 @@ export function Configuration() {
                   <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
                     <MailPlus className="w-5 h-5 text-indigo-600" />
                   </div>
-                  <h3 className="font-semibold text-slate-900 text-lg">Invitar Trabajador</h3>
+                  <h3 className="font-semibold text-slate-900 text-lg">Registrar Trabajador</h3>
                 </div>
                 <button onClick={() => setIsInviting(false)} className="text-slate-400 hover:text-slate-600 transition-colors p-1 rounded-lg hover:bg-slate-100 cursor-pointer">
                   <X className="w-5 h-5" />
@@ -256,33 +293,22 @@ export function Configuration() {
               <form onSubmit={handleInvite} className="p-6 space-y-4">
                 <div className="space-y-1.5">
                   <label className="text-sm font-medium text-slate-700">Nombre Completo</label>
-                  <input required type="text" className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-sm shadow-sm" placeholder="Ej. Juan Pérez" />
+                  <input required type="text" value={newRespNombre} onChange={(e) => setNewRespNombre(e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-sm shadow-sm" placeholder="Ej. Juan Pérez" />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-sm font-medium text-slate-700">Correo Electrónico</label>
-                  <input required type="email" className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-sm shadow-sm" placeholder="juan@empresa.com" />
+                  <label className="text-sm font-medium text-slate-700">Correo Electrónico (Opcional)</label>
+                  <input type="email" value={newRespEmail} onChange={(e) => setNewRespEmail(e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-sm shadow-sm" placeholder="Ej. juan@empresa.com" />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1.5">
-                    <label className="text-sm font-medium text-slate-700">Cargo / Área</label>
-                    <input required type="text" className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-sm shadow-sm" placeholder="RRHH" />
-                  </div>
-                  <div className="space-y-1.5">
-                    <label className="text-sm font-medium text-slate-700">Rol en el Sistema</label>
-                    <select className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-sm shadow-sm">
-                      <option>Lector</option>
-                      <option>Editor</option>
-                      <option>Administrador</option>
-                      <option>DPO</option>
-                    </select>
-                  </div>
+                <div className="space-y-1.5">
+                  <label className="text-sm font-medium text-slate-700">Cargo</label>
+                  <input type="text" value={newRespCargo} onChange={(e) => setNewRespCargo(e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-sm shadow-sm" placeholder="Ej. Operario, DPO" />
                 </div>
                 <div className="pt-4 flex justify-end gap-3">
                   <button type="button" onClick={() => setIsInviting(false)} className="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg font-medium text-sm hover:bg-slate-50 transition-colors cursor-pointer">
                     Cancelar
                   </button>
-                  <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium text-sm hover:bg-indigo-700 transition-colors shadow-sm cursor-pointer">
-                    Enviar Invitación
+                  <button disabled={loading} type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium text-sm hover:bg-indigo-700 transition-colors shadow-sm cursor-pointer disabled:opacity-50">
+                    {loading ? 'Registrando...' : 'Registrar'}
                   </button>
                 </div>
               </form>

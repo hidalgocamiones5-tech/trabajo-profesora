@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import toast from 'react-hot-toast';
 import { Bell, Settings, Eye, Trash2, X, CheckCircle2, ShieldAlert, AlertOctagon, Info, AlertTriangle, ExternalLink, Mail, Sliders, Smartphone, Calendar, FileText, Scale, RefreshCw } from 'lucide-react';
+import { api } from '../services/api';
 
 interface Alerta {
   id: number;
@@ -15,60 +16,52 @@ interface Alerta {
   targetView: string;
 }
 
-const mockInitialAlerts: Alerta[] = [
-  { 
-    id: 1, 
-    priority: 'critica', 
-    title: 'Documento Vencido', 
-    description: 'El documento "Política de Seguridad de la Información" expiró hace 2 días. Requiere revisión urgente para evitar sanciones en auditorías.', 
-    category: 'Documentos', 
-    timestamp: 'Hoy 09:00',
-    impactoLegal: 'El no cumplimiento de la actualización anual de la Política de Seguridad supone una infracción grave según los estándares de ISO 27001 y posible multa de fiscalización.',
-    actionLabel: 'Actualizar Documento',
-    targetView: 'Documentos'
-  },
-  { 
-    id: 2, 
-    priority: 'alta', 
-    title: 'Riesgo Elevado en TI', 
-    description: 'Se ha detectado un nivel de riesgo alto en la matriz de infraestructura de TI sin plan de mitigación asociado.', 
-    category: 'Riesgos', 
-    timestamp: 'Hoy 10:30',
-    impactoLegal: 'La falta de controles para un riesgo de nivel alto expone a la empresa a multas por negligencia en el cuidado de los datos personales (Ley 21.719).',
-    actionLabel: 'Mitigar Riesgo',
-    targetView: 'Riesgos'
-  },
-  { 
-    id: 3, 
-    priority: 'media', 
-    title: 'Auditoría Próxima', 
-    description: 'La auditoría semestral de cumplimiento Ley Karin comienza en 15 días.', 
-    category: 'Calendario', 
-    timestamp: 'Ayer 15:45',
-    impactoLegal: 'La preparación para la auditoría garantiza que se pueda evidenciar el cumplimiento del protocolo de prevención de acoso.',
-    actionLabel: 'Ver en Calendario',
-    targetView: 'Calendario'
-  },
-  { 
-    id: 4, 
-    priority: 'informativa', 
-    title: 'Nueva Normativa Publicada', 
-    description: 'Se ha publicado una actualización de la Ley N° 21.719 en el catálogo oficial de la BCN.', 
-    category: 'Normativas', 
-    timestamp: 'Ayer 11:20',
-    impactoLegal: 'Revisar la modificación legal para determinar si impacta directamente en la Matriz RAT (Registro de Actividades de Tratamiento).',
-    actionLabel: 'Revisar Ley BCN',
-    targetView: 'Cumplimiento'
-  },
-];
+const mapPriority = (criticidad: string): 'critica' | 'alta' | 'media' | 'informativa' => {
+  const crit = criticidad?.toUpperCase();
+  if (crit === 'CRITICA') return 'critica';
+  if (crit === 'ALTA') return 'alta';
+  if (crit === 'MEDIA') return 'media';
+  return 'informativa';
+};
 
 export const AlertsCenter = () => {
-  const [alerts, setAlerts] = useState<Alerta[]>(mockInitialAlerts);
+  const [alerts, setAlerts] = useState<Alerta[]>([]);
   const [activeTab, setActiveTab] = useState('Todas');
+  const [loading, setLoading] = useState(true);
   
   // Modals state
   const [selectedAlert, setSelectedAlert] = useState<Alerta | null>(null);
   const [isConfigOpen, setIsConfigOpen] = useState(false);
+
+  useEffect(() => {
+    fetchAlerts();
+  }, []);
+
+  const fetchAlerts = async () => {
+    try {
+      const data = await api.getAlertas();
+      // Filtrar solo las que no están resueltas, si quieres
+      const alertasActivas = data.filter((a: any) => a.estado !== 'RESUELTA');
+      
+      const mappedAlerts: Alerta[] = alertasActivas.map((a: any) => ({
+        id: a.id,
+        priority: mapPriority(a.criticidad),
+        title: a.titulo,
+        description: a.mensaje,
+        category: a.origen_modulo || 'Sistema',
+        timestamp: new Date(a.fecha_generacion).toLocaleDateString(),
+        impactoLegal: 'Revisar implicancias según matriz de riesgos y SLA definido.',
+        actionLabel: 'Ver Detalle',
+        targetView: a.origen_modulo || 'Dashboard'
+      }));
+      setAlerts(mappedAlerts);
+    } catch (err) {
+      console.error('Error fetching alerts:', err);
+      toast.error('No se pudieron cargar las alertas');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Config settings state
   const [configEmail, setConfigEmail] = useState(true);
@@ -79,20 +72,41 @@ export const AlertsCenter = () => {
   const [configBcn, setConfigBcn] = useState(true);
   const [configKarin, setConfigKarin] = useState(true);
 
-  const handleDiscard = (id: number, e?: React.MouseEvent) => {
+  const handleDiscard = async (id: number, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
+    
+    // Update local state first for instant feedback
     setAlerts(prev => prev.filter(a => a.id !== id));
-    toast.success('Alerta descartada correctamente');
+    
+    try {
+      await api.actualizarAlerta(id, { estado: 'RESUELTA' });
+      toast.success('Alerta descartada correctamente');
+    } catch (err) {
+      toast.error('Hubo un error al descartar la alerta');
+      fetchAlerts(); // restore if failed
+    }
+    
+    if (selectedAlert?.id === id) {
+      setSelectedAlert(null);
+    }
   };
 
-  const handleMarkAllAsRead = () => {
-    setAlerts([]);
-    toast.success('Todas las alertas han sido marcadas como leídas');
+  const handleMarkAllAsRead = async () => {
+    toast.loading('Marcando todas como leídas...', { id: 'markAll' });
+    try {
+      // Idealmente habría un endpoint bulk, pero por ahora lo hacemos iterando
+      await Promise.all(alerts.map(a => api.actualizarAlerta(a.id, { estado: 'RESUELTA' })));
+      setAlerts([]);
+      toast.success('Todas las alertas han sido marcadas como leídas', { id: 'markAll' });
+    } catch (err) {
+      toast.error('Error al actualizar las alertas', { id: 'markAll' });
+      fetchAlerts();
+    }
   };
 
   const handleRestoreAlerts = () => {
-    setAlerts(mockInitialAlerts);
-    toast.success('Alertas de prueba restablecidas');
+    fetchAlerts();
+    toast.success('Alertas actualizadas desde el servidor');
   };
 
   const handleSaveConfig = () => {
@@ -102,8 +116,7 @@ export const AlertsCenter = () => {
 
   const handleQuickAction = (alert: Alerta) => {
     toast.success(`Ejecutando acción: ${alert.actionLabel}...`);
-    setSelectedAlert(null);
-    setAlerts(prev => prev.filter(a => a.id !== alert.id));
+    handleDiscard(alert.id);
   };
 
   const getPriorityColor = (priority: string) => {
@@ -223,68 +236,77 @@ export const AlertsCenter = () => {
           </div>
           
           <div className="divide-y divide-slate-100 overflow-y-auto">
-            <AnimatePresence>
-              {alertsFiltered.map((alerta) => (
-                <motion.div 
-                  layout
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95, height: 0, overflow: 'hidden' }}
-                  transition={{ duration: 0.2 }}
-                  key={alerta.id}
-                  className="p-6 hover:bg-slate-50/80 transition-colors flex items-start space-x-4"
-                >
-                  <div className={`mt-1 flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center ${getPriorityColor(alerta.priority)} border shadow-xs`}>
-                    {getPriorityIcon(alerta.priority)}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex justify-between items-start gap-2">
-                      <div>
-                        <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{alerta.category}</span>
-                        <h4 className="text-lg font-semibold text-slate-800 mt-0.5">{alerta.title}</h4>
+            {loading ? (
+              <div className="flex flex-col items-center justify-center p-12 text-center h-[400px]">
+                <div className="w-10 h-10 border-4 border-[#84CC16] border-t-transparent rounded-full animate-spin mb-4"></div>
+                <p className="text-slate-500 font-medium">Cargando alertas del servidor...</p>
+              </div>
+            ) : (
+              <>
+                <AnimatePresence>
+                  {alertsFiltered.map((alerta) => (
+                    <motion.div 
+                      layout
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95, height: 0, overflow: 'hidden' }}
+                      transition={{ duration: 0.2 }}
+                      key={alerta.id}
+                      className="p-6 hover:bg-slate-50/80 transition-colors flex items-start space-x-4"
+                    >
+                      <div className={`mt-1 flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center ${getPriorityColor(alerta.priority)} border shadow-xs`}>
+                        {getPriorityIcon(alerta.priority)}
                       </div>
-                      <span className="text-xs font-medium text-slate-400 flex-shrink-0 bg-slate-100 px-2.5 py-1 rounded-full">{alerta.timestamp}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex justify-between items-start gap-2">
+                          <div>
+                            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{alerta.category}</span>
+                            <h4 className="text-lg font-semibold text-slate-800 mt-0.5">{alerta.title}</h4>
+                          </div>
+                          <span className="text-xs font-medium text-slate-400 flex-shrink-0 bg-slate-100 px-2.5 py-1 rounded-full">{alerta.timestamp}</span>
+                        </div>
+                        <p className="text-slate-600 mt-2 text-sm leading-relaxed">{alerta.description}</p>
+                        
+                        <div className="mt-4 flex flex-wrap items-center gap-3">
+                          <button 
+                            onClick={() => setSelectedAlert(alerta)}
+                            className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-semibold hover:bg-slate-50 text-slate-700 transition-colors flex items-center gap-1.5 shadow-xs cursor-pointer"
+                          >
+                            <Eye className="w-4 h-4 text-slate-500" /> Ver detalle
+                          </button>
+                          <button 
+                            onClick={(e) => handleDiscard(alerta.id, e)}
+                            className="px-4 py-2 bg-transparent text-slate-400 hover:text-red-600 rounded-xl text-sm font-semibold hover:bg-red-50 transition-colors flex items-center gap-1.5 cursor-pointer"
+                          >
+                            <Trash2 className="w-4 h-4" /> Descartar
+                          </button>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+                
+                {/* Estado Vacío Amigable */}
+                {alertsFiltered.length === 0 && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="absolute inset-0 flex flex-col items-center justify-center p-12 text-center"
+                  >
+                    <div className="w-20 h-20 bg-lime-50 rounded-full flex items-center justify-center mb-5 border-4 border-white shadow-sm">
+                      <CheckCircle2 className="w-10 h-10 text-[#84CC16]" />
                     </div>
-                    <p className="text-slate-600 mt-2 text-sm leading-relaxed">{alerta.description}</p>
-                    
-                    <div className="mt-4 flex flex-wrap items-center gap-3">
-                      <button 
-                        onClick={() => setSelectedAlert(alerta)}
-                        className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-semibold hover:bg-slate-50 text-slate-700 transition-colors flex items-center gap-1.5 shadow-xs cursor-pointer"
-                      >
-                        <Eye className="w-4 h-4 text-slate-500" /> Ver detalle
-                      </button>
-                      <button 
-                        onClick={(e) => handleDiscard(alerta.id, e)}
-                        className="px-4 py-2 bg-transparent text-slate-400 hover:text-red-600 rounded-xl text-sm font-semibold hover:bg-red-50 transition-colors flex items-center gap-1.5 cursor-pointer"
-                      >
-                        <Trash2 className="w-4 h-4" /> Descartar
-                      </button>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-            
-            {/* Estado Vacío Amigable */}
-            {alertsFiltered.length === 0 && (
-              <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="absolute inset-0 flex flex-col items-center justify-center p-12 text-center"
-              >
-                <div className="w-20 h-20 bg-lime-50 rounded-full flex items-center justify-center mb-5 border-4 border-white shadow-sm">
-                  <CheckCircle2 className="w-10 h-10 text-[#84CC16]" />
-                </div>
-                <h3 className="text-xl font-bold text-slate-800 mb-2">¡Excelente!</h3>
-                <p className="text-slate-500 font-medium max-w-sm mb-6">No tienes alertas pendientes de atención en esta categoría. Todo está en orden.</p>
-                <button 
-                  onClick={handleRestoreAlerts}
-                  className="px-4 py-2 border border-slate-200 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors flex items-center gap-2 cursor-pointer shadow-xs"
-                >
-                  <RefreshCw className="w-4 h-4 text-slate-400" /> Restablecer alertas de prueba
-                </button>
-              </motion.div>
+                    <h3 className="text-xl font-bold text-slate-800 mb-2">¡Excelente!</h3>
+                    <p className="text-slate-500 font-medium max-w-sm mb-6">No tienes alertas pendientes de atención en esta categoría. Todo está en orden.</p>
+                    <button 
+                      onClick={handleRestoreAlerts}
+                      className="px-4 py-2 border border-slate-200 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors flex items-center gap-2 cursor-pointer shadow-xs"
+                    >
+                      <RefreshCw className="w-4 h-4 text-slate-400" /> Sincronizar alertas
+                    </button>
+                  </motion.div>
+                )}
+              </>
             )}
           </div>
         </div>

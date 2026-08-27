@@ -133,6 +133,7 @@ class ComplianceEmpresa(models.Model):
     porcentaje_progreso = models.FloatField(default=0.0)
     origen = models.CharField(max_length=50, default='MOTOR_REGLAS')
     justificacion_ia = models.TextField(blank=True, null=True)
+    responsable = models.CharField(max_length=100, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -289,6 +290,10 @@ class TareaPendiente(models.Model):
         ('critica', 'Crítica'),
     ]
     prioridad = models.CharField(max_length=50, choices=prioridad_choices, default='media')
+    comentario_progreso = models.TextField(blank=True, null=True)
+    comentario_cierre = models.TextField(blank=True, null=True)
+    archivo_evidencia = models.FileField(upload_to='evidencias_tareas/', blank=True, null=True)
+    nombre_archivo_evidencia = models.CharField(max_length=255, blank=True, null=True)
     fecha_completada = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
@@ -355,6 +360,7 @@ class Responsable(models.Model):
     area = models.ForeignKey(Area, on_delete=models.SET_NULL, null=True, blank=True)
     nombre = models.CharField(max_length=255)
     cargo = models.CharField(max_length=100, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
 
     def __str__(self):
         return self.nombre

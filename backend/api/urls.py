@@ -45,6 +45,7 @@ urlpatterns = [
     path('me/', me_view, name='me'),
     path('empresas/onboarding/', views.empresas_onboarding, name='empresas_onboarding'),
     path('empresas/compliance/', views.empresas_compliance, name='empresas_compliance'),
+    path('empresas/compliance/<int:compliance_id>/', views.empresas_compliance, name='empresas_compliance_patch'),
     path('empresa/setup/', views.empresa_setup, name='empresa_setup'),
     path('recomendaciones_legales/', views.recomendaciones_legales, name='recomendaciones_legales'),
     path('generar_checklist/', views.generar_checklist, name='generar_checklist'),

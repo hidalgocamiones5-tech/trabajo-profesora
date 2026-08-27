@@ -179,19 +179,40 @@ def empresas_onboarding(request):
         "compliances": ComplianceEmpresaSerializer(todos_compliances, many=True).data
     })
 
-@api_view(['GET'])
+@api_view(['GET', 'PATCH'])
 @permission_classes([permissions.IsAuthenticated])
-def empresas_compliance(request):
+def empresas_compliance(request, compliance_id=None):
     """
-    Endpoint GET /api/empresas/compliance/
-    Lista todas las normativas asignadas y sugeridas para la empresa del usuario.
+    Endpoint GET /api/empresas/compliance/ (lista todos)
+    Endpoint PATCH /api/empresas/compliance/<id>/ (actualiza responsable de una ley y tareas)
     """
     user = request.user
     if not hasattr(user, 'perfilusuario') or not user.perfilusuario.empresa:
         return Response([])
     
     empresa = user.perfilusuario.empresa
+
+    if request.method == 'PATCH' and compliance_id:
+        try:
+            compliance = ComplianceEmpresa.objects.get(id=compliance_id, empresa=empresa)
+            responsable = request.data.get('responsable')
+            
+            if responsable is not None:
+                compliance.responsable = responsable
+                compliance.save()
+                
+                # Cascade update to tasks
+                tareas = TareaPendiente.objects.filter(compliance_empresa=compliance)
+                tareas.update(responsable=responsable, responsable_asignado=responsable)
+                
+            return Response(ComplianceEmpresaSerializer(compliance).data)
+        except ComplianceEmpresa.DoesNotExist:
+            return Response({"error": "No encontrado"}, status=404)
+            
     compliances = ComplianceEmpresa.objects.filter(empresa=empresa).select_related('normativa')
+    for comp in compliances:
+        comp.recalcular_progreso()
+        comp.save(update_fields=['porcentaje_progreso', 'estado'])
     return Response(ComplianceEmpresaSerializer(compliances, many=True).data)
 
 @api_view(['PATCH'])
@@ -271,6 +292,24 @@ class IncidenteViewSet(BaseEmpresaViewSet):
 class TareaPendienteViewSet(BaseEmpresaViewSet):
     queryset = TareaPendiente.objects.all()
     serializer_class = TareaPendienteSerializer
+
+    def perform_create(self, serializer):
+        super().perform_create(serializer)
+        tarea = serializer.instance
+        if tarea and tarea.compliance_empresa:
+            tarea.compliance_empresa.recalcular_progreso()
+            tarea.compliance_empresa.save(update_fields=['porcentaje_progreso', 'estado'])
+
+    def perform_update(self, serializer):
+        super().perform_update(serializer)
+        tarea = serializer.instance
+        if tarea and tarea.compliance_empresa:
+            tarea.compliance_empresa.recalcular_progreso()
+            tarea.compliance_empresa.save(update_fields=['porcentaje_progreso', 'estado'])
+        elif tarea and tarea.empresa:
+            for comp in ComplianceEmpresa.objects.filter(empresa=tarea.empresa):
+                comp.recalcular_progreso()
+                comp.save(update_fields=['porcentaje_progreso', 'estado'])
 
 class RiesgoViewSet(BaseEmpresaViewSet):
     queryset = Riesgo.objects.all()

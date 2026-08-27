@@ -114,6 +114,10 @@ def asignar_normativas_base(empresa: Empresa) -> List[ComplianceEmpresa]:
         ],
         '21521': [
             ("Adecuación de Políticas de Resguardo y Finanzas Abiertas CMF", "Ley Fintec 21.521", "alta", 20),
+        ],
+        '20393': [
+            ('Diagnóstico de riesgos penales Ley 21.595', 'Ley 21.595', 'alta', 10),
+            ('Nombramiento y autonomía de Encargado de Prevención (DPO/CCO)', 'Ley 21.595', 'alta', 15)
         ]
     }
 
@@ -130,8 +134,9 @@ def asignar_normativas_base(empresa: Empresa) -> List[ComplianceEmpresa]:
         compliances_asignados.append(compliance)
 
         # Generar tareas iniciales vinculadas si no existen
-        cod = str(normativa.codigo_bcn or '')
-        clave = next((k for k in TAREAS_BASE_MAP if k in cod or k in normativa.nombre), None)
+        cod = str(normativa.codigo_bcn or '').replace('.', '')
+        nombre_norm = str(normativa.nombre or '').replace('.', '')
+        clave = next((k for k in TAREAS_BASE_MAP if k in cod or k in nombre_norm), None)
         
         if clave and not TareaPendiente.objects.filter(empresa=empresa, compliance_empresa=compliance).exists():
             for tit, asoc, prio, dias in TAREAS_BASE_MAP[clave]:
@@ -141,8 +146,8 @@ def asignar_normativas_base(empresa: Empresa) -> List[ComplianceEmpresa]:
                     compliance_empresa=compliance,
                     tarea=tit,
                     asociada_a=asoc,
-                    responsable=empresa.usuarios.first().user.username if empresa.usuarios.exists() else 'Felipe Sanchez',
-                    responsable_asignado=empresa.usuarios.first().user.get_full_name() if (empresa.usuarios.exists() and empresa.usuarios.first().user.get_full_name()) else 'Felipe Sanchez',
+                    responsable='Sin Asignar',
+                    responsable_asignado='Sin Asignar',
                     prioridad=prio,
                     estado='pendiente',
                     fecha_vencimiento=date.today() + timedelta(days=dias)
