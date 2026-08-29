@@ -68,6 +68,34 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({ onComplete, 
     instalaciones_industriales: false,
   });
 
+  // Pre-cargar datos si ya se ingresaron en el registro
+  React.useEffect(() => {
+    api.getEmpresas().then((res) => {
+      if (res && Array.isArray(res) && res.length > 0) {
+        const emp = res[0];
+        setFormData(prev => ({
+          ...prev,
+          nombre: emp.nombre || emp.razon_social || prev.nombre,
+          rut: emp.rut || prev.rut,
+          tipo_sociedad: emp.tipo_sociedad || prev.tipo_sociedad,
+          rubro: emp.rubro || prev.rubro,
+          rango_empleados: emp.rango_empleados || prev.rango_empleados,
+          region_operacion: emp.region_operacion || prev.region_operacion,
+          nivel_ingresos: emp.nivel_ingresos || prev.nivel_ingresos,
+          tiene_trabajadores: emp.tiene_trabajadores ?? prev.tiene_trabajadores,
+          maneja_datos_personales: emp.maneja_datos_personales ?? prev.maneja_datos_personales,
+          es_b2c_ecommerce: emp.es_b2c_ecommerce ?? prev.es_b2c_ecommerce,
+          procesa_pagos: emp.procesa_pagos ?? prev.procesa_pagos,
+          genera_residuos_rep: emp.genera_residuos_rep ?? prev.genera_residuos_rep,
+          importa_exporta: emp.importa_exporta ?? prev.importa_exporta,
+          trabaja_con_estado: emp.trabaja_con_estado ?? prev.trabaja_con_estado,
+          tiene_sindicato: emp.tiene_sindicato ?? prev.tiene_sindicato,
+          instalaciones_industriales: emp.instalaciones_industriales ?? prev.instalaciones_industriales,
+        }));
+      }
+    }).catch(() => {});
+  }, []);
+
   const handleNext = () => setPaso((prev) => Math.min(prev + 1, 3));
   const handlePrev = () => setPaso((prev) => Math.max(prev - 1, 1));
 
@@ -83,7 +111,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({ onComplete, 
       setAnalisisExitoso(response);
       setTimeout(() => {
         onComplete();
-      }, 2200);
+      }, 3500);
     } catch (err) {
       console.error("Error completando onboarding", err);
       setIsSubmitting(false);
@@ -605,20 +633,34 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({ onComplete, 
             )}
           </AnimatePresence>
 
-          {/* Feedback de Análisis Exitoso con IA */}
+          {/* Feedback de Análisis Exitoso con IA y Fase de Auditoría */}
           {analisisExitoso && (
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="mt-6 p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200 flex items-center gap-4"
+              className="mt-6 p-5 rounded-2xl bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/60 text-slate-900 dark:text-slate-100 flex flex-col gap-3"
             >
-              <div className="p-3 bg-emerald-500 text-white rounded-xl">
-                <Sparkles className="w-6 h-6 animate-pulse" />
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-emerald-500 text-white rounded-xl shadow-md">
+                  <Sparkles className="w-5 h-5 animate-pulse" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-sm text-emerald-700 dark:text-emerald-400">
+                    ¡Diagnóstico Recibido con Éxito!
+                  </h4>
+                  <p className="text-xs text-slate-600 dark:text-slate-300">
+                    Se han activado <strong>{analisisExitoso.normativas_asignadas_count || 0} normativas base</strong> inmediatamente en tu panel.
+                  </p>
+                </div>
               </div>
-              <div>
-                <h4 className="font-bold text-sm">¡Motor de Matching Regulador Completado!</h4>
-                <p className="text-xs mt-0.5 text-emerald-700 dark:text-emerald-300">
-                  Se asignaron <strong>{analisisExitoso.normativas_asignadas_count || 0} normativas por reglas</strong>. Redirigiendo al Dashboard...
+
+              <div className="bg-white/80 dark:bg-slate-900/80 p-3.5 rounded-xl border border-indigo-100 dark:border-indigo-900/40 text-xs space-y-1.5">
+                <div className="flex items-center gap-2 font-semibold text-indigo-700 dark:text-indigo-400">
+                  <ShieldCheck className="w-4 h-4 text-indigo-500" />
+                  <span>Fase de Validación y Auditoría en Curso:</span>
+                </div>
+                <p className="text-slate-500 dark:text-slate-400 leading-relaxed pl-6">
+                  Las normativas sectoriales y sugerencias específicas han sido derivadas a nuestro equipo de compliance en la consola de auditoría. Las leyes adicionales estarán disponibles y verificadas en tu panel dentro de poco tiempo.
                 </p>
               </div>
             </motion.div>

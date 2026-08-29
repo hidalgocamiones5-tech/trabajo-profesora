@@ -13,6 +13,12 @@
             "name": "Backend Prototipo",
             "username": "root",
             "database": "mysql"
+        },
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "ChromaDB RAG",
+            "database": "${workspaceFolder:prototipo}/rag_development/chroma_db/chroma.sqlite3"
         }
     ]
 }

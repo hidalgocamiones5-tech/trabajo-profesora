@@ -1,10 +1,11 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import toast from 'react-hot-toast';
 import {
   Calendar as CalendarIcon, ChevronLeft, ChevronRight, Download, Clock, Plus,
   Search, ShieldCheck, User, X, Trash2, Edit3, Share2, Printer, Check
 } from 'lucide-react';
+import { api } from '../services/api';
 
 export type EventType = 'Auditorías' | 'Capacitaciones' | 'Controles' | 'Evidencias' | 'Riesgos' | 'Incidentes' | 'Documentos';
 export type EventStatus = 'pendiente' | 'en_progreso' | 'completado' | 'urgente' | 'atrasado';
@@ -172,6 +173,64 @@ export const Calendar = () => {
     descripcion: '',
     ubicacion: 'Oficina Central'
   });
+
+  useEffect(() => {
+    const fetchCalendarData = async () => {
+      try {
+        const [eventosData, tareasData] = await Promise.all([
+          api.getCalendarioEventos(),
+          api.getTareas({})
+        ]);
+
+        const combinedEvents: CalendarEvent[] = [];
+
+        // Map backend eventos if they exist
+        if (eventosData && eventosData.length > 0) {
+          eventosData.forEach((ev: any) => {
+            combinedEvents.push({
+              id: ev.id,
+              title: ev.titulo || 'Evento',
+              date: ev.fecha_inicio ? ev.fecha_inicio.split('T')[0] : new Date().toISOString().split('T')[0],
+              time: ev.fecha_inicio && ev.fecha_inicio.includes('T') ? ev.fecha_inicio.split('T')[1].substring(0, 5) : '',
+              type: (ev.tipo === 'Auditoria' ? 'Auditorías' : ev.tipo === 'Capacitacion' ? 'Capacitaciones' : 'Controles') as EventType,
+              normativa: ev.normativa_nombre || 'General',
+              status: ev.estado === 'cumplido' || ev.estado === 'completado' ? 'completado' : 'pendiente',
+              priority: ev.prioridad === 'alta' ? 'Alta' : 'Media',
+              responsable: ev.responsable_nombre || 'Oficial',
+              descripcion: ev.descripcion || '',
+              ubicacion: ev.ubicacion || 'Central'
+            });
+          });
+        }
+
+        // Map tareas to events (so they appear in the calendar)
+        if (tareasData && tareasData.length > 0) {
+          tareasData.forEach(t => {
+            combinedEvents.push({
+              id: 10000 + Number(t.id), // offset ID to avoid collisions
+              title: t.tarea,
+              date: t.fechaVencimiento || new Date().toISOString().split('T')[0],
+              time: '12:00',
+              type: 'Documentos' as EventType,
+              normativa: t.asociadaA || 'Cumplimiento General',
+              status: t.estado === 'completada' ? 'completado' : (t.estado === 'vencido' ? 'urgente' : 'pendiente'),
+              priority: 'Alta',
+              responsable: t.responsableAsignado || t.responsable || 'Equipo',
+              descripcion: `Tarea generada automáticamente desde el dashboard de cumplimiento: ${t.tarea}`,
+              ubicacion: 'Sistema GRC'
+            });
+          });
+        }
+
+        setEvents(combinedEvents);
+      } catch (err) {
+        console.error('Error fetching calendar data', err);
+        toast.error('No se pudieron sincronizar las tareas del calendario.');
+      }
+    };
+    
+    fetchCalendarData();
+  }, []);
 
   const monthNames = [
     'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',

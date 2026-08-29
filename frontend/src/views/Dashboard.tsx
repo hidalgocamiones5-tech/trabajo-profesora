@@ -1,12 +1,13 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'motion/react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, LineChart, Line, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
-import { Search, AlertTriangle, CheckCircle, FileText, Timer, Users, Target, Edit3, Check, Loader2, Plus, Sparkles } from 'lucide-react';
+import { Search, AlertTriangle, CheckCircle, FileText, Timer, Users, Target, Edit3, Check, Loader2, Plus, Sparkles, Compass } from 'lucide-react';
 import clsx from 'clsx';
 import { useDashboard } from '../hooks/useDashboard';
 import { TaskDrawer } from '../components/TaskDrawer';
 import { KPIDetailsModal } from '../components/KPIDetailsModal';
 import { StatusFlowModal } from '../components/StatusFlowModal';
+import { OnboardingWizard } from './OnboardingWizard';
 import { api } from '../services/api';
 import toast from 'react-hot-toast';
 import { MyWork } from './MyWork';
@@ -44,6 +45,7 @@ export const Dashboard = () => {
 
   // Executive Dashboard Internal Sub-views
   const [activeDashboardTab, setActiveDashboardTab] = useState<'Vista General' | 'Mi Trabajo' | 'Alertas' | 'Calendario'>('Vista General');
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   // Custom Hook (Mock API)
   const { metrics, tareas, assignees, isLoadingMetrics, isLoadingTareas, error, refreshTareas } = useDashboard(activeFilters);
@@ -60,6 +62,17 @@ export const Dashboard = () => {
   const [compliances, setCompliances] = useState<any[]>([]);
 
   useEffect(() => {
+    // Check if onboarding is completed
+    api.getEmpresas().then((res) => {
+      if (res && Array.isArray(res) && res.length > 0) {
+        const emp = res[0];
+        if (!emp.setup_completado) {
+          setShowOnboarding(true);
+        }
+      }
+    }).catch(() => {});
+
+    // Get assigned laws
     api.getNormativasAsignadas().then(data => {
       if (Array.isArray(data)) setCompliances(data);
     }).catch(() => {});
@@ -216,22 +229,32 @@ export const Dashboard = () => {
           <p className="text-sm text-slate-500 mt-0.5">Visión global de cumplimiento, riesgos e indicadores clave</p>
         </div>
 
-        {/* Sub-view switcher selector */}
-        <div className="flex p-1 bg-slate-200/70 rounded-xl w-fit">
-          {(['Vista General', 'Mi Trabajo', 'Alertas', 'Calendario'] as const).map(tab => (
-            <button
-              key={tab}
-              onClick={() => setActiveDashboardTab(tab)}
-              className={clsx(
-                "px-4 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer",
-                activeDashboardTab === tab
-                  ? "bg-white shadow-xs text-indigo-600"
-                  : "text-slate-600 hover:text-slate-900"
-              )}
-            >
-              {tab}
-            </button>
-          ))}
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            onClick={() => setShowOnboarding(true)}
+            className="flex items-center gap-2 px-3.5 py-2 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white rounded-xl text-xs font-semibold shadow-xs transition-all cursor-pointer"
+          >
+            <Compass className="w-4 h-4 text-lemon-400" />
+            <span>Asistente de Leyes (Diagnóstico)</span>
+          </button>
+
+          {/* Sub-view switcher selector */}
+          <div className="flex p-1 bg-slate-200/70 rounded-xl w-fit">
+            {(['Vista General', 'Mi Trabajo', 'Alertas', 'Calendario'] as const).map(tab => (
+              <button
+                key={tab}
+                onClick={() => setActiveDashboardTab(tab)}
+                className={clsx(
+                  "px-4 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer",
+                  activeDashboardTab === tab
+                    ? "bg-white shadow-xs text-indigo-600"
+                    : "text-slate-600 hover:text-slate-900"
+                )}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -641,6 +664,19 @@ export const Dashboard = () => {
               refreshTareas();
             }}
           />
+
+          {showOnboarding && (
+            <OnboardingWizard
+              onComplete={() => {
+                setShowOnboarding(false);
+                refreshTareas();
+                api.getNormativasAsignadas().then(data => {
+                  if (Array.isArray(data)) setCompliances(data);
+                }).catch(() => {});
+                toast.success("¡Diagnóstico completado y normativas asignadas con éxito!");
+              }}
+            />
+          )}
         </>
       )}
     </motion.div>

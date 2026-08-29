@@ -270,6 +270,44 @@ export const CHILEAN_LAWS_DB: LeyOficialBCN[] = [
     ]
   },
   {
+    id: 'ley_21459',
+    numero: 'Ley N° 21.459',
+    nombre: 'Establece Normas sobre Delitos Informáticos',
+    alias: 'Ley de Delitos Informáticos 21.459',
+    tipo: 'Ley de la República',
+    origen: 'BCN Ley Chile',
+    criticidad: 'Alta',
+    estado: 'en_tiempo',
+    progreso: 0,
+    fechaInicio: '2023-01-01',
+    fechaTermino: '2026-12-31',
+    organismo: 'Ministerio Público',
+    resumen: 'Para empresas de TECNOLOGÍA, esta ley tipifica el acceso ilícito, interceptación y falsificación de datos informáticos.',
+    articulos: [
+      {
+        numero: 'Art. 2°',
+        capitulo: 'Título I: De los Delitos Informáticos',
+        titulo: 'Acceso Ilícito',
+        contenido: 'El que sin autorización o excediendo la autorización que posea y superando barreras técnicas, acceda a un sistema informático será sancionado.'
+      }
+    ],
+    requisitos: [
+      {
+        id: 'req_del_1',
+        categoria: 'Ciberseguridad y Prevención',
+        titulo: 'Implementar controles de acceso y barreras técnicas',
+        descripcion: 'Configuración de MFA y VPN para accesos remotos y segmentación de redes.',
+        estado: 'en_progreso',
+        hitos: [
+          { id: 'hit_del1', nombre: 'Auditoría de accesos a base de datos', estado: 'en_progreso', fechaVencimiento: '2024-12-15', responsable: 'Julian Sosa', avatarInitials: 'JS' }
+        ]
+      }
+    ],
+    evidencias: [
+      { id: 'ev_del1', nombre: 'Politica_Accesos_2024.pdf', tipo: 'PDF Document', tamano: '1.2 MB', fechaSubida: '2024-06-01', subidoPor: 'Julian Sosa', version: '1.0' }
+    ]
+  },
+  {
     id: 'ley_21521',
     numero: 'Ley N° 21.521',
     nombre: 'Ley para Promover la Innovación y Tecnología Financiera (Ley Fintec)',
@@ -429,7 +467,29 @@ export const bcnService = {
   },
 
   getLeyPorId: async (id: string): Promise<LeyOficialBCN | undefined> => {
-    return CHILEAN_LAWS_DB.find(l => l.id === id || l.numero.toLowerCase().includes(id.toLowerCase()) || l.alias.toLowerCase().includes(id.toLowerCase()));
+    // Mapa de códigos internos BCN hacia nuestros IDs en CHILEAN_LAWS_DB
+    const bcnIdMap: Record<string, string> = {
+      '1200164': 'ley_21643', // Ley Karin
+      '29631': 'ley_19628',   // Datos Personales
+      '1202511': 'ley_21663', // Ciberseguridad
+      '1176766': 'ley_21459', // Delitos Informáticos
+      'nch-27001': 'ley_21663' // Fallback para la ISO que no está en la BCN, mostrar Ciberseguridad o vacio
+    };
+
+    const normalizedId = id.toString().replace(/[\.\s]/g, '').toLowerCase();
+    
+    // Si el ID viene de la API del backend (es un código BCN), lo mapeamos a la key del mock
+    const targetId = bcnIdMap[normalizedId] || normalizedId;
+    
+    return CHILEAN_LAWS_DB.find(l => {
+      const normalizedNumero = l.numero.replace(/[\.\s]/g, '').toLowerCase();
+      const normalizedInternalId = l.id.replace(/[\.\s_]/g, '').toLowerCase();
+      return l.id === id || 
+             l.id === targetId ||
+             normalizedNumero.includes(targetId) || 
+             normalizedInternalId.includes(targetId) ||
+             l.alias.toLowerCase().includes(id.toLowerCase());
+    });
   },
 
   buscarLeyesBCN: async (query: string): Promise<LeyOficialBCN[]> => {
@@ -443,3 +503,5 @@ export const bcnService = {
     );
   }
 };
+
+

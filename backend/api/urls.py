@@ -59,9 +59,11 @@ urlpatterns = [
     path('compliance/mi-trabajo/', views.mi_trabajo_view, name='compliance_mi_trabajo'),
     path('normativas/disponibles/', views.normativas_disponibles_view, name='normativas_disponibles'),
     path('normativas/asignar/', views.asignar_normativa_view, name='asignar_normativa'),
+    path('empresas/smart-discovery/', views.smart_discovery_view, name='smart_discovery'),
     path('alertas/<int:alerta_id>/escalar/', views.escalar_alerta_view, name='escalar_alerta'),
     path('calendario/eventos/', views.calendario_eventos_view, name='calendario_eventos'),
     path('dashboard/generar_resumen/', views.generar_resumen_ia_view, name='generar_resumen_ia'),
+    path('compliance/evaluar-rag/', views.evaluar_compliance_rag_view, name='compliance_evaluar_rag'),
     
     path('', include(router.urls)),
 ]

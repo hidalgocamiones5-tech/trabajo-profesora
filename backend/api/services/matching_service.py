@@ -48,9 +48,27 @@ def asignar_normativas_base(empresa: Empresa) -> List[ComplianceEmpresa]:
 
     compliances_asignados = []
     
+    # Identificar las normativas que ya no aplican y desasignarlas
+    normativas_coincidentes_ids = [n.id for n in normativas_coincidentes]
+    compliances_previos = ComplianceEmpresa.objects.filter(empresa=empresa).exclude(estado__in=['RECHAZADA'])
+    
+    leyes_desasignadas_count = 0
+    leyes_desasignadas_nombres = []
+    
+    for comp in compliances_previos:
+        if comp.normativa.id not in normativas_coincidentes_ids:
+            # Ya no aplica
+            comp.estado = 'NO_APLICA'
+            comp.save()
+            leyes_desasignadas_count += 1
+            leyes_desasignadas_nombres.append(comp.normativa.nombre)
+
     # Audit log entry
+    import json
+    from django.utils import timezone
+
     log_entry = {
-        'timestamp': None, # We can use django.utils.timezone.now().isoformat()
+        'timestamp': timezone.now().isoformat(),
         'triggers_evaluados': {
             'cant_empleados': cant_empleados,
             'rubro': empresa.rubro,
@@ -60,21 +78,28 @@ def asignar_normativas_base(empresa: Empresa) -> List[ComplianceEmpresa]:
             'genera_residuos_rep': empresa.genera_residuos_rep,
             'tiene_trabajadores': empresa.tiene_trabajadores,
         },
-        'leyes_asignadas_count': len(normativas_coincidentes)
+        'leyes_asignadas_count': len(normativas_coincidentes),
+        'leyes_desasignadas_count': leyes_desasignadas_count,
+        'leyes_desasignadas': leyes_desasignadas_nombres
     }
 
-    from django.utils import timezone
-    log_entry['timestamp'] = timezone.now().isoformat()
+    try:
+        if empresa.log_matching and isinstance(empresa.log_matching, str):
+            log_str = empresa.log_matching.replace("'", '"') if empresa.log_matching.startswith('{') else empresa.log_matching
+            current_log = json.loads(log_str)
+        elif isinstance(empresa.log_matching, dict):
+            current_log = empresa.log_matching
+        else:
+            current_log = {}
+    except Exception:
+        current_log = {}
 
-    if isinstance(empresa.log_matching, dict):
-        empresa.log_matching['motor_reglas'] = log_entry
-    else:
-        empresa.log_matching = {'motor_reglas': log_entry}
+    current_log['motor_reglas'] = log_entry
+    empresa.log_matching = json.dumps(current_log)
 
     if len(normativas_coincidentes) == 0:
         empresa.estado_matching = 'ADVERTENCIA'
     else:
-        # Solo lo marcamos como EXITOSO si estaba pendiente o ya era exitoso (no pisamos errores de IA aquí)
         if empresa.estado_matching in ['PENDIENTE', 'EXITOSO']:
             empresa.estado_matching = 'EXITOSO'
             
@@ -121,6 +146,8 @@ def asignar_normativas_base(empresa: Empresa) -> List[ComplianceEmpresa]:
         ]
     }
 
+    compliances_asignados = []
+
     for normativa in normativas_coincidentes:
         compliance, created = ComplianceEmpresa.objects.get_or_create(
             empresa=empresa,
@@ -131,6 +158,11 @@ def asignar_normativas_base(empresa: Empresa) -> List[ComplianceEmpresa]:
                 'porcentaje_progreso': 0.0
             }
         )
+        # Reactivar si estaba NO APLICA
+        if compliance.estado == 'NO_APLICA':
+            compliance.estado = 'PRELIMINAR'
+            compliance.save()
+            
         compliances_asignados.append(compliance)
 
         # Generar tareas iniciales vinculadas si no existen

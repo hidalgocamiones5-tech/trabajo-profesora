@@ -21,36 +21,42 @@ export const Compliance = () => {
     const fetchLeyes = async () => {
       setIsLoading(true);
       try {
-        const [bcnLeyes, complianceData] = await Promise.all([
-          bcnService.getLeyes(),
-          api.getEmpresaCompliance().catch(() => [])
-        ]);
-
+        const complianceData = await api.getEmpresaCompliance().catch(() => []);
+        
         if (complianceData && complianceData.length > 0) {
-          const merged = bcnLeyes.map(ley => {
-            const match = complianceData.find((c: any) => 
-              (c.normativa?.codigo_bcn && ley.numero.includes(c.normativa.codigo_bcn)) ||
-              (c.normativa?.nombre && ley.nombre.toLowerCase().includes(c.normativa.nombre.toLowerCase().substring(0, 15))) ||
-              (ley.alias && c.normativa?.nombre?.toLowerCase().includes(ley.alias.toLowerCase()))
-            );
-            if (match) {
-              const liveProg = match.porcentaje_progreso ?? ley.progreso;
-              return {
-                ...ley,
-                progreso: liveProg,
-                estado: liveProg >= 100 ? ('en_tiempo' as const) : (match.estado === 'EN_RIESGO' ? ('en_riesgo' as const) : ley.estado)
-              };
-            }
-            return ley;
+          // Filtrar leyes que no aplican o que están aún en revisión por los administradores (sugeridas por IA)
+          const activas = complianceData.filter((c: any) => 
+            c.estado !== 'NO_APLICA' && 
+            c.estado !== 'RECHAZADA' && 
+            c.estado !== 'SUGERIDA_IA'
+          );
+          
+          const mapped = activas.map((c: any) => {
+            const isBase = c.origen === 'MOTOR_REGLAS';
+            const isIA = c.origen === 'SMART_DISCOVERY_IA';
+            
+            return {
+              id: c.normativa?.codigo_bcn || c.normativa?.id?.toString() || Math.random().toString(),
+              numero: c.normativa?.codigo_bcn ? `Ley N° ${c.normativa.codigo_bcn}` : (isIA ? 'Sugerencia IA' : 'Regulación Base'),
+              nombre: c.normativa?.nombre || 'Normativa',
+              alias: c.normativa?.nombre || '',
+              fechaPublicacion: c.created_at?.split('T')[0] || '',
+              resumen: c.justificacion_ia || c.normativa?.resumen || c.normativa?.descripcion || 'Sin descripción.',
+              sectores: [isBase ? 'Transversal' : (isIA ? 'IA Específica' : 'General')],
+              progreso: c.porcentaje_progreso || 0,
+              estado: c.porcentaje_progreso >= 80 ? 'en_tiempo' : 'en_riesgo',
+              origen: c.origen,
+              estado_compliance: c.estado,
+              db_compliance_id: c.id
+            };
           });
-          setLeyes(merged);
+          setLeyes(mapped);
         } else {
-          setLeyes(bcnLeyes);
+          setLeyes([]);
         }
       } catch (err) {
         console.error('Error al cargar catálogo:', err);
-        const data = await bcnService.getLeyes();
-        setLeyes(data);
+        setLeyes([]);
       } finally {
         setIsLoading(false);
       }
@@ -71,9 +77,21 @@ export const Compliance = () => {
   const enTiempoCount = leyes.filter(l => (l.progreso || 0) >= 50 || l.estado === 'en_tiempo').length;
   const atrasadasCount = leyes.filter(l => l.estado === 'atrasada' || l.estado === 'en_riesgo').length;
 
-  const handleCrearConIA = () => {
+  const [isDiscovering, setIsDiscovering] = useState(false);
+
+  const handleCrearConIA = async () => {
     toast.success("Iniciando Asistente IA para sugerir normativas según tu rubro...");
-    setIsCatalogoModalOpen(true);
+    setIsDiscovering(true);
+    try {
+      const res = await api.ejecutarSmartDiscovery();
+      toast.success(res.message || "Descubrimiento completado con éxito.");
+      const updated = await api.getEmpresaCompliance();
+      setLeyes(updated);
+    } catch (e) {
+      toast.error("Error al ejecutar descubrimiento IA");
+    } finally {
+      setIsDiscovering(false);
+    }
   };
 
   const renderNormativasList = () => (
@@ -112,10 +130,11 @@ export const Compliance = () => {
           </button>
           <button
             onClick={handleCrearConIA}
-            className="flex items-center gap-1.5 px-3 py-2 bg-indigo-50 border border-indigo-200 text-indigo-700 hover:bg-indigo-100 rounded-xl transition-colors font-semibold text-xs cursor-pointer"
+            disabled={isDiscovering}
+            className="flex items-center gap-1.5 px-3 py-2 bg-indigo-50 border border-indigo-200 text-indigo-700 hover:bg-indigo-100 rounded-xl transition-colors font-semibold text-xs cursor-pointer disabled:opacity-50"
           >
-            <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-            + Crear con IA
+            <Sparkles className={`w-3.5 h-3.5 text-indigo-600 ${isDiscovering ? 'animate-spin' : ''}`} />
+            {isDiscovering ? 'Analizando...' : '+ Crear con IA'}
           </button>
         </div>
       </div>
@@ -195,19 +214,42 @@ export const Compliance = () => {
               className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs hover:shadow-md hover:border-indigo-300 transition-all flex flex-col justify-between group"
             >
               <div>
-                {/* Badges: EN TIEMPO (🟢) & BCN Ley Chile (🔵) */}
+                {/* Badges: Estado & Origen */}
                 <div className="flex items-center justify-between mb-3">
-                  <span className="px-2.5 py-1 rounded-md text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                    EN TIEMPO
-                  </span>
-                  <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-sky-50 text-sky-700 border border-sky-200">
-                    {law.origen}
-                  </span>
+                  {law.estado === 'en_tiempo' && (
+                    <span className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      EN TIEMPO
+                    </span>
+                  )}
+                  {law.estado === 'en_riesgo' && (
+                    <span className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                      EN RIESGO
+                    </span>
+                  )}
+                  {law.estado === 'atrasada' && (
+                    <span className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                      ATRASADA
+                    </span>
+                  )}
+
+                  {law.origen === 'SMART_DISCOVERY_IA' ? (
+                    <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-purple-50 text-purple-700 border border-purple-200 flex items-center gap-1">
+                      <Sparkles className="w-3 h-3" /> IA ESPECÍFICA
+                    </span>
+                  ) : law.origen === 'MOTOR_REGLAS' ? (
+                    <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-sky-50 text-sky-700 border border-sky-200 flex items-center gap-1">
+                      <ShieldCheck className="w-3 h-3" /> BASE UNIVERSAL
+                    </span>
+                  ) : (
+                    <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-50 text-slate-700 border border-slate-200">
+                      MANUAL
+                    </span>
+                  )}
                 </div>
 
                 <div className="text-[11px] font-mono font-bold text-indigo-600 mb-1">{law.numero}</div>
                 <h3 className="font-bold text-slate-900 text-sm mb-2 group-hover:text-indigo-600 transition-colors leading-snug">
-                  {law.alias}
+                  {law.nombre}
                 </h3>
                 <p className="text-xs text-slate-500 line-clamp-2 mb-4 leading-relaxed font-medium">
                   {law.resumen}

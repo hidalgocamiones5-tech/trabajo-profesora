@@ -502,6 +502,11 @@ export const api = {
     return res.data.resumen || '';
   },
 
+  ejecutarSmartDiscovery: async (): Promise<any> => {
+    const res = await axiosInstance.post('/api/empresas/smart-discovery/');
+    return res.data;
+  },
+
   getFichaNormativaCompleta: async (id: number | string): Promise<any> => {
     const res = await axiosInstance.get(`/api/compliance/normativas/${id}/ficha-completa/`);
     return res.data;

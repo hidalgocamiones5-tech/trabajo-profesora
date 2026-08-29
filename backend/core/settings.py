@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'catalogo',
     'soporte',
     'privacidad',
+    'rag_admin.apps.RagAdminConfig',
 ]
 
 MIDDLEWARE = [
@@ -200,6 +201,8 @@ JAZZMIN_SETTINGS = {
         "soporte.RiesgoSoporte": "fas fa-shield-alt",
         "privacidad.RATPrivacidad": "fas fa-user-lock",
         "privacidad.AuditoriaARCO": "fas fa-fingerprint",
+        "rag_admin.AuditoriaIaEmpresa": "fas fa-robot",
+        "rag_admin.RegistroAuditoriaRAG": "fas fa-history",
     },
     "default_icon_parents": "fas fa-folder",
     "default_icon_children": "fas fa-file",

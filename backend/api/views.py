@@ -168,14 +168,23 @@ def empresas_onboarding(request):
     # 1. Motor de Matching Automático (Reglas base)
     compliances_base = asignar_normativas_base(empresa)
 
+    # 2. Smart Discovery con Gemini AI
+    try:
+        from .services.gemini_service import GeminiSmartDiscoveryService
+        smart_discovery = GeminiSmartDiscoveryService()
+        smart_discovery.ejecutar_smart_discovery(empresa)
+    except Exception as e:
+        print(f"Error en Smart Discovery durante onboarding: {e}")
+
     # 3. Serializar y devolver respuesta enriquecida
     todos_compliances = ComplianceEmpresa.objects.filter(empresa=empresa).select_related('normativa')
+    ia_count = todos_compliances.filter(estado='SUGERIDA_IA').count()
     
     return Response({
         "mensaje": "Onboarding completado exitosamente",
         "empresa": EmpresaOnboardingSerializer(empresa).data,
         "normativas_asignadas_count": len(compliances_base),
-        "normativas_sugeridas_ia_count": len(compliances_ia),
+        "normativas_sugeridas_ia_count": ia_count,
         "compliances": ComplianceEmpresaSerializer(todos_compliances, many=True).data
     })
 
@@ -570,4 +579,58 @@ def asignar_normativa_view(request):
             return Response({'mensaje': 'La normativa ya estaba asignada'}, status=200)
     except Normativa.DoesNotExist:
         return Response({'error': 'Normativa no encontrada'}, status=404)
+
+from .services.gemini_service import GeminiSmartDiscoveryService
+
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def smart_discovery_view(request):
+    user = request.user
+    empresa = getattr(user.perfilusuario, 'empresa', None) if hasattr(user, 'perfilusuario') else None
+    if not empresa:
+        return Response({'error': 'Usuario no tiene empresa asignada'}, status=400)
+        
+    try:
+        service = GeminiSmartDiscoveryService()
+        sugerencias = service.ejecutar_smart_discovery(empresa)
+        return Response({'message': 'Sugerencias IA generadas', 'count': len(sugerencias)})
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def evaluar_compliance_rag_view(request):
+    """
+    Endpoint RAG: Realiza diagnóstico GRC mediante Ollama (Llama 3.2) y asigna normativas
+    y tareas de cumplimiento a la empresa del usuario autenticado.
+    """
+    user = request.user
+    empresa = getattr(user.perfilusuario, 'empresa', None) if hasattr(user, 'perfilusuario') else None
+    
+    # Permitir a administradores evaluar una empresa específica enviando 'empresa_id'
+    empresa_id_param = request.data.get('empresa_id')
+    if user.is_staff and empresa_id_param:
+        empresa = Empresa.objects.filter(id=empresa_id_param).first()
+        
+    if not empresa:
+        return Response({'error': 'No se encontró empresa para auditar'}, status=status.HTTP_400_BAD_REQUEST)
+        
+    try:
+        from .services.rag_engine.audit_service import GrcAuditService
+        audit_service = GrcAuditService()
+        resultado = audit_service.auditar_y_asignar(empresa)
+        
+        if resultado.get("success"):
+            return Response({
+                'mensaje': 'Auditoría RAG completada con éxito',
+                'empresa': empresa.nombre,
+                'resumen_ejecutivo': resultado.get('resumen_ejecutivo'),
+                'normativas_asignadas': resultado.get('normativas_asignadas'),
+                'tareas_creadas': resultado.get('tareas_creadas'),
+                'datos': resultado.get('datos_completos')
+            }, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': resultado.get('error')}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        return Response({'error': f'Excepción en motor de auditoría: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

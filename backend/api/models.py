@@ -29,22 +29,22 @@ class Empresa(models.Model):
     setup_completado = models.BooleanField(default=False)
     tamano = models.CharField(max_length=50, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
-    es_b2c_ecommerce = models.BooleanField(default=False)
-    genera_residuos_rep = models.BooleanField(default=False)
-    maneja_datos_personales = models.BooleanField(default=False)
-    procesa_pagos = models.BooleanField(default=False)
+    es_b2c_ecommerce = models.BooleanField(default=False, help_text="Gatilla [Ley del Consumidor (SERNAC)] y comercio electrónico.")
+    genera_residuos_rep = models.BooleanField(default=False, help_text="Gatilla [Ley REP].")
+    maneja_datos_personales = models.BooleanField(default=False, help_text="Gatilla [Ley de Protección de la Vida Privada] y [Ley 21.719].")
+    procesa_pagos = models.BooleanField(default=False, help_text="Gatilla normativas de la CMF y prevención de lavado de activos.")
     rango_empleados = models.CharField(max_length=50, choices=RANGO_EMPLEADOS_CHOICES, default='PEQUENA')
-    tiene_trabajadores = models.BooleanField(default=True)
+    tiene_trabajadores = models.BooleanField(default=True, help_text="Gatilla [Código del Trabajo], [Ley Karin], [Ley Sanna].")
     tipo_sociedad = models.CharField(max_length=50, choices=TIPO_SOCIEDAD_CHOICES, default='SPA')
     updated_at = models.DateTimeField(auto_now=True, null=True)
     estado_matching = models.CharField(max_length=20, default='PENDIENTE')
     log_matching = models.TextField(blank=True, null=True)
-    importa_exporta = models.BooleanField(default=False)
-    instalaciones_industriales = models.BooleanField(default=False)
+    importa_exporta = models.BooleanField(default=False, help_text="Gatilla normativas Aduaneras.")
+    instalaciones_industriales = models.BooleanField(default=False, help_text="Gatilla [Ley Ambiental DIA/EIA] y [DS 594].")
     nivel_ingresos = models.CharField(max_length=20, blank=True, null=True)
     region_operacion = models.CharField(max_length=100, blank=True, null=True)
-    tiene_sindicato = models.BooleanField(default=False)
-    trabaja_con_estado = models.BooleanField(default=False)
+    tiene_sindicato = models.BooleanField(default=False, help_text="Gatilla normativa de negociación colectiva.")
+    trabaja_con_estado = models.BooleanField(default=False, help_text="Gatilla [Ley de Compras Públicas].")
     comuna = models.CharField(max_length=100, blank=True, null=True)
     direccion_matriz = models.CharField(max_length=255, blank=True, null=True)
     nombre_fantasia = models.CharField(max_length=255, blank=True, null=True)
@@ -109,12 +109,32 @@ class Normativa(models.Model):
     requiere_procesa_pagos = models.BooleanField(default=False)
     requiere_residuos = models.BooleanField(default=False)
     requiere_trabajadores = models.BooleanField(default=False)
+    MATERIA_CHOICES = [
+        ('LABORAL', '💼 Laboral & Seguridad'),
+        ('PRIVACIDAD', '🔒 Datos Personales & Ciberseguridad'),
+        ('PENAL_COMPLIANCE', '⚖️ Delitos Económicos & MPD'),
+        ('CONSUMO', '🛒 Consumidor & E-commerce'),
+        ('AMBIENTAL', '♻️ Medioambiente & REP'),
+        ('FINANCIERO', '💳 Financiero & Fintec'),
+        ('CORPORATIVO', '🏢 Corporativo & Sociedades'),
+    ]
+    CRITERIO_APLICABILIDAD_CHOICES = [
+        ('UNIVERSAL', 'Universal (Todas las empresas con personal)'),
+        ('DOTACION', 'Por Dotación de Empleados (min_empleados)'),
+        ('TRIGGER', 'Por Actividad / Trigger Específico'),
+        ('SECTORIAL', 'Sectorial / Rubro Específico'),
+    ]
+
+    numero_oficial = models.CharField(max_length=50, unique=True, null=True, blank=True, help_text="Número canónico de ley, ej: 21643 o DS-594")
+    materia = models.CharField(max_length=50, choices=MATERIA_CHOICES, default='CORPORATIVO')
+    criterio_aplicabilidad = models.CharField(max_length=50, choices=CRITERIO_APLICABILIDAD_CHOICES, default='UNIVERSAL')
+    trigger_asociado = models.CharField(max_length=100, blank=True, null=True, help_text="Campo booleano de Empresa que la activa, ej: maneja_datos_personales, es_b2c_ecommerce")
     resumen = models.TextField(blank=True, null=True)
     rubro_aplicable = models.CharField(max_length=50, blank=True, null=True)
     titulo = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
-        return self.nombre
+        return f"{self.numero_oficial or self.codigo_bcn or ''} - {self.nombre}"
 
 class ComplianceEmpresa(models.Model):
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
