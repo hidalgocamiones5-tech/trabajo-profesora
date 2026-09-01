@@ -1,0 +1,280 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    .rag-review-container {
+        max-width: 1200px;
+        margin: 20px auto;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+    .rag-header-card {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        border: 1px solid #334155;
+        border-radius: 12px;
+        padding: 24px;
+        color: #f8fafc;
+        margin-bottom: 24px;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    }
+    .rag-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 9999px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    .badge-pendiente { background-color: #f59e0b; color: #1e293b; }
+    .badge-aprobado { background-color: #10b981; color: #ffffff; }
+    .badge-rechazado { background-color: #ef4444; color: #ffffff; }
+
+    .badge-risk-alta, .badge-risk-alto, .badge-risk-crítico, .badge-risk-critico { background-color: #ef4444; color: white; }
+    .badge-risk-media, .badge-risk-medio, .badge-risk-moderado { background-color: #f59e0b; color: white; }
+    .badge-risk-baja, .badge-risk-bajo { background-color: #3b82f6; color: white; }
+
+    .law-card {
+        background: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    }
+    .law-header {
+        background: #0f172a;
+        padding: 16px 20px;
+        border-bottom: 1px solid #334155;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .law-body {
+        padding: 20px;
+    }
+    .task-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+    .task-table th {
+        background: #0f172a;
+        color: #94a3b8;
+        text-align: left;
+        padding: 10px 14px;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        border-bottom: 1px solid #334155;
+    }
+    .task-table td {
+        padding: 12px 14px;
+        border-bottom: 1px solid #334155;
+        color: #e2e8f0;
+        font-size: 0.95rem;
+    }
+    .task-table tr:last-child td {
+        border-bottom: none;
+    }
+    .actions-panel {
+        background: #0f172a;
+        border: 1px solid #334155;
+        border-radius: 12px;
+        padding: 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 30px;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+    }
+    .btn-action {
+        padding: 12px 28px;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
+    .btn-approve {
+        background: #10b981;
+        color: white;
+    }
+    .btn-approve:hover {
+        background: #059669;
+        transform: translateY(-2px);
+    }
+    .btn-reject {
+        background: #ef4444;
+        color: white;
+    }
+    .btn-reject:hover {
+        background: #dc2626;
+        transform: translateY(-2px);
+    }
+    .btn-back {
+        background: #475569;
+        color: white;
+    }
+    .btn-back:hover {
+        background: #334155;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="rag-review-container">
+    
+    <!-- Encabezado de la Auditoría -->
+    <div class="rag-header-card">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+                <span class="rag-badge badge-{{ registro.estado|lower }}">{{ registro.get_estado_display }}</span>
+                <h1 style="margin: 12px 0 6px 0; font-size: 1.8rem; font-weight: 700; color: #fff;">
+                    🤖 Revisión de Diagnóstico IA: {{ registro.empresa.nombre }}
+                </h1>
+                <p style="color: #94a3b8; margin: 0; font-size: 0.95rem;">
+                    <strong>Modelo:</strong> {{ registro.modelo_ia }} | 
+                    <strong>Fecha:</strong> {{ registro.fecha_ejecucion|date:"d/m/Y H:i:s" }} | 
+                    <strong>Rubro:</strong> {{ registro.empresa.rubro|default:"General" }}
+                </p>
+            </div>
+            <div style="text-align: right;">
+                <span style="font-size: 2rem; font-weight: 800; color: #38bdf8;">{{ registro.normativas_detectadas }}</span>
+                <span style="display: block; font-size: 0.8rem; color: #94a3b8; text-transform: uppercase;">Normativas Detectadas</span>
+            </div>
+        </div>
+
+        {% if registro.resumen_ejecutivo %}
+        <div style="background: rgba(15, 23, 42, 0.6); padding: 16px; border-radius: 8px; margin-top: 20px; border-left: 4px solid #38bdf8;">
+            <strong style="color: #38bdf8; display: block; margin-bottom: 4px;">📋 Resumen Ejecutivo Propuesto por la IA:</strong>
+            <p style="margin: 0; color: #cbd5e1; font-size: 1rem; line-height: 1.5;">{{ registro.resumen_ejecutivo }}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Alerta Informativa Human in the Loop -->
+    {% if registro.estado == 'PENDIENTE' %}
+    <div style="background: #1e3a5f; border: 1px solid #2563eb; color: #bfdbfe; padding: 16px 20px; border-radius: 8px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+        <span style="font-size: 1.5rem;">ℹ️</span>
+        <div>
+            <strong>Paso de Aprobación Humana Activo:</strong> Las siguientes normativas y tareas están en modo borrador y <u>aún no son visibles para la empresa</u>. Revisa la propuesta y presiona <strong>"Aprobar y Asignar"</strong> para sincronizarlas con el dashboard del cliente.
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Listado de Normativas y Tareas Propuestas -->
+    <h2 style="font-size: 1.4rem; font-weight: 700; color: #f1f5f9; margin-bottom: 16px;">
+        ⚖️ Normativas y Tareas Sugeridas
+    </h2>
+
+    {% for norma in json_data.normativas_aplicables %}
+    <div class="law-card">
+        <div class="law-header">
+            <div>
+                <strong style="font-size: 1.15rem; color: #38bdf8;">
+                    {{ norma.nombre_ley|default:"Normativa Legal" }}
+                </strong>
+                <span style="color: #64748b; font-size: 0.9rem; margin-left: 8px;">(Ley / Decreto {{ norma.ley_id }})</span>
+            </div>
+            <div>
+                <span class="rag-badge badge-risk-{{ norma.nivel_riesgo_general|lower }}">
+                    Riesgo: {{ norma.nivel_riesgo_general|default:"Medio" }}
+                </span>
+            </div>
+        </div>
+        <div class="law-body">
+            <div style="margin-bottom: 16px;">
+                <strong style="color: #94a3b8; font-size: 0.85rem; text-transform: uppercase; display: block; margin-bottom: 4px;">Justificación Jurídica:</strong>
+                <p style="margin: 0; color: #cbd5e1; font-size: 0.95rem;">{{ norma.justificacion_juridica }}</p>
+            </div>
+
+            {% if norma.articulos_clave %}
+            <div style="margin-bottom: 16px;">
+                <strong style="color: #94a3b8; font-size: 0.85rem; text-transform: uppercase; display: block; margin-bottom: 4px;">Artículos Clave Aplicables:</strong>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    {% for art in norma.articulos_clave %}
+                    <span style="background: #334155; color: #f8fafc; padding: 2px 8px; border-radius: 4px; font-size: 0.85rem;">{{ art }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Tabla de Tareas Propuestas -->
+            <strong style="color: #94a3b8; font-size: 0.85rem; text-transform: uppercase; display: block; margin-top: 20px;">Tareas Operativas de Cumplimiento ({{ norma.tareas|length }}):</strong>
+            <table class="task-table">
+                <thead>
+                    <tr>
+                        <th>Tarea</th>
+                        <th>Descripción</th>
+                        <th>Área</th>
+                        <th>Plazo</th>
+                        <th>Prioridad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tarea in norma.tareas %}
+                    <tr>
+                        <td style="font-weight: 600; color: #f8fafc;">{{ tarea.titulo }}</td>
+                        <td style="color: #94a3b8; font-size: 0.9rem;">{{ tarea.descripcion }}</td>
+                        <td><span style="background: #334155; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">{{ tarea.area_responsable }}</span></td>
+                        <td>{{ tarea.plazo_sugerido_dias }} días</td>
+                        <td>
+                            <span class="rag-badge badge-risk-{{ tarea.prioridad|lower }}" style="font-size: 0.75rem;">{{ tarea.prioridad }}</span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: #64748b;">No se generaron tareas automáticas para esta ley.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% empty %}
+    <div style="background: #1e293b; padding: 30px; border-radius: 8px; text-align: center; color: #94a3b8;">
+        No hay normativas registradas en el JSON de esta auditoría.
+    </div>
+    {% endfor %}
+
+    <!-- Panel de Botones de Aprobación -->
+    <div class="actions-panel">
+        <div>
+            <a href="{% url 'admin:rag_admin_auditoriaiaempresa_changelist' %}" class="btn-action btn-back">
+                ⬅ Volver a Empresas
+            </a>
+        </div>
+
+        {% if registro.estado == 'PENDIENTE' %}
+        <div style="display: flex; gap: 16px;">
+            <form method="POST" action="{% url 'admin:rag_admin_registroauditoriarag_rechazar' registro.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn-action btn-reject" onclick="return confirm('¿Estás seguro de que deseas descartar este diagnóstico de la IA?');">
+                    ❌ Descartar Borrador
+                </button>
+            </form>
+
+            <form method="POST" action="{% url 'admin:rag_admin_registroauditoriarag_aprobar' registro.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn-action btn-approve" onclick="return confirm('¿Aprobar y asignar estas normativas y tareas a la empresa?');">
+                    ✅ Aprobar y Asignar a la Empresa
+                </button>
+            </form>
+        </div>
+        {% else %}
+        <div>
+            <span style="color: #94a3b8; font-style: italic;">
+                Esta auditoría ya fue procesada (Estado: <strong>{{ registro.get_estado_display }}</strong>).
+            </span>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

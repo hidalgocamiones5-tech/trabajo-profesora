@@ -66,9 +66,6 @@ export const Dashboard = () => {
     api.getEmpresas().then((res) => {
       if (res && Array.isArray(res) && res.length > 0) {
         const emp = res[0];
-        if (!emp.setup_completado) {
-          setShowOnboarding(true);
-        }
       }
     }).catch(() => {});
 

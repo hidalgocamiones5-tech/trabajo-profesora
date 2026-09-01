@@ -105,13 +105,11 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({ onComplete, 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting || paso !== 3) return;
     setIsSubmitting(true);
     try {
       const response = await api.onboardingEmpresa(formData);
       setAnalisisExitoso(response);
-      setTimeout(() => {
-        onComplete();
-      }, 3500);
     } catch (err) {
       console.error("Error completando onboarding", err);
       setIsSubmitting(false);
@@ -176,8 +174,8 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({ onComplete, 
           </div>
         </div>
 
-        {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 sm:p-10 flex-1 flex flex-col justify-between">
+        {/* Form Body - Changed to div to prevent accidental HTML form submissions */}
+        <div className="p-6 sm:p-10 flex-1 flex flex-col justify-between">
           <AnimatePresence mode="wait">
             {/* PASO 1: Datos Básicos */}
             {paso === 1 && (
@@ -207,10 +205,10 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({ onComplete, 
                     <input
                       type="text"
                       required
+                      readOnly
                       placeholder="Ej: Inversiones y Servicios SpA"
                       value={formData.nombre}
-                      onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-lemon-500 focus:border-transparent outline-none transition-all text-sm font-medium"
+                      className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 focus:outline-none transition-all text-sm font-medium cursor-not-allowed"
                     />
                   </div>
 
@@ -220,10 +218,10 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({ onComplete, 
                     </label>
                     <input
                       type="text"
+                      readOnly
                       placeholder="Ej: 77.123.456-K"
                       value={formData.rut}
-                      onChange={(e) => setFormData({ ...formData, rut: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-lemon-500 focus:border-transparent outline-none transition-all text-sm font-medium"
+                      className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 focus:outline-none transition-all text-sm font-medium cursor-not-allowed"
                     />
                   </div>
                 </div>
@@ -646,69 +644,81 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({ onComplete, 
                 </div>
                 <div>
                   <h4 className="font-bold text-sm text-emerald-700 dark:text-emerald-400">
-                    ¡Diagnóstico Recibido con Éxito!
+                    ¡Perfil de Empresa Registrado con Éxito!
                   </h4>
                   <p className="text-xs text-slate-600 dark:text-slate-300">
-                    Se han activado <strong>{analisisExitoso.normativas_asignadas_count || 0} normativas base</strong> inmediatamente en tu panel.
+                    Tus respuestas han sido guardadas correctamente.
                   </p>
                 </div>
               </div>
 
-              <div className="bg-white/80 dark:bg-slate-900/80 p-3.5 rounded-xl border border-indigo-100 dark:border-indigo-900/40 text-xs space-y-1.5">
-                <div className="flex items-center gap-2 font-semibold text-indigo-700 dark:text-indigo-400">
-                  <ShieldCheck className="w-4 h-4 text-indigo-500" />
-                  <span>Fase de Validación y Auditoría en Curso:</span>
+              <div className="bg-white/80 dark:bg-slate-900/80 p-4 rounded-xl border border-indigo-100 dark:border-indigo-900/40 text-sm space-y-2 mt-2">
+                <div className="flex items-center gap-2 font-bold text-indigo-700 dark:text-indigo-400">
+                  <ShieldCheck className="w-5 h-5 text-indigo-500" />
+                  <span>Revisión en Curso: Asignación de Normativas</span>
                 </div>
-                <p className="text-slate-500 dark:text-slate-400 leading-relaxed pl-6">
-                  Las normativas sectoriales y sugerencias específicas han sido derivadas a nuestro equipo de compliance en la consola de auditoría. Las leyes adicionales estarán disponibles y verificadas en tu panel dentro de poco tiempo.
+                <p className="text-slate-600 dark:text-slate-300 leading-relaxed pl-7">
+                  En 24 horas o menos, nuestro equipo revisará su perfil y le aparecerán en la plataforma las leyes y tareas más específicas para su rubro, adicionales a las de base que todas las empresas deben cumplir.
                 </p>
+                <div className="pt-3 pl-7">
+                  <button 
+                    type="button" 
+                    onClick={onComplete} 
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-lg transition-colors shadow-md"
+                  >
+                    Entendido, ir al Dashboard
+                  </button>
+                </div>
               </div>
             </motion.div>
           )}
 
           {/* Footer Buttons */}
-          <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-4">
-            {paso > 1 ? (
-              <button
-                type="button"
-                onClick={handlePrev}
-                disabled={isSubmitting}
-                className="px-5 py-3 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors flex items-center gap-2"
-              >
-                <ArrowLeft className="w-4 h-4" /> Anterior
-              </button>
-            ) : <div />}
+          {!analisisExitoso && (
+            <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-4">
+              {paso > 1 ? (
+                <button
+                  type="button"
+                  onClick={handlePrev}
+                  disabled={isSubmitting}
+                  className="px-5 py-3 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors flex items-center gap-2"
+                >
+                  <ArrowLeft className="w-4 h-4" /> Anterior
+                </button>
+              ) : <div />}
 
-            {paso < 3 ? (
-              <button
-                type="button"
-                onClick={handleNext}
-                disabled={!isPaso1Valido}
-                className="px-6 py-3 rounded-xl bg-lemon-500 hover:bg-lemon-600 text-slate-950 font-bold text-sm shadow-md shadow-lemon-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2"
-              >
-                Siguiente <ArrowRight className="w-4 h-4" />
-              </button>
-            ) : (
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-lemon-500 to-amber-500 hover:from-lemon-600 hover:to-amber-600 text-slate-950 font-bold text-sm shadow-lg shadow-lemon-500/25 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2"
-              >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Procesando marco legal...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-4 h-4" />
-                    Finalizar y Generar Marco Legal
-                  </>
-                )}
-              </button>
-            )}
-          </div>
-        </form>
+              {paso < 3 ? (
+                <button
+                  type="button"
+                  onClick={handleNext}
+                  disabled={!isPaso1Valido}
+                  className="px-6 py-3 rounded-xl bg-lemon-500 hover:bg-lemon-600 text-slate-950 font-bold text-sm shadow-md shadow-lemon-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2"
+                >
+                  Siguiente <ArrowRight className="w-4 h-4" />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  disabled={isSubmitting}
+                  className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-lemon-500 to-amber-500 hover:from-lemon-600 hover:to-amber-600 text-slate-950 font-bold text-sm shadow-lg shadow-lemon-500/25 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Procesando marco legal...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4" />
+                      Finalizar y Generar Marco Legal
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
+          )}
+        </div>
       </motion.div>
     </div>
   );

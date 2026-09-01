@@ -2,6 +2,9 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+import socket
+socket.getfqdn = lambda name="": name if name else "localhost"
+socket.gethostbyname = lambda name="": "127.0.0.1"
 
 
 def main():

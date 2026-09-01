@@ -519,3 +519,44 @@ class HistoricoCumplimientoMensual(models.Model):
     def __str__(self):
         return f"{self.empresa.nombre} - {self.mes}/{self.anio}: {self.porcentaje_cumplimiento}%"
 
+
+class LeyOficial(models.Model):
+    codigo_bcn = models.CharField(max_length=100, unique=True, null=True, blank=True, help_text="ID oficial en BCN / Ley Chile")
+    numero_oficial = models.CharField(max_length=50, blank=True, null=True, help_text="Ej: Ley 19.628, DS 594")
+    titulo = models.CharField(max_length=255)
+    organismo_emisor = models.CharField(max_length=255, blank=True, null=True)
+    categoria = models.CharField(max_length=100, default='General')
+    resumen_general = models.TextField(blank=True, null=True)
+    fecha_promulgacion = models.DateField(blank=True, null=True)
+    fecha_ultima_modificacion = models.DateField(blank=True, null=True)
+    activo = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Ley Oficial (Catálogo Maestro)"
+        verbose_name_plural = "Leyes Oficiales (Catálogo Maestro)"
+
+    def __str__(self):
+        return f"{self.numero_oficial or self.codigo_bcn or 'Ley'} - {self.titulo}"
+
+
+class ArticuloLey(models.Model):
+    ley = models.ForeignKey(LeyOficial, on_delete=models.CASCADE, related_name="articulos")
+    numero_articulo = models.CharField(max_length=50, help_text="Ej: Art. 4, Art. 211-A")
+    texto_original = models.TextField(help_text="Texto legal oficial completo extraído de la BCN")
+    texto_resumido = models.TextField(help_text="Extracto operativo / clave destilada para IA RAG")
+    categoria_tematica = models.CharField(max_length=100, blank=True, null=True)
+    sanciones_asociadas = models.TextField(blank=True, null=True)
+    indexado_en_rag = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Artículo de Ley"
+        verbose_name_plural = "Artículos de Ley"
+        unique_together = ('ley', 'numero_articulo')
+
+    def __str__(self):
+        return f"{self.ley.numero_oficial or self.ley.titulo} - {self.numero_articulo}"
+

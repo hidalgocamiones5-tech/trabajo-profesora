@@ -65,8 +65,8 @@ if (!mode) {
     console.log(`[⚙️] MONITOREO BACKEND (DJANGO API)`);
     console.log(`========================================${colors.reset}\n`);
     
-    const pythonCmd = isWin ? '.venv\\Scripts\\python.exe manage.py runserver' : '.venv/bin/python manage.py runserver';
-    const proc = spawn(pythonCmd, { cwd: './backend', shell: true });
+    const pythonCmd = isWin ? '.venv\\Scripts\\python.exe manage.py runserver --noreload' : '.venv/bin/python manage.py runserver --noreload';
+    const proc = spawn(pythonCmd, { cwd: './backend', shell: true, env: { ...process.env, PYTHONUNBUFFERED: '1' } });
     proc.stdout.on('data', data => formatLog('BACKEND', colors.backend, data));
     proc.stderr.on('data', data => formatLog('BACKEND', colors.error, data));
   }
@@ -76,6 +76,7 @@ if (!mode) {
     console.log(`[🤖] MONITOREO INTELIGENCIA ARTIFICIAL (OLLAMA / RAG)`);
     console.log(`========================================${colors.reset}\n`);
     
+    let ollamaStatusLogged = false;
     const checkOllama = () => {
       fetch('http://127.0.0.1:11434/api/tags')
         .then(res => {
@@ -84,15 +85,43 @@ if (!mode) {
         })
         .then(data => {
             const models = data.models.map(m => m.name).join(', ') || 'Ninguno';
-            formatLog('MOTOR IA', aiColor, `Servicio activo en el puerto 11434. Modelos locales disponibles: ${models}`);
+            if (!ollamaStatusLogged) {
+                formatLog('MOTOR IA', aiColor, `Servicio activo en el puerto 11434. Modelos locales disponibles: ${models}`);
+                ollamaStatusLogged = true;
+            }
         })
         .catch(err => {
             formatLog('MOTOR IA', colors.warning, 'No se pudo conectar al API de Ollama (127.0.0.1:11434). ¿Está iniciado el servicio?');
+            ollamaStatusLogged = false; // Reset to log again when it comes back
         });
     };
 
-    console.log(`\x1b[36m[i] Iniciando monitor HTTP... (actualiza cada 10 seg)\x1b[0m\n`);
+    console.log(`\x1b[36m[i] Iniciando monitor HTTP...\x1b[0m\n`);
     checkOllama();
-    setInterval(checkOllama, 10000);
+    setInterval(checkOllama, 30000); // Check less frequently (30s)
+
+    const fs = require('fs');
+    const path = require('path');
+    const logPath = path.join(__dirname, 'backend', 'rag_ia.log');
+    
+    if (!fs.existsSync(logPath)) {
+        fs.writeFileSync(logPath, '');
+    }
+
+    let fileSize = fs.statSync(logPath).size;
+    
+    fs.watchFile(logPath, { interval: 500 }, (curr, prev) => {
+        if (curr.size > fileSize) {
+            const stream = fs.createReadStream(logPath, { start: fileSize, end: curr.size });
+            stream.on('data', chunk => {
+                // Escribir el chunk directamente a la consola sin modificar para mantener formato JSON en vivo
+                process.stdout.write(aiColor + chunk.toString() + colors.reset);
+            });
+            fileSize = curr.size;
+        } else if (curr.size < fileSize) {
+            // File was truncated
+            fileSize = curr.size;
+        }
+    });
   }
 }

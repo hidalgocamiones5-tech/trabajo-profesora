@@ -7,7 +7,8 @@ from .models import (
     Empresa, PerfilUsuario, RegistroAuditoriaARCO, Normativa, ComplianceEmpresa, ObjetivoChecklist,
     TratamientoRAT, SolicitudTicket, Incidente, TareaPendiente, Riesgo,
     Sucursal, Area, Responsable, Obligacion, Control, Evidencia, Auditoria,
-    PlanAccion, EventoCompliance, AlertaCompliance, HistoricoCumplimientoMensual
+    PlanAccion, EventoCompliance, AlertaCompliance, HistoricoCumplimientoMensual,
+    LeyOficial, ArticuloLey
 )
 from .services.matching_service import asignar_normativas_base
 
@@ -166,17 +167,19 @@ class EmpresaAdmin(admin.ModelAdmin):
 
     def ejecutar_rag_ollama_view(self, request, object_id):
         from django.shortcuts import redirect
+        from django.contrib import messages
         from api.services.rag_engine.audit_service import GrcAuditService
         empresa = self.get_object(request, object_id)
         if empresa:
             servicio = GrcAuditService()
-            resultado = servicio.auditar_y_asignar(empresa)
+            resultado = servicio.auditar_y_generar_borrador(empresa)
             if resultado.get("success"):
-                self.message_user(
+                registro_id = resultado.get("registro_id")
+                messages.info(
                     request,
-                    f"🤖 Auditoría RAG completada con éxito: {resultado.get('normativas_asignadas')} normativas evaluadas y {resultado.get('tareas_creadas')} tareas generadas.",
-                    level="SUCCESS"
+                    f"🤖 Diagnóstico IA generado para {empresa.nombre}. Revisa y aprueba las leyes y tareas a continuación."
                 )
+                return redirect('admin:rag_admin_registroauditoriarag_revisar', object_id=registro_id)
             else:
                 self.message_user(request, f"❌ Error en auditoría RAG: {resultado.get('error')}", level="ERROR")
         return redirect('admin:api_empresa_change', object_id)
@@ -184,15 +187,21 @@ class EmpresaAdmin(admin.ModelAdmin):
     def ejecutar_auditoria_rag_ollama(self, request, queryset):
         from api.services.rag_engine.audit_service import GrcAuditService
         servicio = GrcAuditService()
-        total_tareas = 0
-        total_normas = 0
+        borradores_creados = 0
+        ultimo_registro_id = None
         for empresa in queryset:
-            res = servicio.auditar_y_asignar(empresa)
-            if res.get("success"):
-                total_normas += res.get("normativas_asignadas", 0)
-                total_tareas += res.get("tareas_creadas", 0)
-        self.message_user(request, f"🤖 Auditoría RAG ejecutada para {queryset.count()} empresa(s). Se asignaron {total_normas} normativas y {total_tareas} tareas operativas.", level="SUCCESS")
-    ejecutar_auditoria_rag_ollama.short_description = "🤖 Ejecutar Auditoría RAG + Ollama (Llama 3.2: Asignar Leyes y Tareas)"
+            resultado = servicio.auditar_y_generar_borrador(empresa)
+            if resultado.get("success"):
+                borradores_creados += 1
+                ultimo_registro_id = resultado.get("registro_id")
+        
+        if borradores_creados == 1 and queryset.count() == 1 and ultimo_registro_id:
+            self.message_user(request, "🤖 Auditoría RAG ejecutada. Por favor revisa y aprueba el borrador.", level="INFO")
+            from django.shortcuts import redirect
+            return redirect('admin:rag_admin_registroauditoriarag_revisar', object_id=ultimo_registro_id)
+            
+        self.message_user(request, f"🤖 Auditoría RAG ejecutada para {queryset.count()} empresa(s). Se generaron {borradores_creados} borradores pendientes de revisión.", level="SUCCESS")
+    ejecutar_auditoria_rag_ollama.short_description = "🤖 Ejecutar Diagnóstico RAG + Ollama (Generar Borrador)"
 
     def re_ejecutar_matching_view(self, request, object_id):
         from django.shortcuts import redirect
@@ -738,3 +747,25 @@ class HiddenTratamientoRATAdmin(TratamientoRATAdmin):
 class HiddenRegistroAuditoriaARCOAdmin(RegistroAuditoriaARCOAdmin):
     def has_module_permission(self, request): return False
 
+class ArticuloLeyInline(admin.TabularInline):
+    model = ArticuloLey
+    extra = 0
+    fields = ('numero_articulo', 'texto_resumido', 'categoria_tematica', 'indexado_en_rag')
+    show_change_link = True
+
+@admin.register(LeyOficial)
+class LeyOficialAdmin(admin.ModelAdmin):
+    list_display = ('numero_oficial', 'codigo_bcn', 'titulo', 'categoria', 'fecha_ultima_modificacion', 'activo', 'get_articulos_count')
+    list_filter = ('categoria', 'activo')
+    search_fields = ('numero_oficial', 'codigo_bcn', 'titulo', 'resumen_general')
+    inlines = [ArticuloLeyInline]
+
+    def get_articulos_count(self, obj):
+        return obj.articulos.count()
+    get_articulos_count.short_description = "Artículos"
+
+@admin.register(ArticuloLey)
+class ArticuloLeyAdmin(admin.ModelAdmin):
+    list_display = ('ley', 'numero_articulo', 'categoria_tematica', 'indexado_en_rag', 'updated_at')
+    list_filter = ('indexado_en_rag', 'categoria_tematica', 'ley')
+    search_fields = ('numero_articulo', 'texto_original', 'texto_resumido', 'ley__titulo')

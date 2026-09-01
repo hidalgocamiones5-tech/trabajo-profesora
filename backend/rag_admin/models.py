@@ -14,6 +14,12 @@ class RegistroAuditoriaRAG(models.Model):
     resumen_ejecutivo = models.TextField(blank=True, null=True)
     normativas_detectadas = models.IntegerField(default=0)
     tareas_generadas = models.IntegerField(default=0)
+    ESTADOS_AUDITORIA = [
+        ('PENDIENTE', 'Pendiente de Revisión'),
+        ('APROBADO', 'Aprobado y Aplicado'),
+        ('RECHAZADO', 'Rechazado / Descartado'),
+    ]
+    estado = models.CharField(max_length=20, choices=ESTADOS_AUDITORIA, default='PENDIENTE')
     exito = models.BooleanField(default=True)
     error_detalle = models.TextField(blank=True, null=True)
     datos_completos_json = models.JSONField(blank=True, null=True)

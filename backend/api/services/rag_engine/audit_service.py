@@ -51,41 +51,58 @@ class GrcAuditService:
         3. Persistencia atómica de Normativas y Tareas en la BD de Django.
         """
         query_text = self._generar_query_perfil(empresa)
-        resultados_rag = self.vector_store.search(query=query_text, top_k=6)
+        
+        # 1. Filtro Duro (Búsqueda Híbrida post-retrieval)
+        resultados_rag_brutos = self.vector_store.search(query=query_text, top_k=12)
+        
+        excluir_categorias = []
+        if not empresa.tiene_trabajadores:
+            excluir_categorias.extend(["Laboral", "Seguridad Ocupacional"])
+        if not empresa.genera_residuos_rep:
+            excluir_categorias.append("Medioambiente & Residuos")
+            
+        resultados_rag = []
+        for res in resultados_rag_brutos:
+            cat = res.get('metadata', {}).get('categoria', '')
+            if cat not in excluir_categorias:
+                resultados_rag.append(res)
+            if len(resultados_rag) >= 6:
+                break
         
         contexto_legal = ""
         for idx, res in enumerate(resultados_rag):
             meta = res.get('metadata', {})
-            contexto_legal += f"[Ley {meta.get('ley_id')} - {meta.get('nombre')}]\n{res.get('text')}\n\n"
+            contexto_legal += f"- {res.get('text')}\n"
 
         perfil_dict = {
             "nombre": empresa.nombre,
-            "rubro": empresa.rubro,
-            "rango_empleados": empresa.rango_empleados,
+            "rubro": empresa.rubro or "General",
+            "empleados": empresa.rango_empleados,
             "maneja_datos_personales": empresa.maneja_datos_personales,
             "es_b2c_ecommerce": empresa.es_b2c_ecommerce,
             "tiene_trabajadores": empresa.tiene_trabajadores,
             "procesa_pagos": empresa.procesa_pagos
         }
 
+        # 2. Plantilla con Pensamiento Simplificado para modelos pequeños
         plantilla_ejemplo = {
-            "resumen_ejecutivo": "Diagnóstico de cumplimiento legal chileno.",
+            "resumen_ejecutivo": "Diagnóstico conciso de cumplimiento.",
             "normativas_aplicables": [
                 {
-                    "ley_id": "19628",
-                    "nombre_ley": "Ley de Protección de la Vida Privada / Datos Personales",
-                    "articulos_clave": ["Artículo 4"],
-                    "justificacion_juridica": "Aplica por almacenamiento de datos de clientes.",
-                    "nivel_riesgo_general": "Alto",
+                    "ley_id": "[NÚMERO DE LA LEY, EJ. Ley 20.393]",
+                    "nombre_ley": "[NOMBRE DE LA LEY]",
+                    "justificacion_juridica": "La empresa maneja datos de clientes, por ende aplica la norma de privacidad.",
+                    "articulos_clave": ["Art. 4"],
+                    "nivel_riesgo_general": "Alta",
                     "tareas": [
                         {
-                            "id_tarea": "T-19628-01",
-                            "titulo": "Implementar Cláusula de Consentimiento en Sitio Web",
-                            "descripcion": "Publicar política de privacidad y checkbox de aceptación.",
-                            "area_responsable": "TI / Ciberseguridad",
+                            "id_tarea": "T-1",
+                            "titulo": "Publicar política de privacidad",
+                            "descripcion": "Implementar checkbox en plataforma.",
+                            "area_responsable": "Legal",
                             "plazo_sugerido_dias": 30,
                             "prioridad": "Alta",
-                            "impacto_incumplimiento": "Multas legales."
+                            "impacto_incumplimiento": "Multas."
                         }
                     ]
                 }
@@ -93,49 +110,119 @@ class GrcAuditService:
         }
 
         prompt = f"""Eres un Auditor Senior de Compliance Legal en Chile.
-Analiza la siguiente empresa y las leyes chilenas oficiales recuperadas.
-Genera el diagnóstico GRC y las tareas operativas obligatorias.
+Genera el diagnóstico y tareas obligatorias según el perfil de la empresa y las leyes aplicables.
 
-CONTEXTO LEGAL CHILENO RECUPERADO:
+REGLAS LEGALES VIGENTES RECUPERADAS:
 {contexto_legal}
 
-PERFIL DE LA EMPRESA:
-{json.dumps(perfil_dict, indent=2, ensure_ascii=False)}
+PERFIL EMPRESA:
+{json.dumps(perfil_dict, ensure_ascii=False)}
 
 INSTRUCCIÓN:
-Responde ÚNICAMENTE con un JSON válido que siga exactamente esta estructura:
-{json.dumps(plantilla_ejemplo, indent=2, ensure_ascii=False)}
+1. Revisa las reglas recuperadas. Si la empresa NO tiene trabajadores (tiene_trabajadores: false), NO asocies normas Laborales.
+2. Es CRÍTICO que el campo 'ley_id' coincida exactamente con el número de la ley evaluada (ej. "Ley 21.643", "Ley 20.393") tal como aparece en el contexto, y NO copies el de la plantilla.
+3. Genera un JSON válido con la siguiente estructura exacta, incluyendo la 'justificacion_juridica' detallada para cada ley:
+{json.dumps(plantilla_ejemplo, ensure_ascii=False)}
 """
+        
+        with open("rag_ia.log", "a", encoding="utf-8") as log_file:
+            log_file.write(f"\n[{timezone.now().strftime('%Y-%m-%d %H:%M:%S')}] Iniciando auditoría RAG optimizada para: {empresa.nombre}\n")
+            log_file.write(f"[{timezone.now().strftime('%Y-%m-%d %H:%M:%S')}] Contexto legal ({len(resultados_rag)} reglas) despachado a Ollama ({self.model_name})...\n")
 
         try:
-            response = ollama.chat(
+            stream = ollama.chat(
                 model=self.model_name,
                 messages=[
-                    {"role": "system", "content": "Eres un auditor legal chileno estricto. Responde únicamente con el JSON poblado."},
+                    {"role": "system", "content": "Eres un auditor legal experto. Debes responder estrictamente en formato JSON válido."},
                     {"role": "user", "content": prompt}
                 ],
                 format="json",
-                options={"temperature": 0.2}
+                options={
+                    "temperature": 0.1
+                },
+                stream=True
             )
             
-            data_json = json.loads(response["message"]["content"])
+            full_response = ""
+            with open("rag_ia.log", "a", encoding="utf-8") as log_file:
+                for chunk in stream:
+                    content = chunk['message']['content']
+                    full_response += content
+                    log_file.write(content)
+                    log_file.flush()
+                log_file.write(f"\n[{timezone.now().strftime('%Y-%m-%d %H:%M:%S')}] Respuesta de Ollama recibida exitosamente.\n")
+                log_file.write(f"[{timezone.now().strftime('%Y-%m-%d %H:%M:%S')}] Guardando borrador de auditoría pendiente de aprobación...\n")
+                
+            data_json = json.loads(full_response)
         except Exception as e:
+            with open("rag_ia.log", "a", encoding="utf-8") as log_file:
+                log_file.write(f"[{timezone.now().strftime('%Y-%m-%d %H:%M:%S')}] ERROR: Fallo en inferencia de Ollama: {str(e)}\n")
             return {"success": False, "error": f"Fallo en inferencia de Ollama: {str(e)}"}
 
-        # 4. Persistencia en Base de Datos Relacional de Django
+        # Contabilizar propuestas de normativas y tareas
+        normativas_propuestas = len(data_json.get("normativas_aplicables", []))
+        tareas_propuestas = sum(len(item.get("tareas", [])) for item in data_json.get("normativas_aplicables", []))
+
+        # Registrar en Historial/Borrador RAG en estado PENDIENTE
+        from rag_admin.models import RegistroAuditoriaRAG
+        registro = RegistroAuditoriaRAG.objects.create(
+            empresa=empresa,
+            modelo_ia=self.model_name,
+            resumen_ejecutivo=data_json.get("resumen_ejecutivo", ""),
+            normativas_detectadas=normativas_propuestas,
+            tareas_generadas=tareas_propuestas,
+            estado='PENDIENTE',
+            exito=True,
+            datos_completos_json=data_json
+        )
+
+        empresa.estado_matching = 'PENDIENTE_REVISION'
+        empresa.log_matching = f"Borrador IA generado el {timezone.now().strftime('%Y-%m-%d %H:%M:%S')}. Pendiente de revisión del auditor."
+        empresa.save(update_fields=['estado_matching', 'log_matching'])
+
+        return {
+            "success": True,
+            "registro_id": registro.id,
+            "resumen_ejecutivo": data_json.get("resumen_ejecutivo"),
+            "normativas_asignadas": normativas_propuestas,
+            "tareas_creadas": tareas_propuestas,
+            "datos_completos": data_json
+        }
+
+    def auditar_y_generar_borrador(self, empresa: Empresa) -> Dict[str, Any]:
+        """Alias descriptivo para generar el borrador."""
+        return self.auditar_y_asignar(empresa)
+
+    @classmethod
+    def aprobar_y_aplicar_auditoria(cls, registro_id: int) -> Dict[str, Any]:
+        """
+        Lee el borrador JSON de RegistroAuditoriaRAG aprobado por el administrador
+        y persiste de forma definitiva las Normativas y Tareas en el backend.
+        """
+        from rag_admin.models import RegistroAuditoriaRAG
+        try:
+            registro = RegistroAuditoriaRAG.objects.get(id=registro_id)
+        except RegistroAuditoriaRAG.DoesNotExist:
+            return {"success": False, "error": f"Registro de auditoría #{registro_id} no encontrado."}
+
+        data_json = registro.datos_completos_json or {}
+        empresa = registro.empresa
         normativas_creadas = 0
         tareas_creadas = 0
-        
+
         with transaction.atomic():
             hoy = timezone.now().date()
-            
+            criticidad_map = {
+                'crítico': 'alta', 'critico': 'alta', 'alto': 'alta', 'alta': 'alta',
+                'moderado': 'media', 'medio': 'media', 'media': 'media',
+                'bajo': 'baja', 'baja': 'baja'
+            }
+
             for item_norma in data_json.get("normativas_aplicables", []):
                 nombre_norma = item_norma.get("nombre_ley", f"Ley {item_norma.get('ley_id')}")
                 riesgo_raw = item_norma.get("nivel_riesgo_general", "Media").lower()
-                criticidad_map = {'crítico': 'alta', 'critico': 'alta', 'alto': 'alta', 'alta': 'alta', 'moderado': 'media', 'medio': 'media', 'media': 'media', 'bajo': 'baja', 'baja': 'baja'}
                 criticidad = criticidad_map.get(riesgo_raw, 'media')
-                
-                # Crear o actualizar Normativa
+
                 normativa_obj, _ = Normativa.objects.get_or_create(
                     empresa=empresa,
                     nombre=nombre_norma,
@@ -148,8 +235,7 @@ Responde ÚNICAMENTE con un JSON válido que siga exactamente esta estructura:
                     }
                 )
                 normativas_creadas += 1
-                
-                # Crear o actualizar ComplianceEmpresa
+
                 ce_obj, _ = ComplianceEmpresa.objects.get_or_create(
                     empresa=empresa,
                     normativa=normativa_obj,
@@ -160,20 +246,18 @@ Responde ÚNICAMENTE con un JSON válido que siga exactamente esta estructura:
                         'justificacion_ia': item_norma.get('justificacion_juridica', '')
                     }
                 )
-                
-                # Crear Tareas asociadas
+
                 for t in item_norma.get("tareas", []):
                     plazo_dias = t.get("plazo_sugerido_dias", 30)
                     vencimiento = hoy + datetime.timedelta(days=plazo_dias)
                     prioridad_tarea = criticidad_map.get(t.get("prioridad", "media").lower(), "media")
-                    
-                    # Evitar duplicar la misma tarea si ya existe
+
                     tarea_existente = TareaPendiente.objects.filter(
                         empresa=empresa,
                         normativa=normativa_obj,
                         tarea=t.get("titulo")
                     ).first()
-                    
+
                     if not tarea_existente:
                         TareaPendiente.objects.create(
                             empresa=empresa,
@@ -189,30 +273,38 @@ Responde ÚNICAMENTE con un JSON válido que siga exactamente esta estructura:
                         )
                         tareas_creadas += 1
 
-            # Actualizar estado de matching de la empresa
-            empresa.estado_matching = 'COMPLETADO'
-            empresa.log_matching = f"Auditoría RAG completada el {timezone.now().strftime('%Y-%m-%d %H:%M:%S')}. Normativas evaluadas: {normativas_creadas}, Tareas generadas: {tareas_creadas}."
-            empresa.save(update_fields=['estado_matching', 'log_matching'])
+            # Actualizar registro RAG a APROBADO
+            registro.estado = 'APROBADO'
+            registro.normativas_detectadas = normativas_creadas
+            registro.tareas_generadas = tareas_creadas
+            registro.save(update_fields=['estado', 'normativas_detectadas', 'tareas_generadas'])
 
-            # Registrar log de auditoría
-            try:
-                from rag_admin.models import RegistroAuditoriaRAG
-                RegistroAuditoriaRAG.objects.create(
-                    empresa=empresa,
-                    modelo_ia=self.model_name,
-                    resumen_ejecutivo=data_json.get("resumen_ejecutivo", ""),
-                    normativas_detectadas=normativas_creadas,
-                    tareas_generadas=tareas_creadas,
-                    exito=True,
-                    datos_completos_json=data_json
-                )
-            except Exception as e_log:
-                print(f"[Warn] No se pudo guardar log RAG: {e_log}")
+            # Actualizar empresa a COMPLETADO
+            empresa.estado_matching = 'COMPLETADO'
+            empresa.log_matching = f"Auditoría RAG aprobada y aplicada el {timezone.now().strftime('%Y-%m-%d %H:%M:%S')}. Normativas: {normativas_creadas}, Tareas: {tareas_creadas}."
+            empresa.save(update_fields=['estado_matching', 'log_matching'])
 
         return {
             "success": True,
-            "resumen_ejecutivo": data_json.get("resumen_ejecutivo"),
             "normativas_asignadas": normativas_creadas,
-            "tareas_creadas": tareas_creadas,
-            "datos_completos": data_json
+            "tareas_creadas": tareas_creadas
         }
+
+    @classmethod
+    def rechazar_auditoria(cls, registro_id: int, motivo: str = "") -> Dict[str, Any]:
+        """Marca un borrador RAG como RECHAZADO."""
+        from rag_admin.models import RegistroAuditoriaRAG
+        try:
+            registro = RegistroAuditoriaRAG.objects.get(id=registro_id)
+            registro.estado = 'RECHAZADO'
+            if motivo:
+                registro.error_detalle = motivo
+            registro.save(update_fields=['estado', 'error_detalle'])
+
+            registro.empresa.estado_matching = 'RECHAZADO'
+            registro.empresa.log_matching = f"Borrador IA rechazado el {timezone.now().strftime('%Y-%m-%d %H:%M:%S')}."
+            registro.empresa.save(update_fields=['estado_matching', 'log_matching'])
+            return {"success": True}
+        except RegistroAuditoriaRAG.DoesNotExist:
+            return {"success": False, "error": "Registro no encontrado"}
+

@@ -161,31 +161,18 @@ def empresas_onboarding(request):
     if not serializer.is_valid():
         return Response(serializer.errors, status=400)
     
-    empresa = serializer.save(setup_completado=True)
+    empresa = serializer.save(setup_completado=True, estado_matching='PENDIENTE')
     perfil.empresa = empresa
     perfil.save()
 
-    # 1. Motor de Matching Automático (Reglas base)
-    compliances_base = asignar_normativas_base(empresa)
-
-    # 2. Smart Discovery con Gemini AI
-    try:
-        from .services.gemini_service import GeminiSmartDiscoveryService
-        smart_discovery = GeminiSmartDiscoveryService()
-        smart_discovery.ejecutar_smart_discovery(empresa)
-    except Exception as e:
-        print(f"Error en Smart Discovery durante onboarding: {e}")
-
-    # 3. Serializar y devolver respuesta enriquecida
-    todos_compliances = ComplianceEmpresa.objects.filter(empresa=empresa).select_related('normativa')
-    ia_count = todos_compliances.filter(estado='SUGERIDA_IA').count()
+    # Ya NO asignamos las leyes automáticamente aquí, para que pase por el Human-in-the-Loop RAG.
     
     return Response({
         "mensaje": "Onboarding completado exitosamente",
         "empresa": EmpresaOnboardingSerializer(empresa).data,
-        "normativas_asignadas_count": len(compliances_base),
-        "normativas_sugeridas_ia_count": ia_count,
-        "compliances": ComplianceEmpresaSerializer(todos_compliances, many=True).data
+        "normativas_asignadas_count": 0,
+        "normativas_sugeridas_ia_count": 0,
+        "compliances": []
     })
 
 @api_view(['GET', 'PATCH'])
