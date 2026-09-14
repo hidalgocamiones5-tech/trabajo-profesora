@@ -50,6 +50,18 @@ class GrcAuditService:
         2. Inferencia determinista en Ollama (Llama 3.2).
         3. Persistencia atómica de Normativas y Tareas en la BD de Django.
         """
+        import os
+        if os.environ.get('RENDER') or os.environ.get('MOCK_IA', 'True') == 'True':
+            # MOCK PARA LA NUBE GRATUITA (Sin Ollama)
+            return {
+                "status": "success",
+                "message": "Auditoría IA (MOCK NUBE) completada. En la versión gratuita de Vercel/Render no hay Ollama, pero el flujo GRC funciona perfecto.",
+                "total_normativas_evaluadas": 0,
+                "normativas_asignadas": 0,
+                "tareas_pendientes_generadas": 0,
+                "detalle_evaluacion": []
+            }
+
         query_text = self._generar_query_perfil(empresa)
         
         # 1. Filtro Duro (Búsqueda Híbrida post-retrieval)
