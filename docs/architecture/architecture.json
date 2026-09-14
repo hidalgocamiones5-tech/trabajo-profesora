@@ -1,0 +1,189 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Arquitectura General",
+    "subtitle": "Componentes principales del sistema, backend, frontend y RAG",
+    "output": "architecture.html",
+    "quality_profile": "showcase"
+  },
+  "components": [
+    {
+      "id": "browser",
+      "type": "external",
+      "label": "Usuario",
+      "sublabel": "Navegador Web",
+      "pos": [
+        40,
+        200
+      ],
+      "size": [
+        120,
+        60
+      ]
+    },
+    {
+      "id": "frontend",
+      "type": "frontend",
+      "label": "App React",
+      "sublabel": "Vite + Tailwind",
+      "pos": [
+        220,
+        200
+      ],
+      "size": [
+        120,
+        60
+      ]
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "Django API",
+      "sublabel": "DRF Backend",
+      "pos": [
+        420,
+        200
+      ],
+      "size": [
+        140,
+        60
+      ]
+    },
+    {
+      "id": "sqlite",
+      "type": "database",
+      "label": "SQLite",
+      "sublabel": "Relational DB",
+      "pos": [
+        420,
+        320
+      ],
+      "size": [
+        140,
+        60
+      ]
+    },
+    {
+      "id": "rag_service",
+      "type": "backend",
+      "label": "Servicio RAG",
+      "sublabel": "Compliance AI",
+      "pos": [
+        620,
+        200
+      ],
+      "size": [
+        140,
+        60
+      ]
+    },
+    {
+      "id": "chromadb",
+      "type": "database",
+      "label": "ChromaDB",
+      "sublabel": "Vector Store",
+      "pos": [
+        620,
+        80
+      ],
+      "size": [
+        140,
+        60
+      ]
+    },
+    {
+      "id": "llm",
+      "type": "cloud",
+      "label": "Ollama LLM",
+      "sublabel": "Local / Remoto",
+      "pos": [
+        820,
+        200
+      ],
+      "size": [
+        140,
+        60
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Servidor Backend",
+      "wraps": [
+        "api",
+        "sqlite",
+        "rag_service",
+        "chromadb"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "browser",
+      "to": "frontend",
+      "label": "UI",
+      "variant": "emphasis"
+    },
+    {
+      "from": "frontend",
+      "to": "api",
+      "label": "REST (JSON)",
+      "variant": "emphasis"
+    },
+    {
+      "from": "api",
+      "to": "sqlite",
+      "label": "ORM",
+      "variant": "dashed",
+      "labelDy": 24
+    },
+    {
+      "from": "api",
+      "to": "rag_service",
+      "label": "evaluar-rag",
+      "variant": "emphasis"
+    },
+    {
+      "from": "rag_service",
+      "to": "chromadb",
+      "label": "embeddings",
+      "variant": "dashed",
+      "fromSide": "top",
+      "toSide": "bottom"
+    },
+    {
+      "from": "rag_service",
+      "to": "llm",
+      "label": "prompt",
+      "variant": "emphasis"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Frontend",
+      "items": [
+        "Aplicación React 19 construida con Vite.",
+        "Manejo de estado y UI con Tailwind CSS y Recharts."
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Backend (Django)",
+      "items": [
+        "Provee endpoints para GRC (Gobierno, Riesgo y Cumplimiento).",
+        "Módulos principales: clientes, gestion_operativa, privacidad, rag_admin."
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Inteligencia Artificial (RAG)",
+      "items": [
+        "ChromaDB para almacenar embeddings de normativas.",
+        "Integración con modelos de Ollama para Smart Discovery y resúmenes."
+      ]
+    }
+  ]
+}

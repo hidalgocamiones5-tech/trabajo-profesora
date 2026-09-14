@@ -556,7 +556,6 @@ class NormativaAdmin(admin.ModelAdmin):
         self.message_user(request, f"⚡ Asignación completada: {total_asignaciones} nuevas asignaciones de compliance a empresas que cumplen las reglas.")
     autoasignar_empresas_action.short_description = "⚡ Asignar automáticamente esta normativa a todas las empresas que cumplan sus reglas"
 
-@admin.register(ComplianceEmpresa)
 class ComplianceEmpresaAdmin(admin.ModelAdmin):
     list_display = ('empresa', 'normativa', 'estado', 'porcentaje_progreso', 'origen', 'updated_at')
     list_filter = ('estado', 'origen', 'empresa')
@@ -746,6 +745,11 @@ class HiddenTratamientoRATAdmin(TratamientoRATAdmin):
 @admin.register(RegistroAuditoriaARCO)
 class HiddenRegistroAuditoriaARCOAdmin(RegistroAuditoriaARCOAdmin):
     def has_module_permission(self, request): return False
+
+@admin.register(ComplianceEmpresa)
+class HiddenComplianceEmpresaAdmin(ComplianceEmpresaAdmin):
+    def has_module_permission(self, request): return False
+
 
 class ArticuloLeyInline(admin.TabularInline):
     model = ArticuloLey

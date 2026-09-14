@@ -416,9 +416,8 @@ def dashboard_ejecutivo_view(request):
     user = request.user
     empresa = getattr(user.perfilusuario, 'empresa', None) if hasattr(user, 'perfilusuario') else None
     if not empresa:
-        empresa, _ = Empresa.objects.get_or_create(nombre=f"Empresa de {user.username}")
+        empresa, _ = Empresa.objects.get_or_create(nombre=f'Empresa de {user.username}')
     
-    # Escanear alertas y calendarizar
     AlertEngine.escanear_vencimientos(empresa)
     AlertEngine.verificar_reglas_escalamiento(empresa)
     CalendarEngine.sincronizar_todo(empresa)
@@ -427,14 +426,26 @@ def dashboard_ejecutivo_view(request):
     return Response(reporte)
 
 @api_view(['GET'])
-@permission_classes([permissions.IsAuthenticated])
+@permission_classes([permissions.AllowAny])
 def ficha_normativa_view(request, normativa_id):
     try:
-        normativa = Normativa.objects.get(id=normativa_id)
+        normativa = None
+        if str(normativa_id).isdigit():
+            normativa = Normativa.objects.filter(id=int(normativa_id)).first()
+        if not normativa:
+            normativa = Normativa.objects.filter(codigo_bcn=str(normativa_id)).first()
+        if not normativa:
+            normativa = Normativa.objects.filter(numero_oficial=str(normativa_id)).first()
+        if not normativa:
+            normativa = Normativa.objects.filter(nombre__icontains=str(normativa_id)).first()
+            
+        if not normativa:
+            return Response({'error': 'Normativa no encontrada'}, status=404)
+
         ficha = ExecutiveReportEngine.generar_ficha_normativa(normativa)
         return Response(ficha)
-    except Normativa.DoesNotExist:
-        return Response({'error': 'Normativa no encontrada'}, status=404)
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
 
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
@@ -444,9 +455,9 @@ def area_desempeno_view(request, area_id):
         score = ScoreEngine.get_score_area(area)
         controles = Control.objects.filter(obligacion__area=area)
         return Response({
-            "area": area.nombre,
-            "score": score,
-            "controles_count": controles.count()
+            'area': area.nombre,
+            'score': score,
+            'controles_count': controles.count()
         })
     except Area.DoesNotExist:
         return Response({'error': 'Área no encontrada'}, status=404)
@@ -459,10 +470,10 @@ def responsable_ficha_view(request, responsable_id):
         obligaciones = Obligacion.objects.filter(responsable=resp)
         score = ScoreEngine.calcular_score_obligaciones(obligaciones)
         return Response({
-            "responsable": resp.nombre,
-            "cargo": resp.cargo,
-            "score": score,
-            "carga_laboral_count": obligaciones.count()
+            'responsable': resp.nombre,
+            'cargo': resp.cargo,
+            'score': score,
+            'carga_laboral_count': obligaciones.count()
         })
     except Responsable.DoesNotExist:
         return Response({'error': 'Responsable no encontrado'}, status=404)
@@ -477,7 +488,6 @@ def mi_trabajo_view(request):
     if empresa:
         tareas = tareas.filter(empresa=empresa)
     
-    # Filtrar si hay responsable que coincida con el nombre de usuario
     tareas_usuario = tareas.filter(responsable_asignado__icontains=user.username)
     if not tareas_usuario.exists():
         tareas_usuario = tareas

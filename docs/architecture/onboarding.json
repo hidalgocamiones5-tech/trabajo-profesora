@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Onboarding de Empresa",
+    "subtitle": "Flujo de registro y Smart Discovery",
+    "output": "onboarding.html"
+  },
+  "components": [
+    {
+      "id": "admin",
+      "type": "external",
+      "label": "Administrador",
+      "sublabel": "Usuario GRC",
+      "pos": [
+        40,
+        200
+      ],
+      "size": [
+        120,
+        60
+      ]
+    },
+    {
+      "id": "frontend",
+      "type": "frontend",
+      "label": "Panel de Control",
+      "sublabel": "UI Onboarding",
+      "pos": [
+        260,
+        200
+      ],
+      "size": [
+        130,
+        60
+      ]
+    },
+    {
+      "id": "empresas_api",
+      "type": "backend",
+      "label": "Empresas API",
+      "sublabel": "POST /empresas/onboarding/",
+      "pos": [
+        500,
+        200
+      ],
+      "size": [
+        160,
+        60
+      ]
+    },
+    {
+      "id": "smart_discovery",
+      "type": "backend",
+      "label": "Smart Discovery",
+      "sublabel": "Evaluación automática",
+      "pos": [
+        740,
+        200
+      ],
+      "size": [
+        150,
+        60
+      ]
+    },
+    {
+      "id": "db",
+      "type": "database",
+      "label": "Base de Datos",
+      "sublabel": "Almacenamiento de Empresa",
+      "pos": [
+        500,
+        320
+      ],
+      "size": [
+        160,
+        60
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "admin",
+      "to": "frontend",
+      "label": "Ingresa datos",
+      "variant": "emphasis",
+      "labelDy": -24
+    },
+    {
+      "from": "frontend",
+      "to": "empresas_api",
+      "label": "POST request",
+      "variant": "emphasis",
+      "labelDy": -24
+    },
+    {
+      "from": "empresas_api",
+      "to": "db",
+      "label": "Guarda registro",
+      "variant": "dashed",
+      "labelDy": 24
+    },
+    {
+      "from": "empresas_api",
+      "to": "smart_discovery",
+      "label": "Inicia análisis",
+      "variant": "emphasis",
+      "labelDy": -24
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Registro Inicial",
+      "items": [
+        "Captura de datos de la empresa: nombre, rut, sector."
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Smart Discovery",
+      "items": [
+        "Proceso en background que perfila a la empresa para asignarle normativas y objetivos de compliance recomendados."
+      ]
+    }
+  ]
+}

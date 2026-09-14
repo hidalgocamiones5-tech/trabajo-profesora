@@ -1,0 +1,222 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Frontend Dashboards & Vistas",
+    "subtitle": "Arquitectura de interfaces del usuario en React",
+    "output": "frontend_dashboard.html"
+  },
+  "components": [
+    {
+      "id": "user",
+      "type": "external",
+      "label": "Usuario",
+      "sublabel": "Navegador",
+      "pos": [
+        40,
+        300
+      ],
+      "size": [
+        120,
+        60
+      ]
+    },
+    {
+      "id": "app",
+      "type": "frontend",
+      "label": "App.tsx (Router)",
+      "sublabel": "Enrutador Principal",
+      "pos": [
+        200,
+        300
+      ],
+      "size": [
+        140,
+        60
+      ]
+    },
+    {
+      "id": "dashboard",
+      "type": "frontend",
+      "label": "Dashboard Ejecutivo",
+      "sublabel": "Dashboard.tsx",
+      "pos": [
+        420,
+        100
+      ],
+      "size": [
+        160,
+        60
+      ]
+    },
+    {
+      "id": "compliance",
+      "type": "frontend",
+      "label": "Módulo Compliance",
+      "sublabel": "Compliance.tsx",
+      "pos": [
+        420,
+        200
+      ],
+      "size": [
+        160,
+        60
+      ]
+    },
+    {
+      "id": "management",
+      "type": "frontend",
+      "label": "Gestión Operativa",
+      "sublabel": "Management.tsx",
+      "pos": [
+        420,
+        300
+      ],
+      "size": [
+        160,
+        60
+      ]
+    },
+    {
+      "id": "mywork",
+      "type": "frontend",
+      "label": "Mi Trabajo",
+      "sublabel": "MyWork.tsx",
+      "pos": [
+        420,
+        400
+      ],
+      "size": [
+        160,
+        60
+      ]
+    },
+    {
+      "id": "reports",
+      "type": "frontend",
+      "label": "Reportes & Alertas",
+      "sublabel": "AlertsCenter / Reports",
+      "pos": [
+        420,
+        500
+      ],
+      "size": [
+        160,
+        60
+      ]
+    },
+    {
+      "id": "api_service",
+      "type": "backend",
+      "label": "Servicios API (Axios)",
+      "sublabel": "Comunicación Backend",
+      "pos": [
+        660,
+        300
+      ],
+      "size": [
+        160,
+        60
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Vistas Principales (React)",
+      "wraps": [
+        "dashboard",
+        "compliance",
+        "management",
+        "mywork",
+        "reports"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "user",
+      "to": "app",
+      "label": "Navega",
+      "variant": "emphasis"
+    },
+    {
+      "from": "app",
+      "to": "dashboard",
+      "variant": "emphasis"
+    },
+    {
+      "from": "app",
+      "to": "compliance",
+      "variant": "emphasis"
+    },
+    {
+      "from": "app",
+      "to": "management",
+      "variant": "emphasis"
+    },
+    {
+      "from": "app",
+      "to": "mywork",
+      "variant": "emphasis"
+    },
+    {
+      "from": "app",
+      "to": "reports",
+      "variant": "emphasis"
+    },
+    {
+      "from": "dashboard",
+      "to": "api_service",
+      "variant": "dashed",
+      "fromSide": "right",
+      "toSide": "top"
+    },
+    {
+      "from": "compliance",
+      "to": "api_service",
+      "variant": "dashed",
+      "fromSide": "right",
+      "toSide": "top"
+    },
+    {
+      "from": "management",
+      "to": "api_service",
+      "variant": "dashed",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "from": "mywork",
+      "to": "api_service",
+      "variant": "dashed",
+      "fromSide": "right",
+      "toSide": "bottom"
+    },
+    {
+      "from": "reports",
+      "to": "api_service",
+      "variant": "dashed",
+      "fromSide": "right",
+      "toSide": "bottom"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Dashboard Ejecutivo",
+      "items": [
+        "Vista global de métricas, estado de compliance general y resumen gerencial."
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Módulos de Trabajo",
+      "items": [
+        "Compliance: Evaluación de normativas (IA RAG).",
+        "Gestión Operativa: Planes de acción, auditorías.",
+        "Mi Trabajo: Bandeja de entrada de tareas del usuario."
+      ]
+    }
+  ]
+}

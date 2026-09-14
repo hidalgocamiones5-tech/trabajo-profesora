@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Modulo: Rag_admin",
+    "subtitle": "Modelos y relaciones de la aplicacion rag_admin",
+    "output": "app_rag_admin.html",
+    "viewBox": [
+      1900,
+      1460
+    ]
+  },
+  "layout": {
+    "mode": "grid",
+    "origin": [
+      100,
+      800
+    ],
+    "cols": 7,
+    "gapX": 100,
+    "gapY": 400,
+    "cellW": 220,
+    "cellH": 60
+  },
+  "components": [
+    {
+      "id": "frontend",
+      "type": "frontend",
+      "label": "Frontend UI",
+      "sublabel": "App rag_admin",
+      "row": 0,
+      "col": 0,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "api_layer",
+      "type": "backend",
+      "label": "API Rag_admin",
+      "sublabel": "Django Views",
+      "row": 0,
+      "col": 1,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "auditoriaiaempresa",
+      "type": "database",
+      "label": "AuditoriaIaEmpresa",
+      "sublabel": "Model",
+      "row": 0,
+      "col": 2,
+      "size": [
+        220,
+        60
+      ],
+      "tag": ""
+    },
+    {
+      "id": "registroauditoriarag",
+      "type": "database",
+      "label": "RegistroAuditoriaRAG",
+      "sublabel": "Model",
+      "row": 0,
+      "col": 3,
+      "size": [
+        220,
+        60
+      ],
+      "tag": ""
+    },
+    {
+      "id": "empresa",
+      "type": "database",
+      "label": "Empresa",
+      "sublabel": "Model (api)",
+      "row": 0,
+      "col": 4,
+      "size": [
+        220,
+        60
+      ],
+      "tag": "external"
+    }
+  ],
+  "connections": [
+    {
+      "from": "frontend",
+      "to": "api_layer",
+      "variant": "emphasis",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "from": "api_layer",
+      "to": "auditoriaiaempresa",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "bottom"
+    },
+    {
+      "from": "api_layer",
+      "to": "registroauditoriarag",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "bottom"
+    },
+    {
+      "from": "registroauditoriarag",
+      "to": "empresa",
+      "variant": "default",
+      "fromSide": "top",
+      "toSide": "top"
+    }
+  ]
+}

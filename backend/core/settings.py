@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'soporte',
     'privacidad',
     'rag_admin.apps.RagAdminConfig',
+    'gestion_operativa',
 ]
 
 MIDDLEWARE = [

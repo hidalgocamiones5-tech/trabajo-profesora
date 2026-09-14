@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Modulo: Gestion_operativa",
+    "subtitle": "Modelos y relaciones de la aplicacion gestion_operativa",
+    "output": "app_gestion_operativa.html",
+    "viewBox": [
+      2860,
+      1460
+    ]
+  },
+  "layout": {
+    "mode": "grid",
+    "origin": [
+      100,
+      800
+    ],
+    "cols": 10,
+    "gapX": 100,
+    "gapY": 400,
+    "cellW": 220,
+    "cellH": 60
+  },
+  "components": [
+    {
+      "id": "frontend",
+      "type": "frontend",
+      "label": "Frontend UI",
+      "sublabel": "App gestion_operativa",
+      "row": 0,
+      "col": 0,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "api_layer",
+      "type": "backend",
+      "label": "API Gestion_operativa",
+      "sublabel": "Django Views",
+      "row": 0,
+      "col": 1,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "solicitudarco",
+      "type": "database",
+      "label": "SolicitudARCO",
+      "sublabel": "Model",
+      "row": 0,
+      "col": 2,
+      "size": [
+        220,
+        60
+      ],
+      "tag": ""
+    },
+    {
+      "id": "incidentekarin",
+      "type": "database",
+      "label": "IncidenteKarin",
+      "sublabel": "Model",
+      "row": 0,
+      "col": 3,
+      "size": [
+        220,
+        60
+      ],
+      "tag": ""
+    },
+    {
+      "id": "riesgopenal",
+      "type": "database",
+      "label": "RiesgoPenal",
+      "sublabel": "Model",
+      "row": 0,
+      "col": 4,
+      "size": [
+        220,
+        60
+      ],
+      "tag": ""
+    },
+    {
+      "id": "controlriesgo",
+      "type": "database",
+      "label": "ControlRiesgo",
+      "sublabel": "Model",
+      "row": 0,
+      "col": 5,
+      "size": [
+        220,
+        60
+      ],
+      "tag": ""
+    },
+    {
+      "id": "empresa",
+      "type": "database",
+      "label": "Empresa",
+      "sublabel": "Model (api)",
+      "row": 0,
+      "col": 6,
+      "size": [
+        220,
+        60
+      ],
+      "tag": "external"
+    },
+    {
+      "id": "user",
+      "type": "database",
+      "label": "User",
+      "sublabel": "Model (auth)",
+      "row": 0,
+      "col": 7,
+      "size": [
+        220,
+        60
+      ],
+      "tag": "external"
+    }
+  ],
+  "connections": [
+    {
+      "from": "frontend",
+      "to": "api_layer",
+      "variant": "emphasis",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "from": "api_layer",
+      "to": "solicitudarco",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "bottom"
+    },
+    {
+      "from": "api_layer",
+      "to": "incidentekarin",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "bottom"
+    },
+    {
+      "from": "api_layer",
+      "to": "riesgopenal",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "bottom"
+    },
+    {
+      "from": "api_layer",
+      "to": "controlriesgo",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "bottom"
+    },
+    {
+      "from": "solicitudarco",
+      "to": "empresa",
+      "variant": "default",
+      "fromSide": "top",
+      "toSide": "top"
+    },
+    {
+      "from": "solicitudarco",
+      "to": "user",
+      "variant": "default",
+      "fromSide": "top",
+      "toSide": "top"
+    },
+    {
+      "from": "incidentekarin",
+      "to": "empresa",
+      "variant": "default",
+      "fromSide": "top",
+      "toSide": "top"
+    },
+    {
+      "from": "incidentekarin",
+      "to": "user",
+      "variant": "default",
+      "fromSide": "top",
+      "toSide": "top"
+    },
+    {
+      "from": "riesgopenal",
+      "to": "empresa",
+      "variant": "default",
+      "fromSide": "top",
+      "toSide": "top"
+    },
+    {
+      "from": "controlriesgo",
+      "to": "riesgopenal",
+      "variant": "default",
+      "fromSide": "top",
+      "toSide": "top"
+    },
+    {
+      "from": "controlriesgo",
+      "to": "user",
+      "variant": "default",
+      "fromSide": "top",
+      "toSide": "top"
+    }
+  ]
+}

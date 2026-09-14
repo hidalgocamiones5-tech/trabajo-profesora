@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Modulo: Privacidad",
+    "subtitle": "Modelos y relaciones de la aplicacion privacidad",
+    "output": "app_privacidad.html",
+    "viewBox": [
+      2220,
+      1460
+    ]
+  },
+  "layout": {
+    "mode": "grid",
+    "origin": [
+      100,
+      800
+    ],
+    "cols": 8,
+    "gapX": 100,
+    "gapY": 400,
+    "cellW": 220,
+    "cellH": 60
+  },
+  "components": [
+    {
+      "id": "frontend",
+      "type": "frontend",
+      "label": "Frontend UI",
+      "sublabel": "App privacidad",
+      "row": 0,
+      "col": 0,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "api_layer",
+      "type": "backend",
+      "label": "API Privacidad",
+      "sublabel": "Django Views",
+      "row": 0,
+      "col": 1,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "ratprivacidad",
+      "type": "database",
+      "label": "RATPrivacidad",
+      "sublabel": "Model",
+      "row": 0,
+      "col": 2,
+      "size": [
+        220,
+        60
+      ],
+      "tag": ""
+    },
+    {
+      "id": "auditoriaarco",
+      "type": "database",
+      "label": "AuditoriaARCO",
+      "sublabel": "Model",
+      "row": 0,
+      "col": 3,
+      "size": [
+        220,
+        60
+      ],
+      "tag": ""
+    },
+    {
+      "id": "empresa",
+      "type": "database",
+      "label": "Empresa",
+      "sublabel": "Model (api)",
+      "row": 0,
+      "col": 4,
+      "size": [
+        220,
+        60
+      ],
+      "tag": "external"
+    },
+    {
+      "id": "perfilusuario",
+      "type": "database",
+      "label": "PerfilUsuario",
+      "sublabel": "Model (api)",
+      "row": 0,
+      "col": 5,
+      "size": [
+        220,
+        60
+      ],
+      "tag": "external"
+    }
+  ],
+  "connections": [
+    {
+      "from": "frontend",
+      "to": "api_layer",
+      "variant": "emphasis",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "from": "api_layer",
+      "to": "ratprivacidad",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "bottom"
+    },
+    {
+      "from": "api_layer",
+      "to": "auditoriaarco",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "bottom"
+    },
+    {
+      "from": "ratprivacidad",
+      "to": "empresa",
+      "variant": "default",
+      "fromSide": "top",
+      "toSide": "top"
+    },
+    {
+      "from": "auditoriaarco",
+      "to": "perfilusuario",
+      "variant": "default",
+      "fromSide": "top",
+      "toSide": "top"
+    },
+    {
+      "from": "auditoriaarco",
+      "to": "empresa",
+      "variant": "default",
+      "fromSide": "top",
+      "toSide": "top"
+    }
+  ]
+}

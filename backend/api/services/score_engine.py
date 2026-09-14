@@ -47,6 +47,10 @@ class ScoreEngine:
         return cls.calcular_score_obligaciones(qs)
 
     @classmethod
+    def get_score_normativa(cls, normativa):
+        return cls.calcular_score_obligaciones(normativa.obligaciones.all())
+
+    @classmethod
     def calcular_cumplimiento_por_normativa(cls, empresa):
         normativas = Normativa.objects.filter(empresa=empresa)
         resultados = []

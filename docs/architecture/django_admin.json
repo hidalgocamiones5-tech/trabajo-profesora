@@ -1,0 +1,204 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Django Admin (Backoffice)",
+    "subtitle": "Panel de control de administradores y gestión de datos",
+    "output": "django_admin.html"
+  },
+  "components": [
+    {
+      "id": "admin_user",
+      "type": "security",
+      "label": "Superusuario",
+      "sublabel": "Staff / Admin",
+      "pos": [
+        40,
+        260
+      ],
+      "size": [
+        130,
+        60
+      ]
+    },
+    {
+      "id": "dj_admin",
+      "type": "frontend",
+      "label": "Django Admin UI",
+      "sublabel": "Sitio /admin/",
+      "pos": [
+        260,
+        260
+      ],
+      "size": [
+        150,
+        60
+      ]
+    },
+    {
+      "id": "mod_auth",
+      "type": "database",
+      "label": "Auth & Users",
+      "sublabel": "Gestión de Accesos",
+      "pos": [
+        520,
+        100
+      ],
+      "size": [
+        160,
+        60
+      ]
+    },
+    {
+      "id": "mod_rag",
+      "type": "database",
+      "label": "RAG Admin",
+      "sublabel": "Normativas y Prompts",
+      "pos": [
+        520,
+        200
+      ],
+      "size": [
+        160,
+        60
+      ]
+    },
+    {
+      "id": "mod_core",
+      "type": "database",
+      "label": "Core & Empresas",
+      "sublabel": "Mantenimiento General",
+      "pos": [
+        520,
+        300
+      ],
+      "size": [
+        160,
+        60
+      ]
+    },
+    {
+      "id": "mod_logs",
+      "type": "database",
+      "label": "Logs & Auditoría",
+      "sublabel": "Trazabilidad",
+      "pos": [
+        520,
+        400
+      ],
+      "size": [
+        160,
+        60
+      ]
+    },
+    {
+      "id": "sqlite",
+      "type": "database",
+      "label": "SQLite",
+      "sublabel": "Persistencia",
+      "pos": [
+        760,
+        260
+      ],
+      "size": [
+        140,
+        60
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "security-group",
+      "label": "Área Restringida (Solo Staff)",
+      "wraps": [
+        "dj_admin",
+        "mod_auth",
+        "mod_rag",
+        "mod_core",
+        "mod_logs"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "admin_user",
+      "to": "dj_admin",
+      "label": "Autenticación",
+      "variant": "security",
+      "labelDy": -20
+    },
+    {
+      "from": "dj_admin",
+      "to": "mod_auth",
+      "variant": "emphasis",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "from": "dj_admin",
+      "to": "mod_rag",
+      "variant": "emphasis",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "from": "dj_admin",
+      "to": "mod_core",
+      "variant": "emphasis",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "from": "dj_admin",
+      "to": "mod_logs",
+      "variant": "emphasis",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "from": "mod_auth",
+      "to": "sqlite",
+      "variant": "dashed",
+      "fromSide": "right",
+      "toSide": "top"
+    },
+    {
+      "from": "mod_rag",
+      "to": "sqlite",
+      "variant": "dashed",
+      "fromSide": "right",
+      "toSide": "top"
+    },
+    {
+      "from": "mod_core",
+      "to": "sqlite",
+      "variant": "dashed",
+      "fromSide": "right",
+      "toSide": "bottom"
+    },
+    {
+      "from": "mod_logs",
+      "to": "sqlite",
+      "variant": "dashed",
+      "fromSide": "right",
+      "toSide": "bottom"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "rose",
+      "title": "Backoffice (Dj Admin)",
+      "items": [
+        "Interfaz autogenerada por Django (http://.../admin).",
+        "Permite a los desarrolladores y soporte técnico gestionar la base de datos directamente, crear nuevos roles y revisar logs de RAG."
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Gestión de RAG",
+      "items": [
+        "Permite ver y editar los metadatos de las normativas inyectadas en la IA antes de procesarlas en ChromaDB."
+      ]
+    }
+  ]
+}

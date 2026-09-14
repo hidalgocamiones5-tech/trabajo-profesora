@@ -1,66 +1,67 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, Plus, Sparkles, Filter, BookOpen, Loader2, ShieldCheck, CheckCircle, AlertTriangle } from 'lucide-react';
-import { CreateNormativaModal } from '../components/CreateNormativaModal';
+import { Search, Sparkles, Filter, BookOpen, Loader2, ShieldCheck, CheckCircle, AlertTriangle } from 'lucide-react';
+
 import { CatalogoNormativasModal } from '../components/CatalogoNormativasModal';
 import { bcnService } from '../services/bcnService';
 import type { LeyOficialBCN } from '../services/bcnService';
 import { api } from '../services/api';
 import { NormativaDetailView } from './NormativaDetailView';
-import toast from 'react-hot-toast';
 
 export const Compliance = () => {
   const [selectedNormativaId, setSelectedNormativaId] = useState<string | null>(null);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [selectedLawObject, setSelectedLawObject] = useState<any | null>(null);
+
   const [isCatalogoModalOpen, setIsCatalogoModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [leyes, setLeyes] = useState<LeyOficialBCN[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchLeyes = async () => {
-      setIsLoading(true);
-      try {
-        const complianceData = await api.getEmpresaCompliance().catch(() => []);
+  const fetchLeyes = async () => {
+    setIsLoading(true);
+    try {
+      const complianceData = await api.getEmpresaCompliance().catch(() => []);
+      
+      if (complianceData && complianceData.length > 0) {
+        // Filtrar leyes que no aplican o que están aún en revisión por los administradores (sugeridas por IA)
+        const activas = complianceData.filter((c: any) => 
+          c.estado !== 'NO_APLICA' && 
+          c.estado !== 'RECHAZADA' && 
+          c.estado !== 'SUGERIDA_IA'
+        );
         
-        if (complianceData && complianceData.length > 0) {
-          // Filtrar leyes que no aplican o que están aún en revisión por los administradores (sugeridas por IA)
-          const activas = complianceData.filter((c: any) => 
-            c.estado !== 'NO_APLICA' && 
-            c.estado !== 'RECHAZADA' && 
-            c.estado !== 'SUGERIDA_IA'
-          );
+        const mapped = activas.map((c: any) => {
+          const isBase = c.origen === 'MOTOR_REGLAS';
+          const isIA = c.origen === 'SMART_DISCOVERY_IA';
           
-          const mapped = activas.map((c: any) => {
-            const isBase = c.origen === 'MOTOR_REGLAS';
-            const isIA = c.origen === 'SMART_DISCOVERY_IA';
-            
-            return {
-              id: c.normativa?.codigo_bcn || c.normativa?.id?.toString() || Math.random().toString(),
-              numero: c.normativa?.codigo_bcn ? `Ley N° ${c.normativa.codigo_bcn}` : (isIA ? 'Sugerencia IA' : 'Regulación Base'),
-              nombre: c.normativa?.nombre || 'Normativa',
-              alias: c.normativa?.nombre || '',
-              fechaPublicacion: c.created_at?.split('T')[0] || '',
-              resumen: c.justificacion_ia || c.normativa?.resumen || c.normativa?.descripcion || 'Sin descripción.',
-              sectores: [isBase ? 'Transversal' : (isIA ? 'IA Específica' : 'General')],
-              progreso: c.porcentaje_progreso || 0,
-              estado: c.porcentaje_progreso >= 80 ? 'en_tiempo' : 'en_riesgo',
-              origen: c.origen,
-              estado_compliance: c.estado,
-              db_compliance_id: c.id
-            };
-          });
-          setLeyes(mapped);
-        } else {
-          setLeyes([]);
-        }
-      } catch (err) {
-        console.error('Error al cargar catálogo:', err);
+          return {
+            id: c.normativa?.codigo_bcn || c.normativa?.id?.toString() || Math.random().toString(),
+            numero: c.normativa?.codigo_bcn ? `Ley N° ${c.normativa.codigo_bcn}` : (isIA ? 'Sugerencia IA' : 'Regulación Base'),
+            nombre: c.normativa?.nombre || 'Normativa',
+            alias: c.normativa?.nombre || '',
+            fechaPublicacion: c.created_at?.split('T')[0] || '',
+            resumen: c.justificacion_ia || c.normativa?.resumen || c.normativa?.descripcion || 'Sin descripción.',
+            sectores: [isBase ? 'Transversal' : (isIA ? 'IA Específica' : 'General')],
+            progreso: c.porcentaje_progreso || 0,
+            estado: c.porcentaje_progreso >= 80 ? 'en_tiempo' : 'en_riesgo',
+            origen: c.origen,
+            estado_compliance: c.estado,
+            db_compliance_id: c.id
+          };
+        });
+        setLeyes(mapped);
+      } else {
         setLeyes([]);
-      } finally {
-        setIsLoading(false);
       }
-    };
+    } catch (err) {
+      console.error('Error al cargar catálogo:', err);
+      setLeyes([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchLeyes();
   }, []);
 
@@ -77,22 +78,6 @@ export const Compliance = () => {
   const enTiempoCount = leyes.filter(l => (l.progreso || 0) >= 50 || l.estado === 'en_tiempo').length;
   const atrasadasCount = leyes.filter(l => l.estado === 'atrasada' || l.estado === 'en_riesgo').length;
 
-  const [isDiscovering, setIsDiscovering] = useState(false);
-
-  const handleCrearConIA = async () => {
-    toast.success("Iniciando Asistente IA para sugerir normativas según tu rubro...");
-    setIsDiscovering(true);
-    try {
-      const res = await api.ejecutarSmartDiscovery();
-      toast.success(res.message || "Descubrimiento completado con éxito.");
-      const updated = await api.getEmpresaCompliance();
-      setLeyes(updated);
-    } catch (e) {
-      toast.error("Error al ejecutar descubrimiento IA");
-    } finally {
-      setIsDiscovering(false);
-    }
-  };
 
   const renderNormativasList = () => (
     <motion.div
@@ -120,21 +105,6 @@ export const Compliance = () => {
           >
             <BookOpen className="w-4 h-4" />
             Explorar Catálogo
-          </button>
-          <button
-            onClick={() => setIsCreateModalOpen(true)}
-            className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl transition-colors font-semibold text-xs shadow-2xs cursor-pointer"
-          >
-            <Plus className="w-3.5 h-3.5 text-slate-500" />
-            + Crear normativa (Manual)
-          </button>
-          <button
-            onClick={handleCrearConIA}
-            disabled={isDiscovering}
-            className="flex items-center gap-1.5 px-3 py-2 bg-indigo-50 border border-indigo-200 text-indigo-700 hover:bg-indigo-100 rounded-xl transition-colors font-semibold text-xs cursor-pointer disabled:opacity-50"
-          >
-            <Sparkles className={`w-3.5 h-3.5 text-indigo-600 ${isDiscovering ? 'animate-spin' : ''}`} />
-            {isDiscovering ? 'Analizando...' : '+ Crear con IA'}
           </button>
         </div>
       </div>
@@ -272,7 +242,10 @@ export const Compliance = () => {
 
               {/* Action Button: Ver Detalle (Ficha 360°) */}
               <button
-                onClick={() => setSelectedNormativaId(law.id)}
+                onClick={() => {
+                  setSelectedNormativaId(law.id);
+                  setSelectedLawObject(law);
+                }}
                 className="w-full py-2 bg-slate-50 hover:bg-indigo-600 hover:text-white border border-slate-200 hover:border-indigo-600 text-slate-700 text-xs font-semibold rounded-xl transition-all cursor-pointer shadow-2xs"
               >
                 Ver Detalle
@@ -290,13 +263,7 @@ export const Compliance = () => {
           bcnService.getLeyes().then(setLeyes);
         }}
       />
-      <CreateNormativaModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        onSuccess={() => {
-          bcnService.getLeyes().then(setLeyes);
-        }}
-      />
+
     </motion.div>
   );
 
@@ -306,7 +273,12 @@ export const Compliance = () => {
         <NormativaDetailView
           key="detail"
           normativaId={selectedNormativaId}
-          onBack={() => setSelectedNormativaId(null)}
+          initialLey={selectedLawObject}
+          onBack={() => {
+            setSelectedNormativaId(null);
+            setSelectedLawObject(null);
+            fetchLeyes();
+          }}
         />
       ) : (
         renderNormativasList()

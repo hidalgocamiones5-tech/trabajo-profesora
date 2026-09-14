@@ -1,0 +1,160 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "RAG Compliance Data Flow",
+    "subtitle": "Evaluación de normativas con Inteligencia Artificial",
+    "output": "rag_compliance.html"
+  },
+  "components": [
+    {
+      "id": "user",
+      "type": "external",
+      "label": "Usuario GRC",
+      "sublabel": "Frontend",
+      "pos": [
+        40,
+        200
+      ],
+      "size": [
+        120,
+        60
+      ]
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "Django API",
+      "sublabel": "rag_admin / core",
+      "pos": [
+        300,
+        200
+      ],
+      "size": [
+        140,
+        60
+      ]
+    },
+    {
+      "id": "chromadb",
+      "type": "database",
+      "label": "ChromaDB",
+      "sublabel": "Vector Store",
+      "pos": [
+        300,
+        60
+      ],
+      "size": [
+        140,
+        60
+      ]
+    },
+    {
+      "id": "llm",
+      "type": "cloud",
+      "label": "Ollama",
+      "sublabel": "Llama 3 / Mistral",
+      "pos": [
+        600,
+        200
+      ],
+      "size": [
+        140,
+        60
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Inferencia RAG Local",
+      "wraps": [
+        "api",
+        "chromadb",
+        "llm"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "user",
+      "to": "api",
+      "label": "Consulta compliance",
+      "variant": "emphasis",
+      "labelDy": -24
+    },
+    {
+      "from": "api",
+      "to": "chromadb",
+      "label": "Búsqueda semántica",
+      "variant": "dashed",
+      "fromSide": "top",
+      "toSide": "bottom",
+      "labelAt": [
+        220,
+        140
+      ]
+    },
+    {
+      "from": "api",
+      "to": "llm",
+      "label": "Genera respuesta",
+      "variant": "emphasis",
+      "labelDy": -24
+    },
+    {
+      "from": "llm",
+      "to": "api",
+      "label": "Texto generado",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "bottom",
+      "via": [
+        [
+          670,
+          280
+        ],
+        [
+          370,
+          280
+        ]
+      ],
+      "labelDy": 10
+    },
+    {
+      "from": "api",
+      "to": "user",
+      "label": "Evaluación y citas",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "bottom",
+      "via": [
+        [
+          370,
+          320
+        ],
+        [
+          100,
+          320
+        ]
+      ],
+      "labelDy": 10
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Vector Database",
+      "items": [
+        "ChromaDB almacena los embeddings de las normativas, leyes y regulaciones aplicables a la empresa."
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Generación",
+      "items": [
+        "El modelo local (Ollama) recibe el contexto de la base de datos y genera una evaluación de cumplimiento o resumen."
+      ]
+    }
+  ]
+}

@@ -31,6 +31,10 @@ class AuditoriaIaEmpresaAdmin(admin.ModelAdmin):
     def auditar_rag_view(self, request, object_id):
         empresa = self.get_object(request, object_id)
         if empresa:
+            if not empresa.setup_completado:
+                self.message_user(request, f"⚠️ No se puede auditar a '{empresa.nombre}' porque aún no ha completado el Onboarding (falta información).", level="WARNING")
+                return redirect('admin:rag_admin_auditoriaiaempresa_changelist')
+
             servicio = GrcAuditService()
             res = servicio.auditar_y_generar_borrador(empresa)
             if res.get("success"):
@@ -47,8 +51,12 @@ class AuditoriaIaEmpresaAdmin(admin.ModelAdmin):
     def ejecutar_rag_masivo(self, request, queryset):
         servicio = GrcAuditService()
         auditadas = 0
+        ignoradas = 0
         ultimo_registro_id = None
         for emp in queryset:
+            if not emp.setup_completado:
+                ignoradas += 1
+                continue
             r = servicio.auditar_y_generar_borrador(emp)
             if r.get("success"):
                 auditadas += 1
@@ -58,7 +66,12 @@ class AuditoriaIaEmpresaAdmin(admin.ModelAdmin):
             messages.info(request, "🤖 Diagnóstico IA generado. Por favor revisa y aprueba el borrador.")
             return redirect('admin:rag_admin_registroauditoriarag_revisar', object_id=ultimo_registro_id)
 
-        self.message_user(request, f"🤖 Auditoría RAG masiva generada: {auditadas} borradores creados para revisión.", level="SUCCESS")
+        msg = f"🤖 Auditoría RAG masiva completada: {auditadas} borradores creados."
+        if ignoradas > 0:
+            msg += f" (⚠️ Se omitieron {ignoradas} empresas por falta de Onboarding)."
+            self.message_user(request, msg, level="WARNING")
+        else:
+            self.message_user(request, msg, level="SUCCESS")
     ejecutar_rag_masivo.short_description = "🤖 Generar Borradores RAG + Ollama en lote"
 
     def get_triggers_badge(self, obj):
@@ -91,6 +104,10 @@ class AuditoriaIaEmpresaAdmin(admin.ModelAdmin):
     get_total_tareas.short_description = "Tareas"
 
     def acciones_rag_btn(self, obj):
+        if not obj.setup_completado:
+            return format_html(
+                '<span style="background:#94a3b8; color:white; padding:5px 10px; border-radius:6px; font-weight:bold; font-size:11px; display:inline-block; cursor:not-allowed;" title="Falta completar Onboarding">⛔ Faltan Datos</span>'
+            )
         url = reverse('admin:rag_admin_auditar_empresa', args=[obj.id])
         return format_html(
             '<a href="{}" style="background:#10b981; color:white; padding:5px 10px; border-radius:6px; text-decoration:none; font-weight:bold; font-size:11px; display:inline-block;">⚡ Auditar con RAG</a>',
@@ -170,4 +187,6 @@ class RegistroAuditoriaRAGAdmin(admin.ModelAdmin):
         formateado = json.dumps(obj.datos_completos_json, indent=2, ensure_ascii=False)
         return mark_safe(f"<pre style='background:#1e293b; color:#38bdf8; padding:15px; border-radius:8px; max-height:400px; overflow:auto;'>{formateado}</pre>")
     ver_json_visual.short_description = "JSON Estructurado Generado por Ollama"
+
+
 

@@ -1,0 +1,340 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Modulo: Api",
+    "subtitle": "Modelos de la aplicacion api",
+    "output": "app_api.html",
+    "viewBox": [
+      1216,
+      1164
+    ]
+  },
+  "layout": {
+    "mode": "grid",
+    "origin": [
+      40,
+      100
+    ],
+    "cols": 4,
+    "gapX": 24,
+    "gapY": 48,
+    "cellW": 220,
+    "cellH": 60
+  },
+  "components": [
+    {
+      "id": "frontend",
+      "type": "frontend",
+      "label": "Frontend UI",
+      "sublabel": "App api",
+      "row": 0,
+      "col": 1,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "api_layer",
+      "type": "backend",
+      "label": "API Api",
+      "sublabel": "Django Views",
+      "row": 1,
+      "col": 1,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "empresa",
+      "type": "database",
+      "label": "Empresa",
+      "sublabel": "Model",
+      "row": 2,
+      "col": 0,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "perfilusuario",
+      "type": "database",
+      "label": "PerfilUsuario",
+      "sublabel": "Model",
+      "row": 2,
+      "col": 1,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "registroauditoriaarco",
+      "type": "database",
+      "label": "RegistroAuditoriaARCO",
+      "sublabel": "Model",
+      "row": 2,
+      "col": 2,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "normativa",
+      "type": "database",
+      "label": "Normativa",
+      "sublabel": "Model",
+      "row": 2,
+      "col": 3,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "complianceempresa",
+      "type": "database",
+      "label": "ComplianceEmpresa",
+      "sublabel": "Model",
+      "row": 3,
+      "col": 0,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "objetivochecklist",
+      "type": "database",
+      "label": "ObjetivoChecklist",
+      "sublabel": "Model",
+      "row": 3,
+      "col": 1,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "tratamientorat",
+      "type": "database",
+      "label": "TratamientoRAT",
+      "sublabel": "Model",
+      "row": 3,
+      "col": 2,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "solicitudticket",
+      "type": "database",
+      "label": "SolicitudTicket",
+      "sublabel": "Model",
+      "row": 3,
+      "col": 3,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "incidente",
+      "type": "database",
+      "label": "Incidente",
+      "sublabel": "Model",
+      "row": 4,
+      "col": 0,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "tareapendiente",
+      "type": "database",
+      "label": "TareaPendiente",
+      "sublabel": "Model",
+      "row": 4,
+      "col": 1,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "riesgo",
+      "type": "database",
+      "label": "Riesgo",
+      "sublabel": "Model",
+      "row": 4,
+      "col": 2,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "sucursal",
+      "type": "database",
+      "label": "Sucursal",
+      "sublabel": "Model",
+      "row": 4,
+      "col": 3,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "area",
+      "type": "database",
+      "label": "Area",
+      "sublabel": "Model",
+      "row": 5,
+      "col": 0,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "responsable",
+      "type": "database",
+      "label": "Responsable",
+      "sublabel": "Model",
+      "row": 5,
+      "col": 1,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "obligacion",
+      "type": "database",
+      "label": "Obligacion",
+      "sublabel": "Model",
+      "row": 5,
+      "col": 2,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "control",
+      "type": "database",
+      "label": "Control",
+      "sublabel": "Model",
+      "row": 5,
+      "col": 3,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "evidencia",
+      "type": "database",
+      "label": "Evidencia",
+      "sublabel": "Model",
+      "row": 6,
+      "col": 0,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "auditoria",
+      "type": "database",
+      "label": "Auditoria",
+      "sublabel": "Model",
+      "row": 6,
+      "col": 1,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "planaccion",
+      "type": "database",
+      "label": "PlanAccion",
+      "sublabel": "Model",
+      "row": 6,
+      "col": 2,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "eventocompliance",
+      "type": "database",
+      "label": "EventoCompliance",
+      "sublabel": "Model",
+      "row": 6,
+      "col": 3,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "alertacompliance",
+      "type": "database",
+      "label": "AlertaCompliance",
+      "sublabel": "Model",
+      "row": 7,
+      "col": 0,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "historicocumplimientomensual",
+      "type": "database",
+      "label": "HistoricoCumplimientoMensual",
+      "sublabel": "Model",
+      "row": 7,
+      "col": 1,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "leyoficial",
+      "type": "database",
+      "label": "LeyOficial",
+      "sublabel": "Model",
+      "row": 7,
+      "col": 2,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "articuloley",
+      "type": "database",
+      "label": "ArticuloLey",
+      "sublabel": "Model",
+      "row": 7,
+      "col": 3,
+      "size": [
+        220,
+        60
+      ]
+    }
+  ],
+  "connections": []
+}

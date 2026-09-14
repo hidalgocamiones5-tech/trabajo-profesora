@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Modulo: Clientes",
+    "subtitle": "Modelos y relaciones de la aplicacion clientes",
+    "output": "app_clientes.html",
+    "viewBox": [
+      1260,
+      1460
+    ]
+  },
+  "layout": {
+    "mode": "grid",
+    "origin": [
+      100,
+      800
+    ],
+    "cols": 5,
+    "gapX": 100,
+    "gapY": 400,
+    "cellW": 220,
+    "cellH": 60
+  },
+  "components": [
+    {
+      "id": "frontend",
+      "type": "frontend",
+      "label": "Frontend UI",
+      "sublabel": "App clientes",
+      "row": 0,
+      "col": 0,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "api_layer",
+      "type": "backend",
+      "label": "API Clientes",
+      "sublabel": "Django Views",
+      "row": 0,
+      "col": 1,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "empresacliente",
+      "type": "database",
+      "label": "EmpresaCliente",
+      "sublabel": "Model",
+      "row": 0,
+      "col": 2,
+      "size": [
+        220,
+        60
+      ],
+      "tag": ""
+    }
+  ],
+  "connections": [
+    {
+      "from": "frontend",
+      "to": "api_layer",
+      "variant": "emphasis",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "from": "api_layer",
+      "to": "empresacliente",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "bottom"
+    }
+  ]
+}

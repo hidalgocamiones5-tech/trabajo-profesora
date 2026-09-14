@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang='es'>
+<head>
+    <meta charset='UTF-8'>
+    <title>Dashboard de Arquitectura</title>
+    <style>
+        body { 
+            margin: 0; 
+            padding: 0; 
+            font-family: system-ui, -apple-system, sans-serif; 
+            display: flex; 
+            height: 100vh; 
+            overflow: hidden; 
+            background-color: #f8fafc;
+        }
+        .sidebar { 
+            width: 300px; 
+            background: #1e293b; 
+            color: #f1f5f9; 
+            display: flex; 
+            flex-direction: column; 
+            overflow-y: auto;
+        }
+        .sidebar-header {
+            padding: 20px;
+            background: #0f172a;
+            border-bottom: 1px solid #334155;
+        }
+        .sidebar-header h1 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: #38bdf8;
+        }
+        .nav-group {
+            margin-top: 15px;
+        }
+        .nav-group-title {
+            padding: 10px 20px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #94a3b8;
+            font-weight: 600;
+        }
+        .nav-link {
+            display: block;
+            padding: 10px 20px 10px 30px;
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 0.95rem;
+            border-left: 3px solid transparent;
+            transition: all 0.2s;
+        }
+        .nav-link:hover, .nav-link.active {
+            background: #334155;
+            color: #fff;
+            border-left-color: #38bdf8;
+        }
+        .content { 
+            flex-grow: 1; 
+            background: #fff;
+            position: relative;
+        }
+        iframe { 
+            width: 100%; 
+            height: 100%; 
+            border: none; 
+        }
+    </style>
+</head>
+<body>
+    <div class='sidebar'>
+        <div class='sidebar-header'>
+            <h1>Dashboard Proyecto</h1>
+        </div>
+        
+        <div class='nav-group'>
+            <div class='nav-group-title'>Interfaces (Dashboards)</div>
+            <a href='architecture/frontend_dashboard.html' class='nav-link' target='viewer' onclick='setActive(this)'>Dashboard Frontend (React)</a>
+            <a href='architecture/django_admin.html' class='nav-link' target='viewer' onclick='setActive(this)'>Backoffice (Django Admin)</a>
+        </div>
+
+        <div class='nav-group'>
+            <div class='nav-group-title'>Arquitectura General</div>
+            <a href='architecture/architecture.html' class='nav-link' target='viewer' onclick='setActive(this)'>Sistema Completo</a>
+            <a href='architecture/onboarding.html' class='nav-link' target='viewer' onclick='setActive(this)'>Flujo Onboarding</a>
+            <a href='architecture/rag_compliance.html' class='nav-link' target='viewer' onclick='setActive(this)'>Datos RAG (IA)</a>
+        </div>
+
+        <div class='nav-group'>
+            <div class='nav-group-title'>Módulos Django (Grilla)</div>
+            <a href='architecture/app_api.html' class='nav-link' target='viewer' onclick='setActive(this)'>App: API</a>
+            <a href='architecture/app_clientes.html' class='nav-link' target='viewer' onclick='setActive(this)'>App: Clientes</a>
+            <a href='architecture/app_catalogo.html' class='nav-link' target='viewer' onclick='setActive(this)'>App: Catálogo</a>
+            <a href='architecture/app_gestion_operativa.html' class='nav-link' target='viewer' onclick='setActive(this)'>App: Gestión Operativa</a>
+            <a href='architecture/app_privacidad.html' class='nav-link' target='viewer' onclick='setActive(this)'>App: Privacidad</a>
+            <a href='architecture/app_rag_admin.html' class='nav-link' target='viewer' onclick='setActive(this)'>App: RAG Admin</a>
+            <a href='architecture/app_soporte.html' class='nav-link' target='viewer' onclick='setActive(this)'>App: Soporte</a>
+        </div>
+        
+        <div class='nav-group'>
+            <div class='nav-group-title'>Código Fuente</div>
+            <a href='api_docs/index.html' class='nav-link' target='viewer' onclick='setActive(this)'>Explorador de Funciones (pdoc)</a>
+        </div>
+    </div>
+    
+    <div class='content'>
+        <!-- El iframe carga por defecto el primer diagrama -->
+        <iframe name='viewer' src='architecture/frontend_dashboard.html'></iframe>
+    </div>
+
+    <script>
+        function setActive(element) {
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            element.classList.add('active');
+        }
+        // Marcar el primer link como activo por defecto
+        document.querySelectorAll('.nav-link')[0].classList.add('active');
+    </script>
+</body>
+</html>

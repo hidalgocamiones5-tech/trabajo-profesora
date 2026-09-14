@@ -61,11 +61,13 @@ export const Dashboard = () => {
   // Live Compliance Data
   const [compliances, setCompliances] = useState<any[]>([]);
 
+  const [hasCompletedSetup, setHasCompletedSetup] = useState(false);
+
   useEffect(() => {
     // Check if onboarding is completed
     api.getEmpresas().then((res) => {
       if (res && Array.isArray(res) && res.length > 0) {
-        const emp = res[0];
+        setHasCompletedSetup(res[0].setup_completado);
       }
     }).catch(() => {});
 
@@ -228,10 +230,23 @@ export const Dashboard = () => {
 
         <div className="flex flex-wrap items-center gap-3">
           <button
-            onClick={() => setShowOnboarding(true)}
-            className="flex items-center gap-2 px-3.5 py-2 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white rounded-xl text-xs font-semibold shadow-xs transition-all cursor-pointer"
+            onClick={() => {
+              if (hasCompletedSetup) {
+                toast.error("Tu perfil ya fue enviado y está en revisión.");
+                return;
+              }
+              setShowOnboarding(true);
+            }}
+            disabled={hasCompletedSetup}
+            title={hasCompletedSetup ? "Onboarding ya completado. Perfil en revisión." : "Iniciar Onboarding"}
+            className={clsx(
+              "flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold shadow-xs transition-all",
+              hasCompletedSetup
+                ? "bg-slate-300 text-slate-500 cursor-not-allowed opacity-80"
+                : "bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white cursor-pointer"
+            )}
           >
-            <Compass className="w-4 h-4 text-lemon-400" />
+            <Compass className={clsx("w-4 h-4", hasCompletedSetup ? "text-slate-400" : "text-lemon-400")} />
             <span>Asistente de Leyes (Diagnóstico)</span>
           </button>
 
@@ -670,7 +685,8 @@ export const Dashboard = () => {
                 api.getNormativasAsignadas().then(data => {
                   if (Array.isArray(data)) setCompliances(data);
                 }).catch(() => {});
-                toast.success("¡Diagnóstico completado y normativas asignadas con éxito!");
+                setHasCompletedSetup(true);
+                toast.success("¡Diagnóstico enviado! Tu perfil está en revisión por nuestro equipo legal e IA.");
               }}
             />
           )}

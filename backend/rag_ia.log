@@ -1,0 +1,1226 @@
+[2026-08-29 18:57:27] Iniciando auditoría RAG para empresa: Fintech & Software Solutions SpA
+[2026-08-29 18:57:27] Contexto recuperado de ChromaDB: 5 fragmentos
+[2026-08-29 18:57:27] Enviando prompt a Ollama (Modelo: llama3.2:3b)...
+[2026-08-29 18:58:33] Iniciando auditoría RAG para empresa: Fintech & Software Solutions SpA
+[2026-08-29 18:58:33] Contexto recuperado de ChromaDB: 5 fragmentos
+[2026-08-29 18:58:33] Enviando prompt a Ollama (Modelo: llama3.2:3b)...
+[2026-08-29 19:41:30] Iniciando auditoría RAG para empresa: Fintech & Software Solutions SpA
+[2026-08-29 19:41:30] Contexto recuperado de ChromaDB: 5 fragmentos
+[2026-08-29 19:41:30] Enviando prompt a Ollama (Modelo: llama3.2:3b)...
+{
+  "resumen_ejecutivo": "Diagnóstico de cumplimiento legal chileno.",
+  "normativas_aplicables": [
+    {
+      "ley_id": "21643",
+      "nombre_ley": "Ley Karin - Prevención del Acoso y Violencia Laboral",
+      "articulos_clave": [
+        "Artículo 211-A"
+      ],
+      "justificacion_juridica": "Aplica por presencia de trabajadores en la empresa.",
+      "nivel_riesgo_general": "Moderado",
+      "tareas": [
+        {
+          "id_tarea": "T-21643-01",
+          "titulo": "Crear Protocolo de Prevención del Aceso Laboral",
+          "descripcion": "Definir canales de denuncia y medidas de resguardo tempranas.",
+          "area_responsable": "RRHH / Seguridad Laboral",
+          "plazo_sugerido_dias": 60,
+          "prioridad": "Media",
+          "impacto_incumplimiento": "Multas legales y daños morales."
+        },
+        {
+          "id_tarea": "T-21643-02",
+          "titulo": "Realizar Capacitación para Trabajadores",
+          "descripcion": "Educación sobre prevención del acoso laboral y derechos de los trabajadores.",
+          "area_responsable": "RRHH / Seguridad Laboral",
+          "plazo_sugerido_dias": 90,
+          "prioridad": "Baja",
+          "impacto_incumplimiento": "Daños morales."
+        }
+      ]
+    },
+    {
+      "ley_id": "20393",
+      "nombre_ley": "Ley de Responsabilidad Penal de las Personas Jurídicas",
+      "articulos_clave": [
+        "Artículo 3"
+      ],
+      "justificacion_juridica": "Aplica por presencia de delitos informáticos en la empresa.",
+      "nivel_riesgo_general": "Alto",
+      "tareas": [
+        {
+          "id_tarea": "T-20393-01",
+          "titulo": "Implementar Modelo de Prevención de Delitos",
+          "descripcion": "Designar encargado de prevención y recursos materiales.",
+          "area_responsable": "TI / Seguridad Informática",
+          "plazo_sugerido_dias": 120,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Multas legales y daños morales."
+        }
+      ]
+    },
+    {
+      "ley_id": "19628",
+      "nombre_ley": "Ley de Protección de la Vida Privada / Datos Personales",
+      "articulos_clave": [
+        "Artículo 4"
+      ],
+      "justificacion_juridica": "Aplica por manejo de datos personales.",
+      "nivel_riesgo_general": "Moderado",
+      "tareas": [
+        {
+          "id_tarea": "T-19628-01",
+          "titulo": "Implementar Cláusula de Consentimiento en Sitio Web",
+          "descripcion": "Publicar política de privacidad y checkbox de aceptación.",
+          "area_responsable": "TI / Ciberseguridad",
+          "plazo_sugerido_dias": 30,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Multas legales."
+        }
+      ]
+    }
+  ]
+}
+[2026-08-29 19:52:30] Respuesta de Ollama recibida exitosamente.
+[2026-08-29 19:52:30] Parseando JSON y guardando en BD...
+[2026-08-29 19:52:48] Iniciando auditoría RAG para empresa: Fintech & Software Solutions SpA
+[2026-08-29 19:52:48] Contexto recuperado de ChromaDB: 5 fragmentos
+[2026-08-29 19:52:48] Enviando prompt a Ollama (Modelo: llama3.2:3b)...
+{
+  "resumen_ejecutivo": "Diagnóstico de cumplimiento legal chileno.",
+  "normativas_aplicables": [
+    {
+      "ley_id": "21643",
+      "nombre_ley": "Ley Karin - Prevención del Acoso y Violencia Laboral",
+      "articulos_clave": [
+        "Artículo 211-A"
+      ],
+      "justificacion_juridica": "Aplica por presencia de trabajadores en la empresa.",
+      "nivel_riesgo_general": "Moderado",
+      "tareas": [
+        {
+          "id_tarea": "T-21643-01",
+          "titulo": "Crear Protocolo de Prevención del Acoso Laboral",
+          "descripcion": "Establecer canales de denuncia y medidas de resguardo tempranas.",
+          "area_responsable": "RRHH / Seguridad Laboral",
+          "plazo_sugerido_dias": 60,
+          "prioridad": "Media",
+          "impacto_incumplimiento": "Sanciones laborales."
+        },
+        {
+          "id_tarea": "T-21643-02",
+          "titulo": "Realizar Capacitación para Empleados",
+          "descripcion": "Formar a empleados sobre prevención de acoso laboral.",
+          "area_responsable": "RRHH / Seguridad Laboral",
+          "plazo_sugerido_dias": 90,
+          "prioridad": "Baja",
+          "impacto_incumplimiento": "Falta de cumplimiento."
+        }
+      ]
+    },
+    {
+      "ley_id": "20393",
+      "nombre_ley": "Ley de Responsabilidad Penal de las Personas Jurídicas",
+      "articulos_clave": [
+        "Artículo 3"
+      ],
+      "justificacion_juridica": "Aplica por presencia de delitos en la empresa.",
+      "nivel_riesgo_general": "Alto",
+      "tareas": [
+        {
+          "id_tarea": "T-20393-01",
+          "titulo": "Implementar Modelo de Prevención de Delitos",
+          "descripcion": "Designar encargado de prevención y establecer protocolos de control interno.",
+          "area_responsable": "Gestión de Riesgos / Compliance",
+          "plazo_sugerido_dias": 120,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Multas legales."
+        }
+      ]
+    },
+    {
+      "ley_id": "19628",
+      "nombre_ley": "Ley de Protección de la Vida Privada / Datos Personales",
+      "articulos_clave": [
+        "Artículo 4"
+      ],
+      "justificacion_juridica": "Aplica por manejo de datos personales.",
+      "nivel_riesgo_general": "Moderado",
+      "tareas": [
+        {
+          "id_tarea": "T-19628-01",
+          "titulo": "Implementar Cláusula de Consentimiento en Sitio Web",
+          "descripcion": "Publicar política de privacidad y checkbox de aceptación.",
+          "area_responsable": "TI / Ciberseguridad",
+          "plazo_sugerido_dias": 30,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Multas legales."
+        }
+      ]
+    }
+  ]
+}
+[2026-08-29 19:59:16] Respuesta de Ollama recibida exitosamente.
+[2026-08-29 19:59:16] Parseando JSON y guardando en BD...
+[2026-08-29 20:03:22] Iniciando auditoría RAG para empresa: Empresa Demo Chile S.A.
+[2026-08-29 20:03:22] Contexto recuperado de ChromaDB: 5 fragmentos
+[2026-08-29 20:03:22] Enviando prompt a Ollama (Modelo: llama3.2:3b)...
+{
+  "res
+[2026-08-29 20:04:05] Iniciando auditoría RAG optimizada para: Fintech & Software Solutions SpA
+[2026-08-29 20:04:05] Contexto legal (6 reglas) despachado a Ollama (llama3.2:3b)...
+{"resumen_ejecutivo": "Diagn\u00f3stico conciso de cumplimiento.", "normativas_aplicables": [{"ley_id": "19628", "nombre_ley": "Ley de Protecci\u00f3n de la Vida Privada / Datos Personales", "articulos_clave": ["Art. 4"], "justificacion_juridica": "Maneja datos de clientes.", "nivel_riesgo_general": "Alta", "tareas": [{"id_tarea": "T-1", "titulo": "Publicar política de privacidad y consentimiento", "descripcion": "Implementar checkbox de consentimiento en plataforma.", "area_responsable": "TI / Legal", "plazo_sugerido_dias": 30, "prioridad": "Alta", "impacto_incumplimiento": "Multas por infracci\u00f3n de privacidad."}, {"id_tarea": "T-2", "titulo": "Notificar cambios en política de privacidad", "descripcion": "Publicar aviso de actualizaci\u00f3n de política de privacidad en sitio web.", "area_responsable": "Comunicaciones / Legal", "plazo_sugerido_dias": 15, "prioridad": "Media", "impacto_incumplimiento": "Pérdida de confianza de los clientes."}]}, {"ley_id": "19496", "nombre_ley": "Ley de Comercio Electrónico", "articulos_clave": ["Art. 3-bis"], "justificacion_juridica": "Garantiza derecho a retracto de 10 días en plataforma.", "nivel_riesgo_general": "Media", "tareas": [{"id_tarea": "T-3", "titulo": "Implementar sistema de reembolso", "descripcion": "Desarrollar sistema de reembolso automático para clientes.", "area_responsable": "Finanzas / TI", "plazo_sugerido_dias": 60, "prioridad": "Media", "impacto_incumplimiento": "Pérdida de confianza de los clientes."}, {"id_tarea": "T-4", "titulo": "Publicar términos y condiciones", "descripcion": "Publicar términos y condiciones claras y concisas en sitio web.", "area_responsable": "Comunicaciones / Legal", "plazo_sugerido_dias": 30, "prioridad": "Media", "impacto_incumplimiento": "Pérdida de confianza de los clientes."}]}, {"ley_id": "21521", "nombre_ley": "Ley de Fintech", "articulos_clave": ["Art. 5"], "justificacion_juridica": "Exigencia de registro obligatorio ante CMF.", "nivel_riesgo_general": "Alta", "tareas": [{"id_tarea": "T-5", "titulo": "Presentar solicitud de registro", "descripcion": "Presentar solicitud de registro ante CMF.", "area_responsable": "Regulación / Legal", "plazo_sugerido_dias": 90, "prioridad": "Alta", "impacto_incumplimiento": "Multas por infracción de regulación."}, {"id_tarea": "T-6", "titulo": "Implementar sistema de gestión de riesgos", "descripcion": "Implementar sistema de gestión de riesgos para plataformas de pagos.", "area_responsable": "Regulación / TI", "plazo_sugerido_dias": 120, "prioridad": "Alta", "impacto_incumplimiento": "Multas por infracción de regulación."}]}, {"ley_id": "20393", "nombre_ley": "Ley de Responsabilidad Penal", "articulos_clave": ["Art. 9"], "justificacion_juridica": "Responsabilidad penal directa de la empresa.", "nivel_riesgo_general": "Alta", "tareas": [{"id_tarea": "T-7", "titulo": "Desarrollar protocolo de prevención de acoso laboral", "descripcion": "Desarrollar protocolo de prevención de acoso laboral y violencia en el trabajo.", "area_responsable": "Recursos Humanos / Legal", "plazo_sugerido_dias": 90, "prioridad": "Alta", "impacto_incumplimiento": "Multas por infracción de regulación."}, {"id_tarea": "T-8", "titulo": "Implementar sistema de gestión de riesgos", "descripcion": "Implementar sistema de gestión de riesgos para la prevención de acoso laboral.", "area_responsable": "Regulación / TI", "plazo_sugerido_dias": 120, "prioridad": "Alta", "impacto_incumplimiento": "Multas por infracción de regulación."}]}]}
+[2026-08-29 20:13:24] Respuesta de Ollama recibida exitosamente.
+[2026-08-29 20:13:24] Parseando JSON y guardando en BD...
+
+[2026-08-31 04:46:57] Iniciando auditoría RAG optimizada para: TechCorp Chile S.A.
+[2026-08-31 04:46:57] Contexto legal (6 reglas) despachado a Ollama (llama3.2:3b)...
+{"resumen_ejecutivo": "Diagn\u00f3stico conciso de cumplimiento.", "normativas_aplicables": [{"ley_id": "19628", "nombre_ley": "Ley de Protecci\u00f3n de la Vida Privada / Datos Personales", "articulos_clave": ["Art. 4"], "justificacion_juridica": "Maneja datos de clientes.", "nivel_riesgo_general": "Alta", "tareas": [{"id_tarea": "T-1", "titulo": "Publicar política de privacidad y consentimiento", "descripcion": "Implementar checkbox de consentimiento en plataforma.", "area_responsable": "TI / Legal", "plazo_sugerido_dias": 30, "prioridad": "Alta", "impacto_incumplimiento": "Multas por infracci\u00f3n de privacidad."}, {"id_tarea": "T-2", "titulo": "Implementar modelo de prevenci\u00f3n de delitos", "descripcion": "Designar encargado de prevenci\u00f3n y establecer protocolos de control interno.", "area_responsable": "Gest\u00f3n de Riesgos", "plazo_sugerido_dias": 60, "prioridad": "Media", "impacto_incumplimiento": "Pérdida de confianza y daños a la reputación."}]}, {"ley_id": "20920", "nombre_ley": "Reglamento de Gestión de Residuos", "articulos_clave": ["Art. 9"], "justificacion_juridica": "Procesa envases y embalajes.", "nivel_riesgo_general": "Media", "tareas": [{"id_tarea": "T-3", "titulo": "Afiliarse a un Sistema de Gestión (GRANSIC)", "descripcion": "Declarar toneladas anuales y cumplir con requisitos de gestión.", "area_responsable": "Gest\u00f3n de Riesgos", "plazo_sugerido_dias": 90, "prioridad": "Media", "impacto_incumplimiento": "Multas y sanciones por incumplimiento de la norma."}]}, {"ley_id": 19496, "nombre_ley": "Ley de Comercio Electr\u00f3nico", "articulos_clave": ["Art. 3-bis"], "justificacion_juridica": "Plataforma de e-commerce.", "nivel_riesgo_general": "Baja", "tareas": [{"id_tarea": "T-4", "titulo": "Garantizar derecho a retracto de 10 días", "descripcion": "Implementar política de retracto y soporte postventa.", "area_responsable": "Ventas y Clientes", "plazo_sugerido_dias": 30, "prioridad": "Baja", "impacto_incumplimiento": "Pérdida de confianza y daños a la reputación."}]}, {"ley_id": 211, "nombre_ley": "Ley de Prevención del Asoco Laboral", "articulos_clave": ["Art. 211-A"], "justificacion_juridica": "Trabajadores y prevención de acoso laboral.", "nivel_riesgo_general": "Alta", "tareas": [{"id_tarea": "T-5", "titulo": "Implementar protocolo de prevención del acoso laboral", "descripcion": "Informar semestralmente a los trabajadores sobre canales de denuncia.", "area_responsable": "RRHH y Salud y Seguridad", "plazo_sugerido_dias": 60, "prioridad": "Alta", "impacto_incumplimiento": "Multas por infracción de derechos laborales."}]}, {"ley_id": 3, "nombre_ley": "C\u00f3digo Penal", "articulos_clave": ["Art. 1"], "justificacion_juridica": "Delitos informáticos y lavado de activos.", "nivel_riesgo_general": "Alta", "tareas": [{"id_tarea": "T-6", "titulo": "Implementar modelo de prevenci\u00f3n de delitos", "descripcion": "Designar encargado de prevenci\u00f3n y establecer protocolos de control interno.", "area_responsable": "Gest\u00f3n de Riesgos", "plazo_sugerido_dias": 90, "prioridad": "Media", "impacto_incumplimiento": "Pérdida de confianza y daños a la reputación."}]}, {"ley_id": 4, "nombre_ley": "C\u00f3digo Penal", "articulos_clave": ["Art. 3-bis"], "justificacion_juridica": "Delitos informáticos y lavado de activos.", "nivel_riesgo_general": "Alta", "tareas": [{"id_tarea": "T-7", "titulo": "Implementar modelo de prevenci\u00f3n de delitos", "descripcion": "Designar encargado de prevenci\u00f3n y establecer protocolos de control interno.", "area_responsable": "Gest\u00f3n de Riesgos", "plazo_sugerido_dias": 90, "prioridad": "Media", "impacto_incumplimiento": "Pérdida de confianza y daños a la reputación."}]}]}
+[2026-08-31 04:47:40] Respuesta de Ollama recibida exitosamente.
+[2026-08-31 04:47:40] Parseando JSON y guardando en BD...
+
+[2026-08-31 04:53:08] Iniciando auditoría RAG optimizada para: Empresa Demo Chile S.A.
+[2026-08-31 04:53:08] Contexto legal (6 reglas) despachado a Ollama (llama3.2:3b)...
+{"resumen_ejecutivo": "Diagn\u00f3stico conciso de cumplimiento.", "normativas_aplicables": [{"ley_id": "19496", "nombre_ley": "Ley de Garant\u00eda de Derechos del Consumidor", "articulos_clave": ["Art. 3-bis"], "justificacion_juridica": "Garantizar derecho a retracto en plataforma e-commerce.", "nivel_riesgo_general": "Media", "tareas": [{"id_tarea": "T-1", "titulo": "Implementar derecho a retracto en plataforma", "descripcion": "Crear política de reembolso y implementar en plataforma.", "area_responsable": "Comercio / TI", "plazo_sugerido_dias": 60, "prioridad": "Media", "impacto_incumplimiento": "Pérdida de confianza del consumidor."}, {"id_tarea": "T-2", "titulo": "Notificar derecho a retracto en términos y condiciones", "descripcion": "Publicar información sobre derecho a retracto en términos y condiciones.", "area_responsable": "Comercio / TI", "plazo_sugerido_dias": 30, "prioridad": "Baja", "impacto_incumplimiento": "Pérdida de confianza del consumidor."}]}, {"ley_id": "20920", "nombre_ley": "Ley de Gestión de Residuos", "articulos_clave": ["Art. 9"], "justificacion_juridica": "Declarar toneladas anuales de envases y embalajes", "nivel_riesgo_general": "Baja", "tareas": [{"id_tarea": "T-3", "titulo": "Declarar toneladas anuales de envases y embalajes", "descripcion": "Revisar y declarar toneladas anuales de envases y embalajes.", "area_responsable": "Medio Ambiente / TI", "plazo_sugerido_dias": 90, "prioridad": "Baja", "impacto_incumplimiento": "Multas por incumplimiento de la ley."}]}, {"ley_id": "19628", "nombre_ley": "Ley de Protección de la Vida Privada / Datos Personales", "articulos_clave": ["Art. 4"], "justificacion_juridica": "Maneja datos de clientes.", "nivel_riesgo_general": "Alta", "tareas": [{"id_tarea": "T-4", "titulo": "Publicar política de privacidad y consentimiento", "descripcion": "Implementar checkbox de consentimiento en plataforma.", "area_responsable": "TI / Legal", "plazo_sugerido_dias": 30, "prioridad": "Alta", "impacto_incumplimiento": "Multas por infracción de privacidad."}]}, {"ley_id": "20920", "nombre_ley": "Ley de Gestión de Residuos", "articulos_clave": ["Art. 9"], "justificacion_juridica": "Declarar toneladas anuales de envases y embalajes", "nivel_riesgo_general": "Baja", "tareas": [{"id_tarea": "T-5", "titulo": "Afiliarse a un Sistema de Gestión (GRANSIC)", "descripcion": "Revisar y afiliarse a un Sistema de Gestión (GRANSIC).", "area_responsable": "Medio Ambiente / TI", "plazo_sugerido_dias": 120, "prioridad": "Baja", "impacto_incumplimiento": "Multas por incumplimiento de la ley."}]}, {"ley_id": "20920", "nombre_ley": "Ley de Gestión de Residuos", "articulos_clave": ["Art. 9"], "justificacion_juridica": "Declarar toneladas anuales de envases y embalajes", "nivel_riesgo_general": "Baja", "tareas": [{"id_tarea": "T-6", "titulo": "Declarar toneladas anuales de envases y embalajes", "descripcion": "Revisar y declarar toneladas anuales de envases y embalajes.", "area_responsable": "Medio Ambiente / TI", "plazo_sugerido_dias": 90, "prioridad": "Baja", "impacto_incumplimiento": "Multas por incumplimiento de la ley."}]}, {"ley_id": "20920", "nombre_ley": "Ley de Gestión de Residuos", "articulos_clave": ["Art. 9"], "justificacion_juridica": "Declarar toneladas anuales de envases y embalajes", "nivel_riesgo_general": "Baja", "tareas": [{"id_tarea": "T-7", "titulo": "Declarar toneladas anuales de envases y embalajes", "descripcion": "Revisar y declarar toneladas anuales de envases y embalajes.", "area_responsable": "Medio Ambiente / TI", "plazo_sugerido_dias": 90, "prioridad": "Baja", "impacto_incumplimiento": "Multas por incumplimiento de la ley."}]}, {"ley_id": "19496", "nombre_ley": "Ley de Garant\u00eda de Derechos del Consumidor", "articulos_clave": ["Art. 3-bis"], "justificacion_juridica": "Garantizar derecho a retracto en plataforma e-commerce.", "nivel_riesgo_general": "Media", "tareas": [{"id_tarea": "T-8", "titulo": "Implementar derecho a retracto en plataforma", "descripcion": "Crear política de reembolso y implementar en plataforma.", "area_responsable": "Comercio / TI", "plazo_sugerido_dias": 60, "prioridad": "Media", "impacto_incumplimiento": "Pérdida de confianza del consumidor."}]}, {"ley_id": "19496", "nombre_ley": "Ley de Garant\u00eda de Derechos del Consumidor", "articulos_clave": ["Art. 3-bis"], "justificacion_juridica": "Garantizar derecho a retracto en plataforma e-commerce.", "nivel_riesgo_general": "Media", "tareas": [{"id_tarea": "T-9", "titulo": "Notificar derecho a retracto en términos y condiciones", "descripcion": "Publicar información sobre derecho a retracto en términos y condiciones.", "area_responsable": "Comercio / TI", "plazo_sugerido_dias": 30, "prioridad": "Baja", "impacto_incumplimiento": "Pérdida de confianza del consumidor."}]}]}
+[2026-08-31 04:53:46] Respuesta de Ollama recibida exitosamente.
+[2026-08-31 04:53:46] Parseando JSON y guardando en BD...
+
+[2026-08-31 04:56:35] Iniciando auditoría RAG optimizada para: Empresa Demo Chile S.A.
+[2026-08-31 04:56:35] Contexto legal (6 reglas) despachado a Ollama (llama3.2:3b)...
+{"resumen_ejecutivo": "Diagn\u00f3stico conciso de cumplimiento.", "normativas_aplicables": [{"ley_id": "19496", "nombre_ley": "Ley de Garant\u00eda de Derechos del Consumidor", "articulos_clave": ["Art. 3-bis"], "justificacion_juridica": "Garantizar derecho a retracto en plataformas e-commerce.", "nivel_riesgo_general": "Media", "tareas": [{"id_tarea": "T-1", "titulo": "Implementar derecho a retracto", "descripcion": "Agregar bot\u00f3n de retracto en plataforma.", "area_responsable": "TI / Ventas", "plazo_sugerido_dias": 15, "prioridad": "Media", "impacto_incumplimiento": "P\u00e9rdida de confianza del consumidor."}, {"id_tarea": "T-2", "titulo": "Publicar t\u00e9rminos y condiciones visibles", "descripcion": "Actualizar t\u00e9rminos y condiciones de la plataforma.", "area_responsable": "Comunicaciones / Ventas", "plazo_sugerido_dias": 30, "prioridad": "Media", "impacto_incumplimiento": "P\u00e9rdida de confianza del consumidor."}]}, {"ley_id": "20920", "nombre_ley": "Ley de Gest\u00f3n de Residuos", "articulos_clave": ["Art. 9"], "justificacion_juridica": "Declarar toneladas anuales de envases y embalajes.", "nivel_riesgo_general": "Baja", "tareas": [{"id_tarea": "T-3", "titulo": "Declarar toneladas anuales", "descripcion": "Actualizar registro de toneladas anuales.", "area_responsable": "Contabilidad / Medio Ambiente", "plazo_sugerido_dias": 60, "prioridad": "Baja", "impacto_incumplimiento": "Multas por incumplimiento de la ley."}]}, {"ley_id": "19628", "nombre_ley": "Ley de Protección de la Vida Privada / Datos Personales", "articulos_clave": ["Art. 4"], "justificacion_juridica": "Maneja datos de clientes.", "nivel_riesgo_general": "Alta", "tareas": [{"id_tarea": "T-4", "titulo": "Publicar política de privacidad y consentimiento", "descripcion": "Implementar checkbox de consentimiento en plataforma.", "area_responsable": "TI / Legal", "plazo_sugerido_dias": 30, "prioridad": "Alta", "impacto_incumplimiento": "Multas por infracción de privacidad."}]}, {"ley_id": "20920", "nombre_ley": "Ley de Gest\u00f3n de Residuos", "articulos_clave": ["Art. 9"], "justificacion_juridica": "Declarar toneladas anuales de envases y embalajes.", "nivel_riesgo_general": "Baja", "tareas": [{"id_tarea": "T-5", "titulo": "Afiliarse a GRANSIC", "descripcion": "Actualizar registro de afiliación.", "area_responsable": "Contabilidad / Medio Ambiente", "plazo_sugerido_dias": 90, "prioridad": "Baja", "impacto_incumplimiento": "Multas por incumplimiento de la ley."}]}, {"ley_id": 20920, "nombre_ley": "Ley de Gest\u00f3n de Residuos", "articulos_clave": ["Art. 9"], "justificacion_juridica": "Declarar toneladas anuales de envases y embalajes.", "nivel_riesgo_general": "Baja", "tareas": [{"id_tarea": "T-6", "titulo": "Actualizar registro de toneladas anuales", "descripcion": "Actualizar registro de toneladas anuales.", "area_responsable": "Contabilidad / Medio Ambiente", "plazo_sugerido_dias": 60, "prioridad": "Baja", "impacto_incumplimiento": "Multas por incumplimiento de la ley."}]}, {"ley_id": 19496, "nombre_ley": "Ley de Garant\u00eda de Derechos del Consumidor", "articulos_clave": ["Art. 3-bis"], "justificacion_juridica": "Garantizar derecho a retracto en plataformas e-commerce.", "nivel_riesgo_general": "Media", "tareas": [{"id_tarea": "T-7", "titulo": "Actualizar registro de retrasos", "descripcion": "Actualizar registro de retrasos en devoluciones.", "area_responsable": "Ventas / Comunicaciones", "plazo_sugerido_dias": 90, "prioridad": "Baja", "impacto_incumplimiento": "P\u00e9rdida de confianza del consumidor."}]}, {"ley_id": 19496, "nombre_ley": "Ley de Garant\u00eda de Derechos del Consumidor", "articulos_clave": ["Art. 3-bis"], "justificacion_juridica": "Garantizar derecho a retracto en plataformas e-commerce.", "nivel_riesgo_general": "Media", "tareas": [{"id_tarea": "T-8", "titulo": "Actualizar registro de devoluciones", "descripcion": "Actualizar registro de devoluciones.", "area_responsable": "Ventas / Comunicaciones", "plazo_sugerido_dias": 60, "prioridad": "Baja", "impacto_incumplimiento": "P\u00e9rdida de confianza del consumidor."}]}]}
+[2026-08-31 04:57:03] Respuesta de Ollama recibida exitosamente.
+[2026-08-31 04:57:03] Parseando JSON y guardando en BD...
+
+[2026-08-31 05:01:24] Iniciando auditoría RAG optimizada para: Empresa Demo Chile S.A.
+[2026-08-31 05:01:24] Contexto legal (6 reglas) despachado a Ollama (llama3.2:3b)...
+
+[2026-08-31 05:01:24] Iniciando auditoría RAG optimizada para: Empresa Demo Chile S.A.
+[2026-08-31 05:01:24] Contexto legal (6 reglas) despachado a Ollama (llama3.2:3b)...
+{"resumen_ejecutivo": "Diagn\u00f3stico conciso de cumplimiento.", "normativas_aplicables": [{"ley_id": "19496", "nombre_ley": "Ley de Garant\u00eda de Derechos del Consumidor", "articulos_clave": ["Art. 3-bis"], "justificacion_juridica": "Garantizar derecho a retracto en plataformas e-commerce.", "nivel_riesgo_general": "Media", "tareas": [{"id_tarea": "T-1", "titulo": "Implementar sistema de retraso de compras", "descripcion": "Desarrollar y implementar sistema de retraso de compras en plataforma.", "area_responsable": "TI / Comercio", "plazo_sugerido_dias": 60, "prioridad": "Media", "impacto_incumplimiento": "Pérdida de confianza del consumidor."}, {"id_tarea": "T-2", "titulo": "Publicar términos y condiciones visibles", "descripcion": "Publicar términos y condiciones de venta en plataforma.", "area_responsable": "Comunicaciones / Comercio", "plazo_sugerido_dias": 30, "prioridad": "Media", "impacto_incumplimiento": "Pérdida de confianza del consumidor."}]}, {"ley_id": "20920", "nombre_ley": "Ley de Gest
+[2026-08-31 05:02:09] Iniciando auditoría RAG optimizada para: Empresa Demo Chile S.A.
+[2026-08-31 05:02:09] Contexto legal (6 reglas) despachado a Ollama (llama3.2:3b)...
+{"resumen_ejecutivo": "Diagn\u00f3stico conciso de cumplimiento.", "normativas_aplicables": [{"ley_id": "19496", "nombre_ley": "Ley de Garant\u00eda de Derechos del Consumidor", "articulos_clave": ["Art. 3-bis"], "justificacion_juridica": "Garantizar derecho a retracto en plataforma e-commerce.", "nivel_riesgo_general": "Media", "tareas": [{"id_tarea": "T-1", "titulo": "Implementar derecho a retracto", "descripcion": "Agregar bot\u00f3n de retracto en plataforma.", "area_responsable": "TI / Ventas", "plazo_sugerido_dias": 15, "prioridad": "Media", "impacto_incumplimiento": "Pens\u00famos por infracci\u00f3n al consumidor."}, {"id_tarea": "T-2", "titulo": "Publicar términos y condiciones visibles", "descripcion": "Actualizar términos y condiciones de la plataforma.", "area_responsable": "Comunicaciones / Ventas", "plazo_sugerido_dias": 30, "prioridad": "Media", "impacto_incumplimiento": "Pensum por infracción al consumidor."}]}], "normativas_aplicables": [{"ley_id": "20920", "nombre_ley": "Ley de Gestión de Residuos", "articulos_clave": ["Art. 9"], "justificacion_juridica": "Declarar toneladas anuales de envases y embalajes.", "nivel_riesgo_general": "Baja", "tareas": [{"id_tarea": "T-3", "titulo": "Declarar toneladas anuales", "descripcion": "Actualizar registro de toneladas anuales.", "area_responsable": "Contabilidad / Medio Ambiente", "plazo_sugerido_dias": 60, "prioridad": "Baja", "impacto_incumplimiento": "Multas por infracción ambiental."}]}], "normativas_aplicables": [{"ley_id": "19628", "nombre_ley": "Ley de Protección de la Vida Privada / Datos Personales", "articulos_clave": ["Art. 4"], "justificacion_juridica": "Maneja datos de clientes.", "nivel_riesgo_general": "Alta", "tareas": [{"id_tarea": "T-4", "titulo": "Publicar política de privacidad y consentimiento", "descripcion": "Implementar checkbox de consentimiento en plataforma.", "area_responsable": "TI / Legal", "plazo_sugerido_dias": 30, "prioridad": "Alta", "impacto_incumplimiento": "Multas por infracción de privacidad."}]}], "normativas_aplicables": [{"ley_id": "20920", "nombre_ley": "Ley de Gestión de Residuos", "articulos_clave": ["Art. 9"], "justificacion_juridica": "Declarar toneladas anuales de envases y embalajes.", "nivel_riesgo_general": "Baja", "tareas": [{"id_tarea": "T-5", "titulo": "Afiliarse a GRANSIC", "descripcion": "Actualizar registro de afiliación a GRANSIC.", "area_responsable": "Contabilidad / Medio Ambiente", "plazo_sugerido_dias": 90, "prioridad": "Baja", "impacto_incumplimiento": "Multas por infracción ambiental."}]}], "normativas_aplicables": [{"ley_id": 20920, "nombre_ley": "Ley de Gestión de Residuos", "articulos_clave": "Art. 9", "justificacion_juridica": "Declarar toneladas anuales de envases y embalajes.", "nivel_riesgo_general": "Baja", "tareas": [{"id_tarea": "T-6", "titulo": "Actualizar registro de envases", "descripcion": "Actualizar registro de envases y embalajes.", "area_responsable": "Contabilidad / Medio Ambiente", "plazo_sugerido_dias": 90, "prioridad": "Baja", "impacto_incumplimiento": "Multas por infracción ambiental."}]}], "normativas_aplicables": [{"ley_id": "19496", "nombre_ley": "Ley de Garant\u00eda de Derechos del Consumidor", "articulos_clave": ["Art. 3-bis"], "justificacion_juridica": "Garantizar derecho a retracto en plataforma e-commerce.", "nivel_riesgo_general": "Media", "tareas": [{"id_tarea": "T-7", "titulo": "Actualizar términos y condiciones", "descripcion": "Actualizar términos y condiciones de la plataforma.", "area_responsable": "Comunicaciones / Ventas", "plazo_sugerido_dias": 30, "prioridad": "Media", "impacto_incumplimiento": "Pensum por infracci\u00f3n al consumidor."}]}]}
+[2026-08-31 05:02:35] Respuesta de Ollama recibida exitosamente.
+[2026-08-31 05:02:35] Guardando borrador de auditoría pendiente de aprobación...
+
+[2026-08-31 05:03:48] Iniciando auditoría RAG optimizada para: Fintech & Software Solutions SpA
+[2026-08-31 05:03:48] Contexto legal (6 reglas) despachado a Ollama (llama3.2:3b)...
+{"resumen_ejecutivo": "Diagn\u00f3stico conciso de cumplimiento.", "normativas_aplicables": [{"ley_id": "19628", "nombre_ley": "Ley de Protecci\u00f3n de la Vida Privada / Datos Personales", "articulos_clave": ["Art. 4"], "justificacion_juridica": "Maneja datos de clientes.", "nivel_riesgo_general": "Alta", "tareas": [{"id_tarea": "T-1", "titulo": "Publicar política de privacidad y consentimiento", "descripcion": "Implementar checkbox de consentimiento en plataforma.", "area_responsable": "TI / Legal", "plazo_sugerido_dias": 30, "prioridad": "Alta", "impacto_incumplimiento": "Multas por infracci\u00f3n de privacidad."}, {"id_tarea": "T-2", "titulo": "Revisar y actualizar política de privacidad", "descripcion": "Revisar y actualizar política de privacidad para asegurar cumplimiento de la ley.", "area_responsable": "TI / Legal", "plazo_sugerido_dias": 60, "prioridad": "Media", "impacto_incumplimiento": "Pérdida de confianza de los clientes."}]}, {"ley_id": "19496", "nombre_ley": "Ley de Comercio Electrónico", "articulos_clave": ["Art. 3-bis"], "justificacion_juridica": "Garantiza derecho a retracto de 10 días en plataforma e-commerce.", "nivel_riesgo_general": "Media", "tareas": [{"id_tarea": "T-3", "titulo": "Implementar derecho a retracto de 10 días", "descripcion": "Implementar sistema de reembolso de 10 días en plataforma.", "area_responsable": "TI / Comercio Electrónico", "plazo_sugerido_dias": 45, "prioridad": "Media", "impacto_incumplimiento": "Pérdida de confianza de los clientes."}, {"id_tarea": "T-4", "titulo": "Revisar y actualizar términos y condiciones", "descripcion": "Revisar y actualizar términos y condiciones para asegurar cumplimiento de la ley.", "area_responsable": "TI / Comercio Electrónico", "plazo_sugerido_dias": 60, "prioridad": "Media", "impacto_incumplimiento": "Pérdida de confianza de los clientes."}]}, {"ley_id": "21521", "nombre_ley": "Ley de Regulación Financiera", "articulos_clave": ["Art. 5"], "justificacion_juridica": "Exigencia de registro obligatorio ante la CMF para plataformas Fintech.", "nivel_riesgo_general": "Alta", "tareas": [{"id_tarea": "T-5", "titulo": "Iniciar proceso de registro ante la CMF", "descripcion": "Iniciar proceso de registro ante la CMF para obtener la autorización necesaria.", "area_responsable": "Finanzas / Regulación", "plazo_sugerido_dias": 90, "prioridad": "Alta", "impacto_incumplimiento": "Sanciones económicas y pérdida de confianza."}]}, {"ley_id": 20393, "nombre_ley": "Código Penal", "articulos_clave": ["Art. 9"], "justificacion_juridica": "Responsabilidad penal directa de la empresa por delitos cometidos en su beneficio.", "nivel_riesgo_general": "Alta", "tareas": [{"id_tarea": "T-6", "titulo": "Implementar Sistema de Gestión (GRANSIC)", "descripcion": "Implementar Sistema de Gestión (GRANSIC) para controlar el envase y embalaje de productos.", "area_responsable": "Logística / Regulación", "plazo_sugerido_dias": 120, "prioridad": "Alta", "impacto_incumplimiento": "Sanciones económicas y pérdida de confianza."}]}, {"ley_id": 20920, "nombre_ley": "Reglamento de Gestión de Residuos", "articulos_clave": ["Art. 9"], "justificacion_juridica": "Empresas que introducen envases, embalajes o aparatos prioritarios deben afiliarse a un Sistema de Gestión (GRANSIC).", "nivel_riesgo_general": "Media", "tareas": [{"id_tarea": "T-7", "titulo": "Iniciar proceso de afiliación a GRANSIC", "descripcion": "Iniciar proceso de afiliación a GRANSIC para obtener la autorización necesaria.", "area_responsable": "Logística / Regulación", "plazo_sugerido_dias": 90, "prioridad": "Media", "impacto_incumplimiento": "Sanciones económicas y pérdida de confianza."}]}]}
+[2026-08-31 05:04:13] Respuesta de Ollama recibida exitosamente.
+[2026-08-31 05:04:13] Guardando borrador de auditoría pendiente de aprobación...
+
+[2026-08-31 05:39:12] Iniciando auditoría RAG optimizada para: TechCorp Chile S.A.
+[2026-08-31 05:39:12] Contexto legal (6 reglas) despachado a Ollama (llama3.2:3b)...
+{"resumen_ejecutivo": "Diagn\u00f3stico conciso de cumplimiento.", "normativas_aplicables": [{"ley_id": "19496", "nombre_ley": "Ley de Protecci\u00f3n de los Derechos de los Consumidores", "articulos_clave": ["Art. 3-bis"], "justificacion_juridica": "Garantizar derecho a retracto de 10 d\u00f1as en plataformas e-commerce.", "nivel_riesgo_general": "Media", "tareas": [{"id_tarea": "T-1", "titulo": "Publicar derechos de retracto en plataforma", "descripcion": "Publicar texto claro y conciso sobre derecho a retracto en la secci\u00f3n de condiciones de venta.", "area_responsable": "Comercio", "plazo_sugerido_dias": 15, "prioridad": "Media", "impacto_incumplimiento": "P\u00e9rdida de confianza de los consumidores."}, {"id_tarea": "T-2", "titulo": "Implementar soporte postventa expedito", "descripcion": "Designar un canal de soporte postventa y establecer un plazo razonable para resolver dudas.", "area_responsable": "Comercio", "plazo_sugerido_dias": 30, "prioridad": "Media", "impacto_incumplimiento": "P\u00e9rdida de confianza de los consumidores."}]}, {"ley_id": "20920", "nombre_ley": "Ley de Responsabilidad Extendida del Productor", "articulos_clave": ["Art. 9"], "justificacion_juridica": "Declarar toneladas anuales de envases, embalajes o aparatos prioritarios.", "nivel_riesgo_general": "Baja", "tareas": [{"id_tarea": "T-3", "titulo": "Declarar toneladas anuales", "descripcion": "Acceder al sistema de gesti\u00f3n GRANSIC y declarar toneladas anuales de envases, embalajes o aparatos prioritarios.", "area_responsable": "Contabilidad", "plazo_sugerido_dias": 15, "prioridad": "Baja", "impacto_incumplimiento": "Multas por infracci\u00f3n de la ley."}]}, {"ley_id": "19628", "nombre_ley": "Ley de Protecci\u00f3n de la Vida Privada / Datos Personales", "articulos_clave": ["Art. 4"], "justificacion_juridica": "Maneja datos de clientes.", "nivel_riesgo_general": "Alta", "tareas": [{"id_tarea": "T-4", "titulo": "Publicar política de privacidad y consentimiento", "descripcion": "Implementar checkbox de consentimiento en plataforma.", "area_responsable": "TI / Legal", "plazo_sugerido_dias": 30, "prioridad": "Alta", "impacto_incumplimiento": "Multas por infracci\u00f3n de privacidad."}]}, {"ley_id": "211-A", "nombre_ley": "Ley de Prevenci\u00f3n del Acoso Laboral, Sexual y Violencia en el Trabajo", "articulos_clave": ["Art. 211-A"], "justificacion_juridica": "Deber de prevenci\u00f3n del acoso laboral, sexual y violencia en el trabajo.", "nivel_riesgo_general": "Media", "tareas": [{"id_tarea": "T-5", "titulo": "Crear protocolo de prevenci\u00f3n del acoso laboral", "descripcion": "Desarrollar un protocolo de prevenci\u00f3n del acoso laboral, sexual y violencia en el trabajo.", "area_responsable": "RRHH", "plazo_sugerido_dias": 30, "prioridad": "Media", "impacto_incumplimiento": "P\u00e9rdida de confianza de los empleados."}]}]}
+[2026-08-31 05:39:40] Respuesta de Ollama recibida exitosamente.
+[2026-08-31 05:39:40] Guardando borrador de auditoría pendiente de aprobación...
+
+[2026-08-31 14:57:08] Iniciando auditoría RAG optimizada para: TechCorp Chile S.A.
+[2026-08-31 14:57:08] Contexto legal (6 reglas) despachado a Ollama (llama3.2:3b)...
+
+[2026-08-31 14:57:08] Iniciando auditoría RAG optimizada para: TechCorp Chile S.A.
+[2026-08-31 14:57:08] Contexto legal (6 reglas) despachado a Ollama (llama3.2:3b)...
+
+[2026-08-31 14:57:09] Iniciando auditoría RAG optimizada para: Empresa Demo Chile S.A.
+[2026-08-31 14:57:09] Contexto legal (6 reglas) despachado a Ollama (llama3.2:3b)...
+{"resumen_ejecutivo": "Diagn\u00f3stico conciso de cumplimiento.", "normativas_aplicables": [{"ley_id": "20920", "nombre_ley": "Ley REP - Responsabilidad Extendida del Productor", "articulos_clave": ["Art. 9"], "justificacion_juridica": "Producci\u00f3n de envases, embalajes o aparatos prioritarios.", "nivel_riesgo_general": "Media", "tareas": [{"id_tarea": "T-2", "titulo": "Afiliarse a un Sistema de Gestión (GRANSIC) y declarar toneladas anuales", "descripcion": "Realizar inscripci\u00f3n en el sistema y declarar toneladas producidas anualmente.", "area_responsable": "Finanzas / Compras", "plazo_sugerido_dias": 60, "prioridad": "Media", "impacto_incumplimiento": "Multas por infracci\u00f3n a la ley"}]}, {"ley_id": "19496", "nombre_ley": "Ley de Garant\u00eda de Derechos del Consumidor", "articulos_clave": ["Art. 3-bis"], "justificacion_juridica": "Plataformas e-commerce y derechos del consumidor.", "nivel_riesgo_general": "Baja", "tareas": [{"id_tarea": "T-3", "titulo": "Garantizar derecho a retracto de 10 d\u00f1as en plataformas e-commerce", "descripcion": "Implementar política de retracto y comunicar a los consumidores.", "area_responsable": "Ventas / Marketing", "plazo_sugerido_dias": 30, "prioridad": "Baja", "impacto_incumplimiento": "Pérdida de confianza del consumidor"}]}, {"ley_id": "19628", "nombre_ley": "Ley de Protección de la Vida Privada / Datos Personales", "articulos_clave": ["Art. 4"], "justificacion_juridica": "Manejo de datos de clientes.", "nivel_riesgo_general": "Alta", "tareas": [{"id_tarea": "T-4", "titulo": "Publicar política de privacidad y consentimiento", "descripcion": "Implementar checkbox de consentimiento en plataforma.", "area_responsable": "TI / Legal", "plazo_sugerido_dias": 30, "prioridad": "Alta", "impacto_incumplimiento": "Multas por infracción de privacidad."}]}, {"ley_id": "20920", "nombre_ley": "Ley REP - Responsabilidad Extendida del Productor", "articulos_clave": ["Art. 9"], "justificacion_juridica": "Producción de envases, embalajes o aparatos prioritarios.", "nivel_riesgo_general": "Media", "tareas": [{"id_tarea": "T-5", "titulo": "Afiliarse a un Sistema de Gestión (GRANSIC) y declarar toneladas anuales", "descripcion": "Realizar inscripción en el sistema y declarar toneladas producidas anualmente.", "area_responsable": "Finanzas / Compras", "plazo_sugerido_dias": 60, "prioridad": "Media", "impacto_incumplimiento": "Multas por infracción a la ley"}]}, {"ley_id": "19496", "nombre_ley": "Ley de Garantía de Derechos del Consumidor", "articulos_clave": ["Art. 3-bis"], "justificacion_juridica": "Plataformas e-commerce y derechos del consumidor.", "nivel_riesgo_general": "Baja", "tareas": [{"id_tarea": "T-6", "titulo": "Garantizar derecho a retracto de 10 días en plataformas e-commerce", "descripcion": "Implementar política de retracto y comunicar a los consumidores.", "area_responsable": "Ventas / Marketing", "plazo_sugerido_dias": 30, "prioridad": "Baja", "impacto_incumplimiento": "Pérdida de confianza del consumidor"}]}, {"ley_id": "19628", "nombre_ley": "Ley de Protección de la Vida Privada / Datos Personales", "articulos_clave": ["Art. 4"], "justificacion_juridica": "Manejo de datos de clientes.", "nivel_riesgo_general": "Alta", "tareas": [{"id_tarea": "T-7", "titulo": "Publicar política de privacidad y consentimiento", "descripcion": "Implementar checkbox de consentimiento en plataforma.", "area_responsable": "TI / Legal", "plazo_sugerido_dias": 30, "prioridad": "Alta", "impacto_incumplimiento": "Multas por infracción de privacidad."}]}, {"ley_id": "20920", "nombre_ley": "Ley REP - Responsabilidad Extendida del Productor", "articulos_clave": ["Art. 9"], "justificacion_juridica": "Producción de envases, embalajes o aparatos prioritarios.", "nivel_riesgo_general": "Media", "tareas": [{"id_tarea": "T-8", "titulo": "Afiliarse a un Sistema de Gestión (GRANSIC) y declarar toneladas anuales", "descripcion": "Realizar inscripción en el sistema y declarar toneladas producidas anualmente.", "area_responsable": "Finanzas / Compras", "plazo_sugerido_dias": 60, "prioridad": "Media", "impacto_incumplimiento": "Multas por infracción a la ley"}]}]}
+[2026-08-31 14:58:10] Respuesta de Ollama recibida exitosamente.
+[2026-08-31 14:58:10] Guardando borrador de auditoría pendiente de aprobación...
+{"resumen_ejecutivo": "Diagn\u00f3stico conciso de cumplimiento.", "normativas_aplicables": [{"ley_id": "19496", "nombre_ley": "Ley de Protecci\u00f3n de los Derechos de los Consumidores", "articulos_clave": ["Art. 3-bis"], "justificacion_juridica": "Garantizar derecho a retracto de 10 d\u00f1as en plataformas e-commerce.", "nivel_riesgo_general": "Media", "tareas": [{"id_tarea": "T-1", "titulo": "Publicar t\u00e9rminos y condiciones visibles", "descripcion": "Actualizar y publicar t\u00e9rminos y condiciones de la plataforma.", "area_responsable": "TI / Marketing", "plazo_sugerido_dias": 15, "prioridad": "Media", "impacto_incumplimiento": "P\u00e9rdida de confianza de los consumidores."}, {"id_tarea": "T-2", "titulo": "Implementar soporte postventa expedito", "descripcion": "Establecer canales de soporte postventa y responder a consultas de manera oportuna.", "area_responsable": "TI / Soporte", "plazo_sugerido_dias": 30, "prioridad": "Media", "impacto_incumplimiento": "P\u00e9rdida de confianza de los consumidores."}]}, {"ley_id": "20920", "nombre_ley": "Ley REP - Responsabilidad Extendida del Productor", "articulos_clave": ["Art. 9"], "justificacion_juridica": "Declarar toneladas anuales de envases, embalajes o aparatos prioritarios.", "nivel_riesgo_general": "Baja", "tareas": [{"id_tarea": "T-3", "titulo": "Declarar toneladas anuales", "descripcion": "Calcular y declarar toneladas anuales de envases, embalajes o aparatos prioritarios.", "area_responsable": "Contabilidad / Finanzas", "plazo_sugerido_dias": 15, "prioridad": "Baja", "impacto_incumplimiento": "Multas por infracci\u00f3n de la ley."}]}, {"ley_id": "19628", "nombre_ley": "Ley de Protecci\u00f3n de la Vida Privada / Datos Personales", "articulos_clave": ["Art. 4"], "justificacion_juridica": "Maneja datos de clientes.", "nivel_riesgo_general": "Alta", "tareas": [{"id_tarea": "T-4", "titulo": "Publicar política de privacidad y consentimiento", "descripcion": "Implementar checkbox de consentimiento en plataforma.", "area_responsable": "TI / Legal", "plazo_sugerido_dias": 30, "prioridad": "Alta", "impacto_incumplimiento": "Multas por infracci\u00f3n de privacidad."}]}, {"ley_id": "211-A", "nombre_ley": "Ley de Prevención del Acoso Laboral, Sexual y Violencia en el Trabajo", "articulos_clave": "Protocolo de prevención", "justificacion_juridica": "Deber de prevención del acoso laboral.", "nivel_riesgo_general": "Alta", "tareas": [{"id_tarea": "T-5", "titulo": "Crear protocolo de prevención", "descripcion": "Establecer protocolo de prevención del acoso laboral, sexual y violencia en el trabajo.", "area_responsable": "HR / Recursos Humanos", "plazo_sugerido_dias": 30, "prioridad": "Alta", "impacto_incumplimiento": "Multas por infracci\u00f3n de la ley."}]}]}
+[2026-08-31 14:58:43] Respuesta de Ollama recibida exitosamente.
+[2026-08-31 14:58:43] Guardando borrador de auditoría pendiente de aprobación...
+{"resumen_ejecutivo": "Diagn\u00f3stico conciso de cumplimiento.", "normativas_aplicables": [{"ley_id": "20920", "nombre_ley": "Ley REP - Responsabilidad Extendida del Productor", "articulos_clave": ["Art. 9"], "justificacion_juridica": "Introducir envases, embalajes o aparatos prioritarios.", "nivel_riesgo_general": "Media", "tareas": [{"id_tarea": "T-1", "titulo": "Afiliarse a GRANSIC y declarar toneladas anuales", "descripcion": "Registrar en el Sistema de Gestión (GRANSIC) y declarar toneladas anuales.", "area_responsable": "Finanzas / Legal", "plazo_sugerido_dias": 60, "prioridad": "Media", "impacto_incumplimiento": "Sanciones por no cumplir con la ley REP."}]}, {"ley_id": "19496", "nombre_ley": "Ley de Protección de los Derechos de los Consumidores", "articulos_clave": ["Art. 3-bis"], "justificacion_juridica": "Garantizar derecho a retracto de 10 d\u00f1as en plataformas e-commerce.", "nivel_riesgo_general": "Alta", "tareas": [{"id_tarea": "T-2", "titulo": "Publicar términos y condiciones visibles y soporte postventa expedito", "descripcion": "Publicar términos y condiciones claras y soporte postventa en la plataforma.", "area_responsable": "Marketing / Legal", "plazo_sugerido_dias": 30, "prioridad": "Alta", "impacto_incumplimiento": "Multas por infracción de derechos de los consumidores."}]}, {"ley_id": "19628", "nombre_ley": "Ley de Protección de la Vida Privada / Datos Personales", "articulos_clave": ["Art. 4"], "justificacion_juridica": "Maneja datos de clientes.", "nivel_riesgo_general": "Alta", "tareas": [{"id_tarea": "T-3", "titulo": "Implementar checkbox de consentimiento", "descripcion": "Implementar checkbox de consentimiento en la plataforma para recolectar datos personales.", "area_responsable": "TI / Legal", "plazo_sugerido_dias": 30, "prioridad": "Alta", "impacto_incumplimiento": "Multas por infracción de privacidad."}]}, {"ley_id": "211-A", "nombre_ley": "Ley de Prevención del Aceso Laboral", "articulos_clave": ["Artículo 211-A"], "justificacion_juridica": "Implementar protocolo de prevención del acoso laboral.", "nivel_riesgo_general": "Media", "tareas": [{"id_tarea": "T-4", "titulo": "Crear protocolo de prevención del acoso laboral", "descripcion": "Crear y publicar protocolo de prevención del acoso laboral en el lugar de trabajo.", "area_responsable": "RRHH / Legal", "plazo_sugerido_dias": 60, "prioridad": "Media", "impacto_incumplimiento": "Sanciones por no cumplir con la ley de prevención del acoso laboral."}]}]}
+[2026-08-31 14:59:11] Respuesta de Ollama recibida exitosamente.
+[2026-08-31 14:59:11] Guardando borrador de auditoría pendiente de aprobación...
+
+[2026-09-01 06:29:42] Iniciando auditoría RAG optimizada para: Fintech & Software Solutions SpA
+[2026-09-01 06:29:42] Contexto legal (6 reglas) despachado a Ollama (llama3.2:3b)...
+{"razonamiento_paso_a_paso": "1. Evalúo Ley 19628: Aplica porque manejan datos. 2. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio. 3. Evalúo Ley 21521: Aplica porque son una Fintech de pagos. 4. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n2. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio. 3. Evalúo Ley 21521: Aplica porque son una Fintech de pagos. 4. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n3. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio. 4. Evalúo Ley 21521: Aplica porque son una Fintech de pagos.\n\n4. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n5. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n6. Evalúo Ley 19628: Aplica porque manejan datos. 7. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n7. Evalúo Ley 19628: Aplica porque manejan datos.\n\n8. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n9. Evalúo Ley 21521: Aplica porque son una Fintech de pagos.\n\n10. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n11. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n12. Evalúo Ley 21521: Aplica porque son una Fintech de pagos.\n\n13. Evalúo Ley 19628: Aplica porque manejan datos.\n\n14. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n15. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n16. Evalúo Ley 19628: Aplica porque manejan datos.\n\n17. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n18. Evalúo Ley 21521: Aplica porque son una Fintech de pagos.\n\n19. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n20. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n21. Evalúo Ley 21521: Aplica porque son una Fintech de pagos.\n\n22. Evalúo Ley 19628: Aplica porque manejan datos.\n\n23. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n24. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n25. Evalúo Ley 19628: Aplica porque manejan datos.\n\n26. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n27. Evalúo Ley 21521: Aplica porque son una Fintech de pagos.\n\n28. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n29. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n30. Evalúo Ley 21521: Aplica porque son una Fintech de pagos.\n\n31. Evalúo Ley 19628: Aplica porque manejan datos.\n\n32. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n33. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n34. Evalúo Ley 19628: Aplica porque manejan datos.\n\n35. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n36. Evalúo Ley 21521: Aplica porque son una Fintech de pagos.\n\n37. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n38. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n39. Evalúo Ley 21521: Aplica porque son una Fintech de pagos.\n\n40. Evalúo Ley 19628: Aplica porque manejan datos.\n\n41. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n42. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n43. Evalúo Ley 19628: Aplica porque manejan datos.\n\n44. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n45. Evalúo Ley 21521: Aplica porque son una Fintech de pagos.\n\n46. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n47. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n48. Evalúo Ley 21521: Aplica porque son una Fintech de pagos.\n\n49. Evalúo Ley 19628: Aplica porque manejan datos.\n\n50. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n51. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n52. Evalúo Ley 19628: Aplica porque manejan datos.\n\n53. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n54. Evalúo Ley 21521: Aplica porque son una Fintech de pagos.\n\n55. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n56. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n57. Evalúo Ley 21521: Aplica porque son una Fintech de pagos.\n\n58. Evalúo Ley 19628: Aplica porque manejan datos.\n\n59. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n60. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n61. Evalúo Ley 19628: Aplica porque manejan datos.\n\n62. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n63. Evalúo Ley 21521: Aplica porque son una Fintech de pagos.\n\n64. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n65. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n66. Evalúo Ley 21521: Aplica porque son una Fintech de pagos.\n\n67. Evalúo Ley 19628: Aplica porque manejan datos.\n\n68. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n69. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n70. Evalúo Ley 19628: Aplica porque manejan datos.\n\n71. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n72. Evalúo Ley 21521: Aplica porque son una Fintech de pagos.\n\n73. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n74. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n75. Evalúo Ley 21521: Aplica porque son una Fintech de pagos.\n\n76. Evalúo Ley 19628: Aplica porque manejan datos.\n\n77. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n78. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n79. Evalúo Ley 19628: Aplica porque manejan datos.\n\n80. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n81. Evalúo Ley 21521: Aplica porque son una Fintech de pagos.\n\n82. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n83. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n84. Evalúo Ley 21521: Aplica porque son una Fintech de pagos.\n\n85. Evalúo Ley 19628: Aplica porque manejan datos.\n\n86. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n87. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n84. Evalúo Ley 19628: Aplica porque manejan datos.\n\n85. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n86. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n87. Evalúo Ley 19628: Aplica porque manejan datos.\n\n88. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n89. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n90. Evalúo Ley 19628: Aplica porque manejan datos.\n\n91. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n92. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n93. Evalúo Ley 19628: Aplica porque manejan datos.\n\n94. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n95. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n96. Evalúo Ley 19628: Aplica porque manejan datos.\n\n97. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n98. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n99. Evalúo Ley 19628: Aplica porque manejan datos.\n\n100. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n101. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n102. Evalúo Ley 19628: Aplica porque manejan datos.\n\n103. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n104. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n105. Evalúo Ley 19628: Aplica porque manejan datos.\n\n106. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n107. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n108. Evalúo Ley 19628: Aplica porque manejan datos.\n\n109. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n110. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n111. Evalúo Ley 19628: Aplica porque manejan datos.\n\n112. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n113. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n114. Evalúo Ley 19628: Aplica porque manejan datos.\n\n115. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n116. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n117. Evalúo Ley 19628: Aplica porque manejan datos.\n\n118. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n119. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n120. Evalúo Ley 19628: Aplica porque manejan datos.\n\n121. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n122. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n123. Evalúo Ley 19628: Aplica porque manejan datos.\n\n124. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n125. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n126. Evalúo Ley 19628: Aplica porque manejan datos.\n\n127. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n128. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n129. Evalúo Ley 19628: Aplica porque manejan datos.\n\n130. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n131. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n132. Evalúo Ley 19628: Aplica porque manejan datos.\n\n133. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n134. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n135. Evalúo Ley 19628: Aplica porque manejan datos.\n\n136. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n137. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n138. Evalúo Ley 19628: Aplica porque manejan datos.\n\n139. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n140. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n141. Evalúo Ley 19628: Aplica porque manejan datos.\n\n142. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n143. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n144. Evalúo Ley 19628: Aplica porque manejan datos.\n\n145. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n146. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n147. Evalúo Ley 19628: Aplica porque manejan datos.\n\n148. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n149. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n150. Evalúo Ley 19628: Aplica porque manejan datos.\n\n151. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n152. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n153. Evalúo Ley 19628: Aplica porque manejan datos.\n\n154. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n155. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n156. Evalúo Ley 19628: Aplica porque manejan datos.\n\n157. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n158. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n159. Evalúo Ley 19628: Aplica porque manejan datos.\n\n160. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n161. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n162. Evalúo Ley 19628: Aplica porque manejan datos.\n\n163. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n164. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n165. Evalúo Ley 19628: Aplica porque manejan datos.\n\n166. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n167. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n168. Evalúo Ley 19628: Aplica porque manejan datos.\n\n169. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n170. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n171. Evalúo Ley 19628: Aplica porque manejan datos.\n\n172. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n173. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n174. Evalúo Ley 19628: Aplica porque manejan datos.\n\n175. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n176. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n177. Evalúo Ley 19628: Aplica porque manejan datos.\n\n178. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n179. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n180. Evalúo Ley 19628: Aplica porque manejan datos.\n\n181. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n182. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n183. Evalúo Ley 19628: Aplica porque manejan datos.\n\n184. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n185. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n186. Evalúo Ley 19628: Aplica porque manejan datos.\n\n187. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n188. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n189. Evalúo Ley 19628: Aplica porque manejan datos.\n\n190. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n191. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n192. Evalúo Ley 19628: Aplica porque manejan datos.\n\n193. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n194. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n195. Evalúo Ley 19628: Aplica porque manejan datos.\n\n196. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n197. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n198. Evalúo Ley 19628: Aplica porque manejan datos.\n\n199. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n200. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n201. Evalúo Ley 19628: Aplica porque manejan datos.\n\n202. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n203. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n204. Evalúo Ley 19628: Aplica porque manejan datos.\n\n205. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n206. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n207. Evalúo Ley 19628: Aplica porque manejan datos.\n\n208. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n209. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n210. Evalúo Ley 19628: Aplica porque manejan datos.\n\n211. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n212. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n213. Evalúo Ley 19628: Aplica porque manejan datos.\n\n214. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n215. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n216. Evalúo Ley 19628: Aplica porque manejan datos.\n\n217. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n218. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n219. Evalúo Ley 19628: Aplica porque manejan datos.\n\n220. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n221. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n222. Evalúo Ley 19628: Aplica porque manejan datos.\n\n223. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n224. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n225. Evalúo Ley 19628: Aplica porque manejan datos.\n\n226. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n227. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n228. Evalúo Ley 19628: Aplica porque manejan datos.\n\n229. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n230. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n231. Evalúo Ley 19628: Aplica porque manejan datos.\n\n232. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n233. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n234. Evalúo Ley 19628: Aplica porque manejan datos.\n\n235. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n236. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n237. Evalúo Ley 19628: Aplica porque manejan datos.\n\n238. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n239. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n240. Evalúo Ley 19628: Aplica porque manejan datos.\n\n241. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n242. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n243. Evalúo Ley 19628: Aplica porque manejan datos.\n\n244. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n245. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n246. Evalúo Ley 19628: Aplica porque manejan datos.\n\n247. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n248. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n249. Evalúo Ley 19628: Aplica porque manejan datos.\n\n250. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n251. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n252. Evalúo Ley 19628: Aplica porque manejan datos.\n\n253. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n254. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n255. Evalúo Ley 19628: Aplica porque manejan datos.\n\n256. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n257. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n258. Evalúo Ley 19628: Aplica porque manejan datos.\n\n259. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n260. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n261. Evalúo Ley 19628: Aplica porque manejan datos.\n\n262. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n263. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n264. Evalúo Ley 19628: Aplica porque manejan datos.\n\n265. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n266. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n267. Evalúo Ley 19628: Aplica porque manejan datos.\n\n268. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n269. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n270. Evalúo Ley 19628: Aplica porque manejan datos.\n\n271. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n272. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n273. Evalúo Ley 19628: Aplica porque manejan datos.\n\n274. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n275. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n276. Evalúo Ley 19628: Aplica porque manejan datos.\n\n277. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n278. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n279. Evalúo Ley 19628: Aplica porque manejan datos.\n\n280. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n281. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n282. Evalúo Ley 19628: Aplica porque manejan datos.\n\n283. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n284. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n285. Evalúo Ley 19628: Aplica porque manejan datos.\n\n286. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n287. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n288. Evalúo Ley 19628: Aplica porque manejan datos.\n\n289. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n290. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n291. Evalúo Ley 19628: Aplica porque manejan datos.\n\n292. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n293. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n294. Evalúo Ley 19628: Aplica porque manejan datos.\n\n295. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n296. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n297. Evalúo Ley 19628: Aplica porque manejan datos.\n\n298. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n299. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n300. Evalúo Ley 19628: Aplica porque manejan datos.\n\n301. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n302. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n303. Evalúo Ley 19628: Aplica porque manejan datos.\n\n304. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n305. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n306. Evalúo Ley 19628: Aplica porque manejan datos.\n\n307. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n308. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n309. Evalúo Ley 19628: Aplica porque manejan datos.\n\n310. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n311. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n312. Evalúo Ley 19628: Aplica porque manejan datos.\n\n313. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n314. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n315. Evalúo Ley 19628: Aplica porque manejan datos.\n\n316. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n317. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n318. Evalúo Ley 19628: Aplica porque manejan datos.\n\n319. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n320. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n321. Evalúo Ley 19628: Aplica porque manejan datos.\n\n322. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n323. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n324. Evalúo Ley 19628: Aplica porque manejan datos.\n\n325. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n326. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n327. Evalúo Ley 19628: Aplica porque manejan datos.\n\n328. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n329. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n330. Evalúo Ley 19628: Aplica porque manejan datos.\n\n331. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n332. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n333. Evalúo Ley 19628: Aplica porque manejan datos.\n\n334. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n335. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n336. Evalúo Ley 19628: Aplica porque manejan datos.\n\n337. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n338. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n339. Evalúo Ley 19628: Aplica porque manejan datos.\n\n340. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n341. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n342. Evalúo Ley 19628: Aplica porque manejan datos.\n\n343. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n344. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n345. Evalúo Ley 19628: Aplica porque manejan datos.\n\n346. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n347. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n348. Evalúo Ley 19628: Aplica porque manejan datos.\n\n349. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n350. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n351. Evalúo Ley 19628: Aplica porque manejan datos.\n\n352. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n353. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n354. Evalúo Ley 19628: Aplica porque manejan datos.\n\n355. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n356. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n357. Evalúo Ley 19628: Aplica porque manejan datos.\n\n358. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n359. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n360. Evalúo Ley 19628: Aplica porque manejan datos.\n\n361. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n362. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n363. Evalúo Ley 19628: Aplica porque manejan datos.\n\n364. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n365. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n366. Evalúo Ley 19628: Aplica porque manejan datos.\n\n367. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n368. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n369. Evalúo Ley 19628: Aplica porque manejan datos.\n\n370. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n371. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n372. Evalúo Ley 19628: Aplica porque manejan datos.\n\n373. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n374. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n375. Evalúo Ley 19628: Aplica porque manejan datos.\n\n376. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n377. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n378. Evalúo Ley 19628: Aplica porque manejan datos.\n\n379. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n380. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n381. Evalúo Ley 19628: Aplica porque manejan datos.\n\n382. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n383. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n384. Evalúo Ley 19628: Aplica porque manejan datos.\n\n385. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n386. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n387. Evalúo Ley 19628: Aplica porque manejan datos.\n\n388. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n389. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n390. Evalúo Ley 19628: Aplica porque manejan datos.\n\n391. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n392. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n393. Evalúo Ley 19628: Aplica porque manejan datos.\n\n394. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n395. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n396. Evalúo Ley 19628: Aplica porque manejan datos.\n\n397. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n398. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n399. Evalúo Ley 19628: Aplica porque manejan datos.\n\n400. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n401. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n402. Evalúo Ley 19628: Aplica porque manejan datos.\n\n403. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n404. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n405. Evalúo Ley 19628: Aplica porque manejan datos.\n\n406. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n407. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n408. Evalúo Ley 19628: Aplica porque manejan datos.\n\n409. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n410. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n411. Evalúo Ley 19628: Aplica porque manejan datos.\n\n412. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n413. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n414. Evalúo Ley 19628: Aplica porque manejan datos.\n\n415. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n416. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n417. Evalúo Ley 19628: Aplica porque manejan datos.\n\n418. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n419. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n420. Evalúo Ley 19628: Aplica porque manejan datos.\n\n421. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n422. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n423. Evalúo Ley 19628: Aplica porque manejan datos.\n\n424. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n425. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n426. Evalúo Ley 19628: Aplica porque manejan datos.\n\n427. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n428. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n429. Evalúo Ley 19628: Aplica porque manejan datos.\n\n430. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n431. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n432. Evalúo Ley 19628: Aplica porque manejan datos.\n\n433. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n434. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n435. Evalúo Ley 19628: Aplica porque manejan datos.\n\n436. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n437. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n438. Evalúo Ley 19628: Aplica porque manejan datos.\n\n439. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n440. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n441. Evalúo Ley 19628: Aplica porque manejan datos.\n\n442. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n443. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n444. Evalúo Ley 19628: Aplica porque manejan datos.\n\n445. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n446. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n447. Evalúo Ley 19628: Aplica porque manejan datos.\n\n448. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n449. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n450. Evalúo Ley 19628: Aplica porque manejan datos.\n\n451. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n452. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n453. Evalúo Ley 19628: Aplica porque manejan datos.\n\n454. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n455. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n456. Evalúo Ley 19628: Aplica porque manejan datos.\n\n457. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n458. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n459. Evalúo Ley 19628: Aplica porque manejan datos.\n\n460. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n461. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n462. Evalúo Ley 19628: Aplica porque manejan datos.\n\n463. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n464. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n465. Evalúo Ley 19628: Aplica porque manejan datos.\n\n466. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n467. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n468. Evalúo Ley 19628: Aplica porque manejan datos.\n\n469. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n470. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n471. Evalúo Ley 19628: Aplica porque manejan datos.\n\n472. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n473. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n474. Evalúo Ley 19628: Aplica porque manejan datos.\n\n475. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n476. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n477. Evalúo Ley 19628: Aplica porque manejan datos.\n\n478. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n479. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n480. Evalúo Ley 19628: Aplica porque manejan datos.\n\n481. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n482. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n483. Evalúo Ley 19628: Aplica porque manejan datos.\n\n484. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n485. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n486. Evalúo Ley 19628: Aplica porque manejan datos.\n\n487. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n488. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n489. Evalúo Ley 19628: Aplica porque manejan datos.\n\n490. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n491. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n492. Evalúo Ley 19628: Aplica porque manejan datos.\n\n493. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n494. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n495. Evalúo Ley 19628: Aplica porque manejan datos.\n\n496. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n497. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n498. Evalúo Ley 19628: Aplica porque manejan datos.\n\n499. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n500. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n501. Evalúo Ley 19628: Aplica porque manejan datos.\n\n502. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n503. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n504. Evalúo Ley 19628: Aplica porque manejan datos.\n\n505. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n506. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n507. Evalúo Ley 19628: Aplica porque manejan datos.\n\n508. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n509. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n510. Evalúo Ley 19628: Aplica porque manejan datos.\n\n511. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n512. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n513. Evalúo Ley 19628: Aplica porque manejan datos.\n\n514. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n515. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n516. Evalúo Ley 19628: Aplica porque manejan datos.\n\n517. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n518. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n519. Evalúo Ley 19628: Aplica porque manejan datos.\n\n520. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n521. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n522. Evalúo Ley 19628: Aplica porque manejan datos.\n\n523. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n524. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n525. Evalúo Ley 19628: Aplica porque manejan datos.\n\n526. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n527. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n528. Evalúo Ley 19628: Aplica porque manejan datos.\n\n529. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n530. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n531. Evalúo Ley 19628: Aplica porque manejan datos.\n\n532. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n533. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n534. Evalúo Ley 19628: Aplica porque manejan datos.\n\n535. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n536. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n537. Evalúo Ley 19628: Aplica porque manejan datos.\n\n538. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n539. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n540. Evalúo Ley 19628: Aplica porque manejan datos.\n\n541. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n542. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n543. Evalúo Ley 19628: Aplica porque manejan datos.\n\n544. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n545. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n546. Evalúo Ley 19628: Aplica porque manejan datos.\n\n547. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n548. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n549. Evalúo Ley 19628: Aplica porque manejan datos.\n\n550. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n551. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n552. Evalúo Ley 19628: Aplica porque manejan datos.\n\n553. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n554. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n555. Evalúo Ley 19628: Aplica porque manejan datos.\n\n556. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n557. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n558. Evalúo Ley 19628: Aplica porque manejan datos.\n\n559. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n560. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n561. Evalúo Ley 19628: Aplica porque manejan datos.\n\n562. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n563. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n564. Evalúo Ley 19628: Aplica porque manejan datos.\n\n565. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n566. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n567. Evalúo Ley 19628: Aplica porque manejan datos.\n\n568. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n569. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n570. Evalúo Ley 19628: Aplica porque manejan datos.\n\n571. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n572. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n573. Evalúo Ley 19628: Aplica porque manejan datos.\n\n574. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n575. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n576. Evalúo Ley 19628: Aplica porque manejan datos.\n\n577. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n578. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n579. Evalúo Ley 19628: Aplica porque manejan datos.\n\n580. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n581. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n582. Evalúo Ley 19628: Aplica porque manejan datos.\n\n583. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n584. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n585. Evalúo Ley 19628: Aplica porque manejan datos.\n\n586. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n587. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n588. Evalúo Ley 19628: Aplica porque manejan datos.\n\n589. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n590. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n591. Evalúo Ley 19628: Aplica porque manejan datos.\n\n592. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n593. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n594. Evalúo Ley 19628: Aplica porque manejan datos.\n\n595. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n596. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n597. Evalúo Ley 19628: Aplica porque manejan datos.\n\n598. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n599. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n600. Evalúo Ley 19628: Aplica porque manejan datos.\n\n601. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n602. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n603. Evalúo Ley 19628: Aplica porque manejan datos.\n\n604. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n605. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n606. Evalúo Ley 19628: Aplica porque manejan datos.\n\n607. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n608. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n609. Evalúo Ley 19628: Aplica porque manejan datos.\n\n610. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n611. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n612. Evalúo Ley 19628: Aplica porque manejan datos.\n\n613. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n614. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n615. Evalúo Ley 19628: Aplica porque manejan datos.\n\n616. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n617. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n618. Evalúo Ley 19628: Aplica porque manejan datos.\n\n619. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n620. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n621. Evalúo Ley 19628: Aplica porque manejan datos.\n\n622. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n623. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n624. Evalúo Ley 19628: Aplica porque manejan datos.\n\n625. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n626. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n627. Evalúo Ley 19628: Aplica porque manejan datos.\n\n628. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n629. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n630. Evalúo Ley 19628: Aplica porque manejan datos.\n\n631. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n632. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n633. Evalúo Ley 19628: Aplica porque manejan datos.\n\n634. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n635. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n636. Evalúo Ley 19628: Aplica porque manejan datos.\n\n637. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n638. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n639. Evalúo Ley 19628: Aplica porque manejan datos.\n\n640. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n641. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n642. Evalúo Ley 19628: Aplica porque manejan datos.\n\n643. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n644. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n645. Evalúo Ley 19628: Aplica porque manejan datos.\n\n646. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n647. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n648. Evalúo Ley 19628: Aplica porque manejan datos.\n\n649. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n650. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n651. Evalúo Ley 19628: Aplica porque manejan datos.\n\n652. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n653. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n654. Evalúo Ley 19628: Aplica porque manejan datos.\n\n655. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n656. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n657. Evalúo Ley 19628: Aplica porque manejan datos.\n\n658. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n659. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n660. Evalúo Ley 19628: Aplica porque manejan datos.\n\n661. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n662. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n663. Evalúo Ley 19628: Aplica porque manejan datos.\n\n664. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n665. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n666. Evalúo Ley 19628: Aplica porque manejan datos.\n\n667. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n668. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n669. Evalúo Ley 19628: Aplica porque manejan datos.\n\n670. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n671. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n672. Evalúo Ley 19628: Aplica porque manejan datos.\n\n673. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n674. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n675. Evalúo Ley 19628: Aplica porque manejan datos.\n\n676. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n677. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n678. Evalúo Ley 19628: Aplica porque manejan datos.\n\n679. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n680. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n681. Evalúo Ley 19628: Aplica porque manejan datos.\n\n682. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n683. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n684. Evalúo Ley 19628: Aplica porque manejan datos.\n\n685. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n686. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n687. Evalúo Ley 19628: Aplica porque manejan datos.\n\n688. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n689. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n690. Evalúo Ley 19628: Aplica porque manejan datos.\n\n691. Evalúo Ley 20393: Aplica porque tienen trabajadores y hay delitos en su beneficio.\n\n692. Evalúo Ley 19496: Aplica porque es una plataforma e-commerce.\n\n693. Evalúo Ley 196
+[2026-09-01 06:39:37] Iniciando auditoría RAG optimizada para: Fintech & Software Solutions SpA
+[2026-09-01 06:39:37] Contexto legal (6 reglas) despachado a Ollama (llama3.2:3b)...
+{"analisis_preliminar": [{"ley_evaluada": "19496 - Art. 3-bis", "aplica": false, "motivo": ""}], 
+"analisis_preliminar": [{"ley_evaluada": "20393 - Art. 3", "aplica": true, "motivo": "La empresa tiene beneficio y ejecutivos que pueden cometer delitos."}], 
+"analisis_preliminar": [{"ley_evaluada": "19628 - Art. 4", "aplica": true, "motivo": "Maneja datos de clientes."}], 
+"analisis_preliminar": [{"ley_evaluada": "19628 - Art. 10", "aplica": false, "motivo": ""}], 
+"analisis_preliminar": [{"ley_evaluada": "20393 - Art. 4", "aplica": true, "motivo": "La empresa debe implementar un Modelo de Prevención de Delitos (MPD) certificado."}], 
+"analisis_preliminar": [{"ley_evaluada": "21521 - Art. 5", "aplica": false, "motivo": ""}]}
+[2026-09-01 06:39:44] Respuesta de Ollama recibida exitosamente.
+[2026-09-01 06:39:44] Guardando borrador de auditoría pendiente de aprobación...
+
+[2026-09-01 06:42:05] Iniciando auditoría RAG optimizada para: Fintech & Software Solutions SpA
+[2026-09-01 06:42:05] Contexto legal (6 reglas) despachado a Ollama (llama3.2:3b)...
+{"analisis_preliminar": [{"ley_evaluada": "19496 - Art. 3-bis", "aplica": false, "motivo": ""}], 
+"resumen_ejecutivo": "Diagn\u00f3stico conciso de cumplimiento.", 
+"normativas_aplicables": [
+{"ley_id": "19628", "nombre_ley": "Ley de Protecci\u00f3n de la Vida Privada / Datos Personales", "articulos_clave": ["Art. 4"], "justificacion_juridica": "Maneja datos de clientes.", "nivel_riesgo_general": "Alta", 
+"tareas": [
+{"id_tarea": "T-1", "titulo": "Publicar política de privacidad y consentimiento", "descripcion": "Implementar checkbox de consentimiento en plataforma.", "area_responsable": "TI / Legal", "plazo_sugerido_dias": 30, "prioridad": "Alta", 
+"impacto_incumplimiento": "Multas por infracci\u00f3n de privacidad."}]}, 
+{"ley_id": "20393 - Art. 4", "nombre_ley": "Ley sobre Prevenci\u00f3n y Erradicaci\u00f3n del Delito", "articulos_clave": ["Art. 4"], "justificacion_juridica": "", "nivel_riesgo_general": "Muy Alta", 
+"tareas": [
+{"id_tarea": "T-2", "titulo": "Crear Modelo de Prevenci\u00f3n de Delitos (MPD) y nombrar Encargado de Compliance", "descripcion": "Implementar MPD certificado, nombrar Encargado de Compliance.", 
+"area_responsable": "Legal / Riesgos", "plazo_sugerido_dias": 60, "prioridad": "Muy Alta", 
+"impacto_incumplimiento": "Penalizaci\u00f3n por infracci\u00f3n en la prevenci\u00f3n de delitos."}]}, 
+{"ley_id": "20393 - Art. 3", "nombre_ley": "Ley sobre Prevenci\u00f3n y Erradicaci\u00f3n del Delito", "articulos_clave": ["Art. 3"], "justificacion_juridica": "", "nivel_riesgo_general": "Muy Alta", 
+"tareas": [
+{"id_tarea": "T-3", "titulo": "Implementar medidas de prevenci\u00f3n de delitos en beneficio de la empresa", "descripcion": "Implementar medidas para prevenir delitos en el beneficio de la empresa.", 
+"area_responsable": "Legal / Riesgos", "plazo_sugerido_dias": 90, "prioridad": "Muy Alta", 
+"impacto_incumplimiento": "Penalizaci\u00f3n por infracci\u00f3n en la prevenci\u00f3n de delitos."}]}, 
+{"ley_id": "21521 - Art. 5", "nombre_ley": "Ley sobre Regulaci\u00f3n de Fintech y Pagos", "articulos_clave": ["Art. 5"], "justificacion_juridica": "", "nivel_riesgo_general": "Muy Alta", 
+"tareas": [
+{"id_tarea": "T-4", "titulo": "Registro obligatorio ante la CMF para plataformas Fintech de pagos", "descripcion": "Registrar la plataforma ante la CMF.", 
+"area_responsable": "Legal / Riesgos", "plazo_sugerido_dias": 30, "prioridad": "Muy Alta", 
+"impacto_incumplimiento": "Multas por infracci\u00f3n en el registro."}]}]}
+[2026-09-01 06:42:25] Respuesta de Ollama recibida exitosamente.
+[2026-09-01 06:42:25] Guardando borrador de auditoría pendiente de aprobación...
+
+[2026-09-01 06:42:49] Iniciando auditoría RAG optimizada para: TechCorp Chile S.A.
+[2026-09-01 06:42:49] Contexto legal (6 reglas) despachado a Ollama (llama3.2:3b)...
+{"analisis_preliminar": [{"ley_evaluada": "19496 - Art. 3-bis", "aplica": false, "motivo": "No aplica ya que la plataforma es B2C y no requiere retracto de 10 días."}, {"ley_evaluada": "19628 - Art. 4", "aplica": true, "motivo": "La empresa maneja datos personales y debe obtener consentimiento explícito e informado por escrito."}, {"ley_evaluada": "21521 - Art. 5", "aplica": false, "motivo": "No requiere registro ante la CMF ya que no es una plataforma Fintech de pagos o préstamos con gobernanza de riesgos."}, {"ley_evaluada": "19628 - Art. 10", "aplica": true, "motivo": "La empresa maneja datos sensibles (datos personales) y debe obtener consentimiento expreso o base legal especial con protocolos reforzados de seguridad."}, {"ley_evaluada": "20393 - Art. 3", "aplica": false, "motivo": "No aplica ya que no hay delitos cometidos en beneficio de la empresa."}, {"ley_evaluada": "20393 - Art. 4", "aplica": true, "motivo": "La empresa debe implementar un Modelo de Prevención de Delitos (MPD) certificado y nombrar Encargado de Compliance."}], "resumen_ejecutivo": "Diagnóstico conciso de cumplimiento.", "normativas_aplicables": [{"ley_id": "19628", "nombre_ley": "Ley de Protección de la Vida Privada / Datos Personales", "articulos_clave": ["Art. 4"], "justificacion_juridica": "Maneja datos de clientes.", "nivel_riesgo_general": "Alta", "tareas": [{"id_tarea": "T-1", "titulo": "Publicar política de privacidad y consentimiento", "descripcion": "Implementar checkbox de consentimiento en plataforma.", "area_responsable": "TI / Legal", "plazo_sugerido_dias": 30, "prioridad": "Alta", "impacto_incumplimiento": "Multas por infracción de privacidad."}, {"id_tarea": "T-2", "titulo": "Implementar MPD certificado y nombrar Encargado de Compliance", "descripcion": "Realizar evaluación de riesgos penales y implementar medidas preventivas.", "area_responsable": "Legal / Riesgo", "plazo_sugerido_dias": 60, "prioridad": "Alta", "impacto_incumplimiento": "Sanciones por falta de cumplimiento."}]}]}
+[2026-09-01 06:43:03] Respuesta de Ollama recibida exitosamente.
+[2026-09-01 06:43:03] Guardando borrador de auditoría pendiente de aprobación...
+
+[2026-09-03 21:13:18] Iniciando auditoría RAG optimizada para: Fintech & Software Solutions SpA
+[2026-09-03 21:13:18] Contexto legal (6 reglas) despachado a Ollama (llama3.2:3b)...
+
+[2026-09-03 21:13:18] Iniciando auditoría RAG optimizada para: Empresa Demo Chile S.A.
+[2026-09-03 21:13:18] Contexto legal (6 reglas) despachado a Ollama (llama3.2:3b)...
+{
+  "resumen_ejecutivo": "Diagnóstico conciso de cumplimiento.",
+  "normativas_aplicables": [
+    {
+      "ley_id": "Ley 21.595",
+      "nombre_ley": "Ley 21.595 - Art. Catálogo",
+      "justificacion_juridica": "La empresa tiene un beneficio económico y medioambiental, por lo que se aplica esta ley.",
+      "articulos_clave": ["Art. Catálogo"],
+      "nivel_riesgo_general": "Alta",
+      "tareas": [
+        {
+          "id_tarea": "T-1",
+          "titulo": "Implementar Modelo de Prevención de Delitos (MPD)",
+          "descripcion": "Actualizar y implementar un MPD real y efectivo para evitar la disolución de la empresa o comiso de ganancias.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 60,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Multas."
+        }
+      ]
+    },
+    {
+      "ley_id": "Ley 19.496",
+      "nombre_ley": "Ley 19.496 - Garantizar derecho a retracto",
+      "justificacion_juridica": "La empresa es una plataforma e-commerce, por lo que se aplica esta ley.",
+      "articulos_clave": ["Art. 3-bis"],
+      "nivel_riesgo_general": "Media",
+      "tareas": [
+        {
+          "id_tarea": "T-2",
+          "titulo": "Publicar términos y condiciones visibles",
+          "descripcion": "Garantizar que los términos y condiciones sean visibles y accesibles para los clientes.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 30,
+          "prioridad": "Media",
+          "impacto_incumplimiento": "Multas."
+        },
+        {
+          "id_tarea": "T-3",
+          "titulo": "Implementar soporte postventa expedito",
+          "descripcion": "Garantizar que el soporte postventa sea expedito y eficiente para los clientes.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 60,
+          "prioridad": "Media",
+          "impacto_incumplimiento": "Multas."
+        }
+      ]
+    },
+    {
+      "ley_id": "20393",
+      "nombre_ley": "Ley 20393 - Responsabilidad penal directa",
+      "justificacion_juridica": "La empresa tiene ejecutivos que supervisan la empresa, por lo que se aplica esta ley.",
+      "articulos_clave": ["Art. 3"],
+      "nivel_riesgo_general": "Alta",
+      "tareas": [
+        {
+          "id_tarea": "T-4",
+          "titulo": "Implementar políticas de supervisión interna",
+          "descripcion": "Garantizar que los ejecutivos supervisen la empresa de manera efectiva.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 90,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Multas."
+        }
+      ]
+    },
+    {
+      "ley_id": "Ley 21.719",
+      "nombre_ley": "Ley 21.719 - Consentimiento",
+      "justificacion_juridica": "La empresa maneja datos de clientes, por lo que se aplica esta ley.",
+      "articulos_clave": ["Art. Consentimiento"],
+      "nivel_riesgo_general": "Alta",
+      "tareas": [
+        {
+          "id_tarea": "T-5",
+          "titulo": "Implementar política de consentimiento explícito",
+          "descripcion": "Garantizar que los clientes den su consentimiento explícito para recolectar y tratar sus datos.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 60,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Multas."
+        }
+      ]
+    },
+    {
+      "ley_id": "19628",
+      "nombre_ley": "Ley 19628 - Obligación de consentimiento explícito",
+      "justificacion_juridica": "La empresa maneja datos de clientes, por lo que se aplica esta ley.",
+      "articulos_clave": ["Art. 4"],
+      "nivel_riesgo_general": "Alta",
+      "tareas": [
+        {
+          "id_tarea": "T-6",
+          "titulo": "Implementar política de consentimiento explícito",
+          "descripcion": "Garantizar que los clientes den su consentimiento explícito para recolectar y tratar sus datos.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 60,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Multas."
+        }
+      ]
+    }
+  ]
+}
+[2026-09-03 21:14:21] Respuesta de Ollama recibida exitosamente.
+[2026-09-03 21:14:21] Guardando borrador de auditoría pendiente de aprobación...
+{
+  "resumen_ejecutivo": "Diagnóstico conciso de cumplimiento.",
+  "normativas_aplicables": [
+    {
+      "ley_id": "Ley 21.595",
+      "nombre_ley": "Ley 21.595 - Art. Catálogo",
+      "justificacion_juridica": "La empresa tiene una responsabilidad penal directa de más de 200 nuevos delitos económicos y medioambientales cometidos en su beneficio, lo que la obliga a implementar un Modelo de Prevención de Delitos (MPD) real y efectivo.",
+      "articulos_clave": ["Art. Catálogo"],
+      "nivel_riesgo_general": "Alta",
+      "tareas": [
+        {
+          "id_tarea": "T-1",
+          "titulo": "Implementar Modelo de Prevención de Delitos (MPD)",
+          "descripcion": "Actualizar y implementar un MPD real y efectivo para evitar la disolución de la empresa o comiso de ganancias.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 90,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Multas y sanciones"
+        }
+      ]
+    },
+    {
+      "ley_id": "Ley 19.496",
+      "nombre_ley": "Ley 19.496 - Art. 3-bis",
+      "justificacion_juridica": "La empresa debe garantizar el derecho de retracto de 10 días en plataformas e-commerce, términos y condiciones visibles y soporte postventa expedito.",
+      "articulos_clave": ["Art. 3-bis"],
+      "nivel_riesgo_general": "Media",
+      "tareas": [
+        {
+          "id_tarea": "T-2",
+          "titulo": "Publicar términos y condiciones claras",
+          "descripcion": "Actualizar y publicar términos y condiciones claras y visibles en la plataforma.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 30,
+          "prioridad": "Media",
+          "impacto_incumplimiento": "Penas de multa"
+        },
+        {
+          "id_tarea": "T-3",
+          "titulo": "Implementar sistema de retracto",
+          "descripcion": "Implementar un sistema de retracto de 10 días para clientes/usuarios.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 60,
+          "prioridad": "Media",
+          "impacto_incumplimiento": "Penas de multa"
+        }
+      ]
+    },
+    {
+      "ley_id": "20393",
+      "nombre_ley": "Ley 20393 - Art. 3",
+      "justificacion_juridica": "La empresa tiene una responsabilidad penal directa de delitos cometidos en su beneficio debido a fallas de dirección o supervisión de sus ejecutivos.",
+      "articulos_clave": ["Art. 3"],
+      "nivel_riesgo_general": "Alta",
+      "tareas": [
+        {
+          "id_tarea": "T-4",
+          "titulo": "Revisar y actualizar la estructura de gestión",
+          "descripcion": "Revisar y actualizar la estructura de gestión para asegurar que se cumplan las normas de dirección y supervisión.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 90,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Multas y sanciones"
+        }
+      ]
+    },
+    {
+      "ley_id": "Ley 21.719",
+      "nombre_ley": "Ley 21.719 - Art. Consentimiento",
+      "justificacion_juridica": "La empresa debe obtener el consentimiento explícito, informado y por escrito de clientes/usuarios para recolectar o tratar sus datos.",
+      "articulos_clave": ["Art. Consentimiento"],
+      "nivel_riesgo_general": "Alta",
+      "tareas": [
+        {
+          "id_tarea": "T-5",
+          "titulo": "Actualizar política de privacidad",
+          "descripcion": "Actualizar y implementar una política de privacidad que cumpla con la norma de consentimiento explícito.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 60,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Multas y sanciones"
+        }
+      ]
+    },
+    {
+      "ley_id": "19628",
+      "nombre_ley": "Ley 19628 - Art. 4",
+      "justificacion_juridica": "La empresa debe obtener el consentimiento explícito, informado y por escrito de clientes/usuarios para recolectar o tratar sus datos personales.",
+      "articulos_clave": ["Art. 4"],
+      "nivel_riesgo_general": "Alta",
+      "tareas": [
+        {
+          "id_tarea": "T-6",
+          "titulo": "Actualizar política de privacidad",
+          "descripcion": "Actualizar y implementar una política de privacidad que cumpla con la norma de consentimiento explícito.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 60,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Multas y sanciones"
+        }
+      ]
+    }
+  ]
+}
+[2026-09-03 21:15:13] Respuesta de Ollama recibida exitosamente.
+[2026-09-03 21:15:13] Guardando borrador de auditoría pendiente de aprobación...
+
+[2026-09-14 14:57:06] Iniciando auditoría RAG optimizada para: Empresa Demo Chile S.A.
+[2026-09-14 14:57:06] Contexto legal (6 reglas) despachado a Ollama (llama3.2:3b)...
+{
+  "resumen_ejecutivo": "Diagnóstico conciso de cumplimiento.",
+  "normativas_aplicables": [
+    {
+      "ley_id": "Ley 21.595",
+      "nombre_ley": "Ley 21.595 - Art. Catálogo",
+      "justificacion_juridica": "La empresa tiene más de 200 nuevos delitos económicos y medioambientales cometidos en su beneficio, lo que la obliga a cumplir con la norma de responsabilidad penal directa.",
+      "articulos_clave": ["Art. Catálogo"],
+      "nivel_riesgo_general": "Alta",
+      "tareas": [
+        {
+          "id_tarea": "T-1",
+          "titulo": "Actualizar Modelo de Prevención de Delitos (MPD)",
+          "descripcion": "Implementar un MPD real y efectivo para evitar la disolución de la empresa o comiso de ganancias.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 60,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Multas."
+        }
+      ]
+    },
+    {
+      "ley_id": "Ley 19.496",
+      "nombre_ley": "Ley 19.496 - Garantizar derecho a retracto",
+      "justificacion_juridica": "La empresa debe garantizar el derecho de retractiono de 10 días en plataformas e-commerce, términos y condiciones visibles y soporte postventa expedito.",
+      "articulos_clave": ["Art. 3-bis"],
+      "nivel_riesgo_general": "Media",
+      "tareas": [
+        {
+          "id_tarea": "T-2",
+          "titulo": "Publicar términos y condiciones claras",
+          "descripcion": "Actualizar términos y condiciones de la plataforma para cumplir con la norma de garantía de derecho a retracto.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 30,
+          "prioridad": "Media",
+          "impacto_incumplimiento": "Multas."
+        }
+      ]
+    },
+    {
+      "ley_id": "20393",
+      "nombre_ley": "Ley 20393 - Responsabilidad penal directa",
+      "justificacion_juridica": "La empresa debe cumplir con la norma de responsabilidad penal directa por delitos cometidos en su beneficio debido a fallas de dirección o supervisión de sus ejecutivos.",
+      "articulos_clave": ["Art. 3"],
+      "nivel_riesgo_general": "Alta",
+      "tareas": [
+        {
+          "id_tarea": "T-3",
+          "titulo": "Actualizar política de supervisión",
+          "descripcion": "Implementar un sistema de supervisión efectivo para evitar delitos cometidos en su beneficio.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 60,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Multas."
+        }
+      ]
+    },
+    {
+      "ley_id": "Ley 21.719",
+      "nombre_ley": "Ley 21.719 - Consentimiento explícito",
+      "justificacion_juridica": "La empresa debe obtener consentimiento explícito, informado y por escrito de clientes/usuarios para recolectar o tratar sus datos.",
+      "articulos_clave": ["Art. Consentimiento"],
+      "nivel_riesgo_general": "Alta",
+      "tareas": [
+        {
+          "id_tarea": "T-4",
+          "titulo": "Actualizar política de consentimiento",
+          "descripcion": "Implementar un sistema de consentimiento explícito para recolectar y tratar datos de clientes/usuarios.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 30,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Multas."
+        }
+      ]
+    },
+    {
+      "ley_id": "19628",
+      "nombre_ley": "Ley 19628 - Obligación de consentimiento explícito",
+      "justificacion_juridica": "La empresa debe obtener consentimiento explícito, informado y por escrito de clientes/usuarios para recolectar o tratar sus datos personales.",
+      "articulos_clave": ["Art. 4"],
+      "nivel_riesgo_general": "Alta",
+      "tareas": [
+        {
+          "id_tarea": "T-5",
+          "titulo": "Actualizar política de consentimiento",
+          "descripcion": "Implementar un sistema de consentimiento explícito para recolectar y tratar datos personales de clientes/usuarios.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 30,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Multas."
+        }
+      ]
+    }
+  ]
+}
+[2026-09-14 14:59:18] Respuesta de Ollama recibida exitosamente.
+[2026-09-14 14:59:18] Guardando borrador de auditoría pendiente de aprobación...
+
+[2026-09-14 15:03:34] Iniciando auditoría RAG optimizada para: TechCorp Chile S.A.
+[2026-09-14 15:03:34] Contexto legal (6 reglas) despachado a Ollama (llama3.2:3b)...
+{
+  "resumen_ejecutivo": "Diagnóstico conciso de cumplimiento.",
+  "normativas_aplicables": [
+    {
+      "ley_id": "Ley 19.496",
+      "nombre_ley": "Ley 19.496 - Garantizar derecho a retracto de 10 días en plataformas e-commerce, términos y condiciones visibles y soporte postventa expedito.",
+      "justificacion_juridica": "La empresa es una plataforma de e-commerce y, según la ley, debe garantizar el derecho de retraction de los clientes dentro de un plazo de 10 días.",
+      "articulos_clave": ["Art. 3-bis"],
+      "nivel_riesgo_general": "Media",
+      "tareas": [
+        {
+          "id_tarea": "T-1",
+          "titulo": "Publicar política de retraction",
+          "descripcion": "Implementar política de retraction en la plataforma, incluyendo un plazo de 10 días para el retraimiento de los productos.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 15,
+          "prioridad": "Media",
+          "impacto_incumplimiento": "Pérdida de confianza de los clientes."
+        }
+      ]
+    },
+    {
+      "ley_id": "Ley 19628",
+      "nombre_ley": "Ley 19628 - Obligación de consentimiento explícito, informado y por escrito de clientes/usuarios para recolectar o tratar sus datos personales en plataformas o contratos.",
+      "justificacion_juridica": "La empresa maneja datos de clientes y, según la ley, debe obtener su consentimiento explícito y por escrito para recolectar y tratar sus datos.",
+      "articulos_clave": ["Art. 4"],
+      "nivel_riesgo_general": "Alta",
+      "tareas": [
+        {
+          "id_tarea": "T-2",
+          "titulo": "Obtener consentimiento explícito",
+          "descripcion": "Implementar un proceso para obtener el consentimiento explícito y por escrito de los clientes para recolectar y tratar sus datos.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 30,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Multas y daños a la reputación."
+        }
+      ]
+    },
+    {
+      "ley_id": "Ley 21.595",
+      "nombre_ley": "Ley 21.595 - Responsabilidad penal directa de la empresa por más de 200 nuevos delitos económicos y medioambientales cometidos en su beneficio.",
+      "justificacion_juridica": "La empresa debe cumplir con la ley y evitar la comisión de delitos económicos y medioambientales que puedan generar responsabilidad penal directa.",
+      "articulos_clave": ["Art. Catálogo"],
+      "nivel_riesgo_general": "Alta",
+      "tareas": [
+        {
+          "id_tarea": "T-3",
+          "titulo": "Implementar MPD",
+          "descripcion": "Implementar un Modelo de Prevención de Delitos (MPD) real y efectivo para evitar la comisión de delitos económicos y medioambientales.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 60,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Responsabilidad penal directa y daños a la reputación."
+        }
+      ]
+    },
+    {
+      "ley_id": "Ley 21.521",
+      "nombre_ley": "Ley 21.521 - Exigencia de registro obligatorio ante la CMF para plataformas Fintech de pagos, préstamos o custodia de fondos con gobernanza de riesgos.",
+      "justificacion_juridica": "La empresa es una plataforma Fintech y, según la ley, debe registrarse ante la CMF para cumplir con las normas de gobernanza de riesgos.",
+      "articulos_clave": ["Art. 5"],
+      "nivel_riesgo_general": "Media",
+      "tareas": [
+        {
+          "id_tarea": "T-4",
+          "titulo": "Registro ante la CMF",
+          "descripcion": "Realizar el registro obligatorio ante la CMF y implementar la gobernanza de riesgos en la plataforma.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 30,
+          "prioridad": "Media",
+          "impacto_incumplimiento": "Pérdida de confianza de los clientes y sanciones."
+        }
+      ]
+    },
+    {
+      "ley_id": "Ley 21.719",
+      "nombre_ley": "Ley 21.719 - Prohibición de pre-marcar casillas. Obligación de consentimiento explícito, informado y por escrito de clientes/usuarios para recolectar o tratar sus datos.",
+      "justificacion_juridica": "La empresa debe cumplir con la ley y obtener el consentimiento explícito y por escrito de los clientes para recolectar y tratar sus datos.",
+      "articulos_clave": ["Art. Consentimiento"],
+      "nivel_riesgo_general": "Alta",
+      "tareas": [
+        {
+          "id_tarea": "T-5",
+          "titulo": "Obtener consentimiento explícito",
+          "descripcion": "Implementar un proceso para obtener el consentimiento explícito y por escrito de los clientes para recolectar y tratar sus datos.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 30,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Multas y daños a la reputación."
+        }
+      ]
+    }
+  ]
+}
+[2026-09-14 15:04:01] Respuesta de Ollama recibida exitosamente.
+[2026-09-14 15:04:01] Guardando borrador de auditoría pendiente de aprobación...
+
+[2026-09-14 15:24:31] Iniciando auditoría RAG optimizada para: TechCorp Chile S.A.
+[2026-09-14 15:24:31] Contexto legal (6 reglas) despachado a Ollama (llama3.2:3b)...
+{
+  "resumen_ejecutivo": "Diagnóstico conciso de cumplimiento.",
+  "normativas_aplicables": [
+    {
+      "ley_id": "Ley 19.496",
+      "nombre_ley": "Ley 19.496 - Garantizar derecho a retracto de 10 días en plataformas e-commerce, términos y condiciones visibles y soporte postventa expedito.",
+      "justificacion_juridica": "La empresa es una plataforma de e-commerce y, según la ley, debe garantizar el derecho de retraction de los clientes dentro de un plazo de 10 días. Esto implica que la empresa debe tener un proceso claro y transparente para manejar las devoluciones y reembolsos.",
+      "articulos_clave": ["Art. 3-bis"],
+      "nivel_riesgo_general": "Media",
+      "tareas": [
+        {
+          "id_tarea": "T-1",
+          "titulo": "Publicar política de privacidad",
+          "descripcion": "Implementar checkbox en plataforma.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 30,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Multas."
+        }
+      ]
+    },
+    {
+      "ley_id": "19628",
+      "nombre_ley": "Ley 19628 - Obligación de consentimiento explícito, informado y por escrito de clientes/usuarios para recolectar o tratar sus datos personales en plataformas o contratos.",
+      "justificacion_juridica": "La empresa maneja datos de clientes, por ende aplica la norma de privacidad y debe obtener el consentimiento explícito y informado de estos datos.",
+      "articulos_clave": ["Art. 4"],
+      "nivel_riesgo_general": "Alta",
+      "tareas": [
+        {
+          "id_tarea": "T-2",
+          "titulo": "Obtener consentimiento explícito de clientes",
+          "descripcion": "Implementar proceso de consentimiento explícito en la plataforma.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 60,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Multas."
+        }
+      ]
+    },
+    {
+      "ley_id": "Ley 21.595",
+      "nombre_ley": "Ley 21.595 - Responsabilidad penal directa de la empresa por más de 200 nuevos delitos económicos y medioambientales cometidos en su beneficio.",
+      "justificacion_juridica": "La empresa debe cumplir con la norma de responsabilidad penal directa y evitar la comisión de delitos económicos y medioambientales.",
+      "articulos_clave": ["Art. Catálogo"],
+      "nivel_riesgo_general": "Alta",
+      "tareas": [
+        {
+          "id_tarea": "T-3",
+          "titulo": "Actualizar Modelo de Prevención de Delitos (MPD)",
+          "descripcion": "Implementar MPD real y efectivo para evitar la disolución de la empresa o comiso de ganancias.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 90,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Disolución de la empresa."
+        }
+      ]
+    },
+    {
+      "ley_id": "Ley 21.521",
+      "nombre_ley": "Ley 21.521 - Exigencia de registro obligatorio ante la CMF para plataformas Fintech de pagos, préstamos o custodia de fondos con gobernanza de riesgos.",
+      "justificacion_juridica": "La empresa es una plataforma Fintech y, según la ley, debe registrarse ante la CMF.",
+      "articulos_clave": ["Art. 5"],
+      "nivel_riesgo_general": "Media",
+      "tareas": [
+        {
+          "id_tarea": "T-4",
+          "titulo": "Registro ante la CMF",
+          "descripcion": "Realizar el registro obligatorio ante la CMF.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 30,
+          "prioridad": "Media",
+          "impacto_incumplimiento": "Sanciones."
+        }
+      ]
+    },
+    {
+      "ley_id": "Ley 21.719",
+      "nombre_ley": "Ley 21.719 - Prohibición de pre-marcar casillas. Obligación de consentimiento explícito, informado y por escrito de clientes/usuarios para recolectar o tratar sus datos.",
+      "justificacion_juridica": "La empresa debe cumplir con la norma de prohibición de pre-marcar casillas y obtener el consentimiento explícito y informado de los clientes.",
+      "articulos_clave": ["Art. Consentimiento"],
+      "nivel_riesgo_general": "Alta",
+      "tareas": [
+        {
+          "id_tarea": "T-5",
+          "titulo": "Publicar política de consentimiento explícito",
+          "descripcion": "Implementar proceso de consentimiento explícito en la plataforma.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 60,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Multas."
+        }
+      ]
+    }
+  ]
+}
+[2026-09-14 15:25:39] Respuesta de Ollama recibida exitosamente.
+[2026-09-14 15:25:39] Guardando borrador de auditoría pendiente de aprobación...
+
+[2026-09-14 15:32:42] Iniciando auditoría RAG optimizada para: Empresa Demo Chile S.A.
+[2026-09-14 15:32:42] Contexto legal (6 reglas) despachado a Ollama (llama3.2:3b)...
+{
+  "resumen_ejecutivo": "Diagnóstico conciso de cumplimiento.",
+  "normativas_aplicables": [
+    {
+      "ley_id": "Ley 21.595",
+      "nombre_ley": "Ley 21.595 - Art. Catálogo",
+      "justificacion_juridica": "La empresa tiene más de 200 nuevos delitos económicos y medioambientales cometidos en su beneficio, lo que la obliga a cumplir con esta ley.",
+      "articulos_clave": ["Art. Catálogo"],
+      "nivel_riesgo_general": "Alta",
+      "tareas": [
+        {
+          "id_tarea": "T-1",
+          "titulo": "Actualizar Modelo de Prevención de Delitos (MPD)",
+          "descripcion": "Implementar un MPD real y efectivo para evitar la disolución de la empresa o comiso de ganancias.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 60,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Disolución de la empresa o comiso de ganancias."
+        }
+      ]
+    },
+    {
+      "ley_id": "Ley 19.496",
+      "nombre_ley": "Ley 19.496 - Garantizar derecho a retracto",
+      "justificacion_juridica": "La empresa es una plataforma e-commerce y debe garantizar el derecho de retractiono de sus clientes.",
+      "articulos_clave": ["Art. 3-bis"],
+      "nivel_riesgo_general": "Media",
+      "tareas": [
+        {
+          "id_tarea": "T-2",
+          "titulo": "Publicar términos y condiciones visibles",
+          "descripcion": "Implementar términos y condiciones claras y visibles en la plataforma.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 30,
+          "prioridad": "Media",
+          "impacto_incumplimiento": "Pérdida de confianza de los clientes."
+        },
+        {
+          "id_tarea": "T-3",
+          "titulo": "Implementar soporte postventa expedito",
+          "descripcion": "Establecer un sistema de soporte postventa eficiente y rápido.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 60,
+          "prioridad": "Media",
+          "impacto_incumplimiento": "Pérdida de confianza de los clientes."
+        }
+      ]
+    },
+    {
+      "ley_id": "20393",
+      "nombre_ley": "Ley 20393 - Responsabilidad penal directa",
+      "justificacion_juridica": "La empresa tiene ejecutivos que deben cumplir con esta ley, lo que la obliga a implementar medidas de prevención de delitos.",
+      "articulos_clave": ["Art. 3"],
+      "nivel_riesgo_general": "Alta",
+      "tareas": [
+        {
+          "id_tarea": "T-4",
+          "titulo": "Actualizar política de dirección y supervisión",
+          "descripcion": "Implementar un sistema de supervisión y dirección eficiente para evitar delitos.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 90,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Responsabilidad penal directa de la empresa."
+        }
+      ]
+    },
+    {
+      "ley_id": "Ley 21.719",
+      "nombre_ley": "Ley 21.719 - Consentimiento",
+      "justificacion_juridica": "La empresa debe obtener consentimiento explícito y informado de sus clientes para recolectar o tratar sus datos.",
+      "articulos_clave": ["Art. Consentimiento"],
+      "nivel_riesgo_general": "Alta",
+      "tareas": [
+        {
+          "id_tarea": "T-5",
+          "titulo": "Actualizar política de consentimiento",
+          "descripcion": "Implementar un sistema de consentimiento explícito y informado para los clientes.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 60,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Pérdida de confianza de los clientes."
+        }
+      ]
+    },
+    {
+      "ley_id": "19628",
+      "nombre_ley": "Ley 19628 - Obligación de consentimiento",
+      "justificacion_juridica": "La empresa debe obtener consentimiento explícito y informado de sus clientes para recolectar o tratar sus datos personales.",
+      "articulos_clave": ["Art. 4"],
+      "nivel_riesgo_general": "Alta",
+      "tareas": [
+        {
+          "id_tarea": "T-6",
+          "titulo": "Actualizar política de consentimiento",
+          "descripcion": "Implementar un sistema de consentimiento explícito y informado para los clientes.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 60,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Pérdida de confianza de los clientes."
+        }
+      ]
+    }
+  ]
+}
+[2026-09-14 15:33:16] Respuesta de Ollama recibida exitosamente.
+[2026-09-14 15:33:16] Guardando borrador de auditoría pendiente de aprobación...
+
+[2026-09-14 16:39:36] Iniciando auditoría RAG optimizada para: Fintech & Software Solutions SpA
+[2026-09-14 16:39:36] Contexto legal (6 reglas) despachado a Ollama (llama3.2:3b)...
+{
+  "resumen_ejecutivo": "Diagnóstico conciso de cumplimiento.",
+  "normativas_aplicables": [
+    {
+      "ley_id": "Ley 21.595",
+      "nombre_ley": "Ley 21.595 - Art. Catálogo",
+      "justificacion_juridica": "La empresa tiene una responsabilidad penal directa de más de 200 nuevos delitos económicos y medioambientales cometidos en su beneficio, lo que la obliga a implementar un Modelo de Prevención de Delitos (MPD) real y efectivo.",
+      "articulos_clave": ["Art. Catálogo"],
+      "nivel_riesgo_general": "Alta",
+      "tareas": [
+        {
+          "id_tarea": "T-1",
+          "titulo": "Implementar Modelo de Prevención de Delitos (MPD)",
+          "descripcion": "Actualizar e implementar un MPD real y efectivo para evitar la disolución de la empresa o comiso de ganancias.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 90,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Multas."
+        }
+      ]
+    },
+    {
+      "ley_id": "Ley 19.496",
+      "nombre_ley": "Ley 19.496 - Garantizar derecho a retracto",
+      "justificacion_juridica": "La empresa debe garantizar el derecho de los clientes a retractarse de compras realizadas en plataformas e-commerce, lo que requiere la implementación de un proceso de retracto eficiente.",
+      "articulos_clave": ["Art. 3-bis"],
+      "nivel_riesgo_general": "Media",
+      "tareas": [
+        {
+          "id_tarea": "T-2",
+          "titulo": "Implementar proceso de retracto",
+          "descripcion": "Desarrollar un proceso de retracto claro y transparente para los clientes, incluyendo la notificación de la cancelación de la compra y el reembolso.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 60,
+          "prioridad": "Media",
+          "impacto_incumplimiento": "Daños a la reputación."
+        }
+      ]
+    },
+    {
+      "ley_id": "20393",
+      "nombre_ley": "Ley 20393 - Responsabilidad penal directa",
+      "justificacion_juridica": "La empresa tiene una responsabilidad penal directa por delitos cometidos en su beneficio debido a fallas de dirección o supervisión de sus ejecutivos.",
+      "articulos_clave": ["Art. 3"],
+      "nivel_riesgo_general": "Alta",
+      "tareas": [
+        {
+          "id_tarea": "T-3",
+          "titulo": "Revisar la estructura de la dirección",
+          "descripcion": "Revisar la estructura de la dirección y la supervisión de los ejecutivos para asegurarse de que cumplan con sus responsabilidades legales.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 30,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Multas."
+        }
+      ]
+    },
+    {
+      "ley_id": "Ley 21.719",
+      "nombre_ley": "Ley 21.719 - Consentimiento",
+      "justificacion_juridica": "La empresa debe obtener el consentimiento explícito, informado y por escrito de los clientes/usuarios para recolectar o tratar sus datos personales.",
+      "articulos_clave": ["Art. Consentimiento"],
+      "nivel_riesgo_general": "Alta",
+      "tareas": [
+        {
+          "id_tarea": "T-4",
+          "titulo": "Desarrollar política de consentimiento",
+          "descripcion": "Desarrollar una política de consentimiento clara y transparente para obtener el consentimiento explícito de los clientes/usuarios.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 90,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Multas."
+        }
+      ]
+    },
+    {
+      "ley_id": "19628",
+      "nombre_ley": "Ley 19628 - Obligación de consentimiento",
+      "justificacion_juridica": "La empresa debe obtener el consentimiento explícito, informado y por escrito de los clientes/usuarios para recolectar o tratar sus datos personales.",
+      "articulos_clave": ["Art. 4"],
+      "nivel_riesgo_general": "Alta",
+      "tareas": [
+        {
+          "id_tarea": "T-5",
+          "titulo": "Desarrollar política de consentimiento",
+          "descripcion": "Desarrollar una política de consentimiento clara y transparente para obtener el consentimiento explícito de los clientes/usuarios.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 90,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Multas."
+        }
+      ]
+    }
+  ]
+}
+[2026-09-14 16:40:09] Respuesta de Ollama recibida exitosamente.
+[2026-09-14 16:40:09] Guardando borrador de auditoría pendiente de aprobación...
+
+[2026-09-14 16:59:41] Iniciando auditoría RAG optimizada para: TechCorp Chile S.A.
+[2026-09-14 16:59:41] Contexto legal (6 reglas) despachado a Ollama (llama3.2:3b)...
+{
+  "resumen_ejecutivo": "Diagnóstico conciso de cumplimiento.",
+  "normativas_aplicables": [
+    {
+      "ley_id": "Ley 19.496",
+      "nombre_ley": "Ley 19.496 - Garantizar derecho a retracto de 10 días en plataformas e-commerce, términos y condiciones visibles y soporte postventa expedito.",
+      "justificacion_juridica": "La empresa es una plataforma de e-commerce y debe garantizar el derecho de retraction de los clientes dentro de un plazo de 10 días.",
+      "articulos_clave": ["Art. 3-bis"],
+      "nivel_riesgo_general": "Media",
+      "tareas": [
+        {
+          "id_tarea": "T-1",
+          "titulo": "Publicar política de retraction",
+          "descripcion": "Implementar política de retraction en la plataforma y comunicarla a los clientes.",
+          "area_responsable": "Marketing",
+          "plazo_sugerido_dias": 15,
+          "prioridad": "Media",
+          "impacto_incumplimiento": "Pérdida de confianza."
+        }
+      ]
+    },
+    {
+      "ley_id": "19628",
+      "nombre_ley": "Ley 19628 - Obligación de consentimiento explícito, informado y por escrito de clientes/usuarios para recolectar o tratar sus datos personales en plataformas o contratos.",
+      "justificacion_juridica": "La empresa maneja datos de clientes y debe obtener su consentimiento explícito y por escrito para recolectar y tratar sus datos.",
+      "articulos_clave": ["Art. 4"],
+      "nivel_riesgo_general": "Alta",
+      "tareas": [
+        {
+          "id_tarea": "T-2",
+          "titulo": "Obtener consentimiento explícito",
+          "descripcion": "Redactar y comunicar a los clientes la política de recolección y tratamiento de sus datos personales.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 30,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Multas."
+        }
+      ]
+    },
+    {
+      "ley_id": "Ley 21.595",
+      "nombre_ley": "Ley 21.595 - Responsabilidad penal directa de la empresa por más de 200 nuevos delitos económicos y medioambientales cometidos en su beneficio.",
+      "justificacion_juridica": "La empresa debe cumplir con la norma de responsabilidad penal directa por delitos económicos y medioambientales.",
+      "articulos_clave": ["Art. Catálogo"],
+      "nivel_riesgo_general": "Alta",
+      "tareas": [
+        {
+          "id_tarea": "T-3",
+          "titulo": "Implementar MPD",
+          "descripcion": "Desarrollar y implementar un Modelo de Prevención de Delitos (MPD) real y efectivo.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 60,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Disolución de la empresa."
+        }
+      ]
+    },
+    {
+      "ley_id": "Ley 21.521",
+      "nombre_ley": "Ley 21.521 - Exigencia de registro obligatorio ante la CMF para plataformas Fintech de pagos, préstamos o custodia de fondos con gobernanza de riesgos.",
+      "justificacion_juridica": "La empresa es una plataforma Fintech y debe registrarse ante la CMF.",
+      "articulos_clave": ["Art. 5"],
+      "nivel_riesgo_general": "Media",
+      "tareas": [
+        {
+          "id_tarea": "T-4",
+          "titulo": "Registro ante la CMF",
+          "descripcion": "Realizar el registro obligatorio ante la CMF y cumplir con la gobernanza de riesgos.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 30,
+          "prioridad": "Media",
+          "impacto_incumplimiento": "Sanciones."
+        }
+      ]
+    },
+    {
+      "ley_id": "Ley 21.719",
+      "nombre_ley": "Ley 21.719 - Prohibición de pre-marcar casillas. Obligación de consentimiento explícito, informado y por escrito de clientes/usuarios para recolectar o tratar sus datos.",
+      "justificacion_juridica": "La empresa debe cumplir con la norma de prohibición de pre-marcar casillas y obtener consentimiento explícito y por escrito de los clientes.",
+      "articulos_clave": ["Art. Consentimiento"],
+      "nivel_riesgo_general": "Alta",
+      "tareas": [
+        {
+          "id_tarea": "T-5",
+          "titulo": "Publicar política de consentimiento",
+          "descripcion": "Implementar política de consentimiento explícito y por escrito en la plataforma.",
+          "area_responsable": "Marketing",
+          "plazo_sugerido_dias": 15,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Pérdida de confianza."
+        }
+      ]
+    }
+  ]
+}
+[2026-09-14 17:00:09] Respuesta de Ollama recibida exitosamente.
+[2026-09-14 17:00:09] Guardando borrador de auditoría pendiente de aprobación...
+
+[2026-09-14 17:09:31] Iniciando auditoría RAG optimizada para: TechCorp Chile S.A.
+[2026-09-14 17:09:31] Contexto legal (6 reglas) despachado a Ollama (llama3.2:3b)...
+{
+  "resumen_ejecutivo": "Diagnóstico conciso de cumplimiento.",
+  "normativas_aplicables": [
+    {
+      "ley_id": "Ley 19.496",
+      "nombre_ley": "Ley 19.496 - Garantizar derecho a retracto de 10 días en plataformas e-commerce, términos y condiciones visibles y soporte postventa expedito.",
+      "justificacion_juridica": "La empresa es un proveedor de servicios en línea y, por tanto, debe garantizar el derecho de retractiono de los clientes dentro de un plazo de 10 días.",
+      "articulos_clave": ["Art. 3-bis"],
+      "nivel_riesgo_general": "Media",
+      "tareas": [
+        {
+          "id_tarea": "T-1",
+          "titulo": "Publicar política de retracto",
+          "descripcion": "Implementar un sistema de retractiono que permita a los clientes solicitar su cancelación de la compra dentro de los 10 días posteriores a la realización de la transacción.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 15,
+          "prioridad": "Media",
+          "impacto_incumplimiento": "Pérdida de confianza."
+        }
+      ]
+    },
+    {
+      "ley_id": "Ley 19628",
+      "nombre_ley": "Ley 19628 - Obligación de consentimiento explícito, informado y por escrito de clientes/usuarios para recolectar o tratar sus datos personales en plataformas o contratos.",
+      "justificacion_juridica": "La empresa maneja datos personales de sus clientes, por lo que debe obtener su consentimiento explícito y por escrito para recolectar y tratar estos datos.",
+      "articulos_clave": ["Art. 4", "Art. 10"],
+      "nivel_riesgo_general": "Alta",
+      "tareas": [
+        {
+          "id_tarea": "T-2",
+          "titulo": "Obtener consentimiento explícito",
+          "descripcion": "Implementar un proceso para obtener el consentimiento explícito de los clientes antes de recolectar y tratar sus datos personales.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 30,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Multas y daños."
+        }
+      ]
+    },
+    {
+      "ley_id": "Ley 21.595",
+      "nombre_ley": "Ley 21.595 - Responsabilidad penal directa de la empresa por más de 200 nuevos delitos económicos y medioambientales cometidos en su beneficio.",
+      "justificacion_juridica": "La empresa debe cumplir con la norma de responsabilidad penal directa por más de 200 nuevos delitos económicos y medioambientales cometidos en su beneficio.",
+      "articulos_clave": ["Art. Catálogo"],
+      "nivel_riesgo_general": "Alta",
+      "tareas": [
+        {
+          "id_tarea": "T-3",
+          "titulo": "Implementar un sistema de gestión de riesgos",
+          "descripcion": "Implementar un sistema de gestión de riesgos para identificar y mitigar los riesgos económicos y medioambientales asociados con la actividad de la empresa.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 60,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Responsabilidad penal directa."
+        }
+      ]
+    },
+    {
+      "ley_id": "Ley 21.521",
+      "nombre_ley": "Ley 21.521 - Exigencia de registro obligatorio ante la CMF para plataformas Fintech de pagos, préstamos o custodia de fondos con gobernanza de riesgos.",
+      "justificacion_juridica": "La empresa es una plataforma Fintech y, por tanto, debe cumplir con la norma de registro obligatorio ante la CMF.",
+      "articulos_clave": ["Art. 5"],
+      "nivel_riesgo_general": "Media",
+      "tareas": [
+        {
+          "id_tarea": "T-4",
+          "titulo": "Registro ante la CMF",
+          "descripcion": "Realizar el registro obligatorio ante la CMF y implementar un sistema de gobernanza de riesgos para la plataforma.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 30,
+          "prioridad": "Media",
+          "impacto_incumplimiento": "Pérdida de confianza."
+        }
+      ]
+    },
+    {
+      "ley_id": "Ley 21.595",
+      "nombre_ley": "Ley 21.595 - Exigencia crítica de actualizar e implementar un Modelo de Prevención de Delitos (MPD) real y efectivo para evitar la disolución de la empresa o comiso de ganancias.",
+      "justificacion_juridica": "La empresa debe actualizar e implementar un MPD real y efectivo para evitar la disolución de la empresa o comiso de ganancias.",
+      "articulos_clave": ["Art. MPD"],
+      "nivel_riesgo_general": "Alta",
+      "tareas": [
+        {
+          "id_tarea": "T-5",
+          "titulo": "Implementar un MPD",
+          "descripcion": "Implementar un MPD real y efectivo para identificar y mitigar los riesgos de delitos y evitar la disolución de la empresa o comiso de ganancias.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 90,
+          "prioridad": "Alta",
+          "impacto_incumplimiento": "Responsabilidad penal directa."
+        }
+      ]
+    },
+    {
+      "ley_id": "Ley 19628",
+      "nombre_ley": "Ley 19628 - Prohibición de tratar datos sensibles (salud, biometría, ideología) salvo consentimiento expreso o base legal especial con protocolos reforzados de seguridad.",
+      "justificacion_juridica": "La empresa no maneja datos sensibles, por lo que no es necesario implementar protocolos reforzados de seguridad.",
+      "articulos_clave": ["Art. 10"],
+      "nivel_riesgo_general": "Baja",
+      "tareas": [
+        {
+          "id_tarea": "T-6",
+          "titulo": "Revisar políticas de privacidad",
+          "descripcion": "Revisar las políticas de privacidad de la empresa para asegurarse de que estén alineadas con la norma de protección de datos.",
+          "area_responsable": "Legal",
+          "plazo_sugerido_dias": 15,
+          "prioridad": "Baja",
+          "impacto_incumplimiento": "Pérdida de confianza."
+        }
+      ]
+    }
+  ]
+}
+[2026-09-14 17:10:06] Respuesta de Ollama recibida exitosamente.
+[2026-09-14 17:10:06] Guardando borrador de auditoría pendiente de aprobación...

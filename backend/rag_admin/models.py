@@ -31,3 +31,5 @@ class RegistroAuditoriaRAG(models.Model):
 
     def __str__(self):
         return f"{self.empresa.nombre} - {self.fecha_ejecucion.strftime('%d/%m/%Y %H:%M')}"
+
+

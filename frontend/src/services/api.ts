@@ -525,6 +525,54 @@ export const api = {
   getCalendarioEventos: async (): Promise<any[]> => {
     const res = await axiosInstance.get('/api/calendario/eventos/');
     return res.data || [];
+  },
+
+  // Operaciones Ficha 360 & GRC
+  actualizarObligacion: async (id: number | string, data: any): Promise<any> => {
+    const res = await axiosInstance.patch(`/api/obligaciones/${id}/`, data);
+    return res.data;
+  },
+
+  crearObligacion: async (data: any): Promise<any> => {
+    const res = await axiosInstance.post('/api/obligaciones/', data);
+    return res.data;
+  },
+
+  ejecutarControl: async (id: number | string, data: any): Promise<any> => {
+    const res = await axiosInstance.patch(`/api/controles/${id}/`, data);
+    return res.data;
+  },
+
+  crearControl: async (data: any): Promise<any> => {
+    const res = await axiosInstance.post('/api/controles/', data);
+    return res.data;
+  },
+
+  subirEvidencia: async (formData: FormData): Promise<any> => {
+    const res = await axiosInstance.post('/api/evidencias/', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    return res.data;
+  },
+
+  crearPlanAccion: async (data: any): Promise<any> => {
+    const res = await axiosInstance.post('/api/planes-accion/', data);
+    return res.data;
+  },
+
+  actualizarPlanAccion: async (id: number | string, data: any): Promise<any> => {
+    const res = await axiosInstance.patch(`/api/planes-accion/${id}/`, data);
+    return res.data;
+  },
+
+  crearAuditoria: async (data: any): Promise<any> => {
+    const res = await axiosInstance.post('/api/auditorias/', data);
+    return res.data;
+  },
+
+  actualizarAuditoria: async (id: number | string, data: any): Promise<any> => {
+    const res = await axiosInstance.patch(`/api/auditorias/${id}/`, data);
+    return res.data;
   }
 };
 

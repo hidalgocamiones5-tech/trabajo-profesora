@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Modulo: Soporte",
+    "subtitle": "Modelos y relaciones de la aplicacion soporte",
+    "output": "app_soporte.html",
+    "viewBox": [
+      2220,
+      1460
+    ]
+  },
+  "layout": {
+    "mode": "grid",
+    "origin": [
+      100,
+      800
+    ],
+    "cols": 8,
+    "gapX": 100,
+    "gapY": 400,
+    "cellW": 220,
+    "cellH": 60
+  },
+  "components": [
+    {
+      "id": "frontend",
+      "type": "frontend",
+      "label": "Frontend UI",
+      "sublabel": "App soporte",
+      "row": 0,
+      "col": 0,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "api_layer",
+      "type": "backend",
+      "label": "API Soporte",
+      "sublabel": "Django Views",
+      "row": 0,
+      "col": 1,
+      "size": [
+        220,
+        60
+      ]
+    },
+    {
+      "id": "ticketsoporte",
+      "type": "database",
+      "label": "TicketSoporte",
+      "sublabel": "Model",
+      "row": 0,
+      "col": 2,
+      "size": [
+        220,
+        60
+      ],
+      "tag": ""
+    },
+    {
+      "id": "incidentesoporte",
+      "type": "database",
+      "label": "IncidenteSoporte",
+      "sublabel": "Model",
+      "row": 0,
+      "col": 3,
+      "size": [
+        220,
+        60
+      ],
+      "tag": ""
+    },
+    {
+      "id": "riesgosoporte",
+      "type": "database",
+      "label": "RiesgoSoporte",
+      "sublabel": "Model",
+      "row": 0,
+      "col": 4,
+      "size": [
+        220,
+        60
+      ],
+      "tag": ""
+    },
+    {
+      "id": "empresa",
+      "type": "database",
+      "label": "Empresa",
+      "sublabel": "Model (api)",
+      "row": 0,
+      "col": 5,
+      "size": [
+        220,
+        60
+      ],
+      "tag": "external"
+    }
+  ],
+  "connections": [
+    {
+      "from": "frontend",
+      "to": "api_layer",
+      "variant": "emphasis",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "from": "api_layer",
+      "to": "ticketsoporte",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "bottom"
+    },
+    {
+      "from": "api_layer",
+      "to": "incidentesoporte",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "bottom"
+    },
+    {
+      "from": "api_layer",
+      "to": "riesgosoporte",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "bottom"
+    },
+    {
+      "from": "ticketsoporte",
+      "to": "empresa",
+      "variant": "default",
+      "fromSide": "top",
+      "toSide": "top"
+    },
+    {
+      "from": "incidentesoporte",
+      "to": "empresa",
+      "variant": "default",
+      "fromSide": "top",
+      "toSide": "top"
+    },
+    {
+      "from": "riesgosoporte",
+      "to": "empresa",
+      "variant": "default",
+      "fromSide": "top",
+      "toSide": "top"
+    }
+  ]
+}

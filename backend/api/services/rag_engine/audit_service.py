@@ -223,17 +223,18 @@ INSTRUCCIÓN:
                 riesgo_raw = item_norma.get("nivel_riesgo_general", "Media").lower()
                 criticidad = criticidad_map.get(riesgo_raw, 'media')
 
-                normativa_obj, _ = Normativa.objects.get_or_create(
-                    empresa=empresa,
-                    nombre=nombre_norma,
-                    defaults={
-                        'estado': 'en_tiempo',
-                        'criticidad': criticidad,
-                        'progreso': 0,
-                        'fecha_inicio': hoy,
-                        'fecha_termino': hoy + datetime.timedelta(days=90)
-                    }
-                )
+                # Buscar en el catálogo maestro (creado por admins, empresa is null)
+                normativa_obj = Normativa.objects.filter(empresa__isnull=True, nombre__icontains=nombre_norma[:20]).first()
+                if not normativa_obj:
+                    # Fallback si no existe: buscar por numero_oficial si el nombre_norma tiene números
+                    numeros = ''.join(filter(str.isdigit, nombre_norma))
+                    if numeros:
+                        normativa_obj = Normativa.objects.filter(empresa__isnull=True, numero_oficial__icontains=numeros).first()
+                
+                # Si definitivamente no existe en el catálogo, la saltamos porque las crean los admins
+                if not normativa_obj:
+                    continue
+
                 normativas_creadas += 1
 
                 ce_obj, _ = ComplianceEmpresa.objects.get_or_create(
@@ -259,13 +260,16 @@ INSTRUCCIÓN:
                     ).first()
 
                     if not tarea_existente:
+                        titulo_tarea = t.get("titulo", "Tarea de cumplimiento")
+                        area_sug = t.get("area_responsable", "Compliance")
+                        
                         TareaPendiente.objects.create(
                             empresa=empresa,
                             normativa=normativa_obj,
                             compliance_empresa=ce_obj,
-                            tarea=t.get("titulo", "Tarea de cumplimiento"),
-                            responsable=t.get("area_responsable", "Compliance"),
-                            responsable_asignado=t.get("area_responsable", "Compliance"),
+                            tarea=f"{titulo_tarea} (Sugerido: {area_sug})",
+                            responsable="Sin Asignar",
+                            responsable_asignado="Sin Asignar",
                             asociada_a=f"Ley {item_norma.get('ley_id')}",
                             fecha_vencimiento=vencimiento,
                             prioridad=prioridad_tarea,
